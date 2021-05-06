@@ -1,4 +1,4 @@
-# Smart-Alarm-using-tinyML
+# Smart Alarm using Tiny Machine Learning
 
 ## Purpose of the project:
 The aim of this project is to develop an alarm system that adjusts the waking up time to the best moment depending on data gathered from different sensors.
