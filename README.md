@@ -5,7 +5,7 @@ The aim of this project is to develop an alarm system that adjusts the waking up
 
 There are several systems that employ already Machine Learning (ML) to achieve this goal, but they rely upon performing the calculations on external machines. These systems fall into two categories:
 
-- Wearable devices equipped with different sensors that are directly attached to the user (i.e. bracelet, smartwatch, rings...) which rely upon a stable wireless communication (BLE, WIFI...) so as to transmit this data to other more powerful computer, typically a smart-phone.
+- Wearable devices equipped with different sensors that are directly attached to the user (i.e. bracelet, smartwatch, rings...) which rely upon a stable wireless communication (BLE, WIFI...) so as to transmit this data to another more powerful computer, typically a smart-phone.
 - A nightstand-style alarm clock that employs other different sensors which measure remotely the sleep cycles of the user.
 
 While the former gives very reasonable results due to the fact that it has sensors that are in close contact with the user, it suffers from the drawback of a considerable battery drain. Not to mention the need of a stable communication for the data transmission. 
