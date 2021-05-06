@@ -36,7 +36,7 @@ Daniel Moreno París, Carlos Gil García
 
 ## Disclaimer
 
-The main objective of this project is purely for research. All components listed here as well as code or documentation are prototype-wise and no meant to be commercialzed.
+The main objective of this project is purely for research. All components listed here as well as code or documentation are prototype-wise and not meant to be commercialzed.
 
 It is also worth mentioning that the authors of the project are not experts in the field, thus non-accurate use of terminology or information may be foreseen. Additionally, constructive feedback and suggestions for improvement will be always welcome.
 
