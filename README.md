@@ -1,5 +1,11 @@
 # Smart Alarm using Tiny Machine Learning
 
+## Description of the project
+A device attached to the body (e.g. a bracelet) intelligently adjusts the exact time to wake the user according to his state of sleep. The user will need to define a time threshold so that the model knows what is the range in which it has room to operate.
+
+For example: the user wishes to wake up at around 8 am and it is okay if the system could wake him 15 minutes earlier or later. The user will then define a threshold of 15 minutes and the system will know that it can wake the user up at the most appropriate time between 7:45 and 8:15.
+
+
 ## Purpose of the project:
 The aim of this project is to develop an alarm system that adjusts the waking up time to the best moment depending on data gathered from different sensors.
 
@@ -16,13 +22,13 @@ In light of the above, this project is mainly focused on conflating the benefits
 
 ## Constraints and challenges: 
 
-A major challenge is to shrink down a reasonable ML model (to less than 1 MB of size) that still performs predictions with high accuracy, low latency and low power consuption.
+A major challenge is to shrink down a reasonable ML model (to less than 1 MB of size) that still carries out predictions with high accuracy, low latency and low power consuption.
 
 
 
 ## Version/Date: 
 
-06/05/2021	
+07/05/2021	
 
 
 ## Authors
