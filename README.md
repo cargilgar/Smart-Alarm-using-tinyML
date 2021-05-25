@@ -32,7 +32,7 @@ BLE to send a daily report to the smart-phone.
 
 ## Version/Date: 
 
-22/05/2021	
+25/05/2021	
 
 
 ## Authors
