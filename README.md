@@ -29,10 +29,14 @@ A major challenge is to shrink down a reasonable ML model (to less than 1 MB of 
 BLE to send a daily report to the smart-phone.
 
 
-
 ## Version/Date: 
 
-28/05/2021	
+01/06/2021	
+
+
+## Expected due date:
+
+15/08/2021
 
 
 ## Authors
