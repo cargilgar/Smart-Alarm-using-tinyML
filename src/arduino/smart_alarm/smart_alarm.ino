@@ -162,7 +162,7 @@ void loop()
   
 //------------------------Data Preprocessing---------------------------
 
-//VALORES MÁXIMOS EN VALOR ABSOLUTO
+//Max value for each axis in 1 second
   if(abs(x) > abs(max_x)){
      max_x = x;
  }
@@ -174,9 +174,9 @@ void loop()
   }
   
  if(millis() - lastReportTime > 1000){
-   Serial.println(String(max_x) + "\t");
-   Serial.println(String(max_y) + "\t");
-   Serial.println(String(max_z) + "\t");
+   Serial.println("MAX X: " + String(max_x * 9.81) + "\t");
+   Serial.println("MAX Y: " + String(max_y * 9.81) + "\t");
+   Serial.println("MAX Z: " + String(max_z * 9.81) + "\t");
    
    max_x = 0;
    max_y = 0;
@@ -184,6 +184,8 @@ void loop()
    
    lastReportTime = millis();
  }
+
+ //Almacenar y pasar valores máximos de aceleración a m/s2
 //---------------------------------------------------------------------
   
   // Calculate an x value to feed into the model. We compare the current
@@ -192,7 +194,7 @@ void loop()
   // trained on, and use this to calculate a value.
   float position = static_cast<float>(inference_count) /
                    static_cast<float>(kInferencesPerCycle);
-  float x = position * kXrange;
+  x = position * kXrange;
 
   // Quantize the input from floating-point to integer
   int8_t x_quantized = x / input->params.scale + input->params.zero_point;
@@ -210,7 +212,7 @@ void loop()
   // Obtain the quantized output from model's output tensor
   int8_t y_quantized = output->data.int8[0];
   // Dequantize the output from integer to floating-point
-  float y = (y_quantized - output->params.zero_point) * output->params.scale;
+ y = (y_quantized - output->params.zero_point) * output->params.scale;
 
   // Output the results. A custom HandleOutput function can be implemented
   // for each supported hardware target.
