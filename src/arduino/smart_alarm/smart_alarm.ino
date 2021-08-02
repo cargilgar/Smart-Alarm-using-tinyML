@@ -53,14 +53,27 @@ namespace {
   
   constexpr int kTensorArenaSize = 2000;
   uint8_t tensor_arena[kTensorArenaSize];
+
+//----------------------------------
+  constexpr int label_count = 5;
+  const char* labels[label_count] = {"0", "1", "2", "3", "4"};
+//---------------------------------- 
 }  // namespace
 
-// The name of this function is important for Arduino compatibility.
-void setup() 
-{
+ //--------------------
+  int max_x = 0;
+  int max_y = 0;
+  int max_z = 0;
+  int lastReportTime = 0;
+//--------------------
+
+void setup() { 
+  // Start serial
   Serial.begin(9600);
+  Serial.println("Started");
   while (!Serial);
 
+  // Start IMU
   if (!IMU.begin()) {
     Serial.println("Failed to initialize IMU");
     while (1);
@@ -72,8 +85,7 @@ void setup()
   // Map the model into a usable data structure. This doesn't involve any
   // copying or parsing, it's a very lightweight operation.
   model = tflite::GetModel(g_model);
-  if (model->version() != TFLITE_SCHEMA_VERSION) 
-  {
+  if (model->version() != TFLITE_SCHEMA_VERSION) {
     TF_LITE_REPORT_ERROR(error_reporter,
                          "Model provided is schema version %d not equal "
                          "to supported version %d.",
@@ -86,7 +98,7 @@ void setup()
   
   /*Change to something like this
    * 
-    tflite::MicroMutableOpResolver<4> micro_op_resolver;
+    static tflite::MicroMutableOpResolver<4> micro_op_resolver;
     micro_op_resolver.AddDepthwiseConv2D();
     micro_op_resolver.AddFullyConnected();
     micro_op_resolver.AddReshape();
@@ -100,6 +112,7 @@ void setup()
 
   // Allocate memory from the tensor_arena for the model's tensors.
   TfLiteStatus allocate_status = interpreter->AllocateTensors();
+  
   if (allocate_status != kTfLiteOk) {
     TF_LITE_REPORT_ERROR(error_reporter, "AllocateTensors() failed");
     return;
@@ -108,6 +121,19 @@ void setup()
   // Validate input shape.
   input = interpreter->input(0);
 
+/*  // Set model input settings
+  TfLiteTensor* model_input = interpreter->input(0);
+  if ((model_input->dims->size != 4) || (model_input->dims->data[0] != 1) ||
+      (model_input->dims->data[1] != raster_height) ||
+      (model_input->dims->data[2] != raster_width) ||
+      (model_input->dims->data[3] != raster_channels) ||
+      (model_input->type != kTfLiteInt8)) {
+    TF_LITE_REPORT_ERROR(error_reporter,
+                         "Bad input tensor parameters in model");
+    return;
+  }
+*/
+
   // Validate input shape.
   output = interpreter->output(0);
 
@@ -115,7 +141,6 @@ void setup()
   inference_count = 0;
 }
 
-// The name of this function is important for Arduino compatibility.
 void loop() 
 {
 
@@ -131,6 +156,35 @@ void loop()
  
     }
   }
+
+
+  // --- Read data from Heart Rate Sensor
+  
+//------------------------Data Preprocessing---------------------------
+
+//VALORES MÁXIMOS EN VALOR ABSOLUTO
+  if(abs(x) > abs(max_x)){
+     max_x = x;
+ }
+  if(abs(y) > abs(max_y)){
+     max_y = y;
+ }    
+  if(abs(z) > abs(max_z)){
+     max_z = z;
+  }
+  
+ if(millis() - lastReportTime > 1000){
+   Serial.println(String(max_x) + "\t");
+   Serial.println(String(max_y) + "\t");
+   Serial.println(String(max_z) + "\t");
+   
+   max_x = 0;
+   max_y = 0;
+   max_z = 0;
+   
+   lastReportTime = millis();
+ }
+//---------------------------------------------------------------------
   
   // Calculate an x value to feed into the model. We compare the current
   // inference_count to the number of inferences per cycle to determine
