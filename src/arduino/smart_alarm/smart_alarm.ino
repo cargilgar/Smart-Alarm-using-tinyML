@@ -66,7 +66,7 @@ namespace {
   float max_x = 0;
   float max_y = 0;
   float max_z = 0;
-  int lastReportTime = 0;
+  long lastReportTime = 0;
   float input_array[14];
   int Heart_rate_counter = 0;
   float BPM = 0;
@@ -185,13 +185,12 @@ void loop()
     }
   }
 
-
   // --- Read data from Heart Rate Sensor
 
 //BPM = pulseSensor.getBeatsPerMinute();  // Calls function on our pulseSensor object that returns BPM as an "int".
                                             
 //------------------------Data Pre-processing--------------------------
-do{
+while(millis() - lastReportTime < 1000){
   // Max value for each axis in 1 second and scale to m/s2
     if(abs(x) > abs(max_x)){
        max_x = abs(x) * 9.807;
@@ -202,7 +201,7 @@ do{
     if(abs(z) > abs(max_z)){
        max_z = abs(z) * 9.807;
    }
-}while(millis() - lastReportTime < 1000);
+}
   
    // Generate all model features
    input_array[4] = (max_x - input_array[0]); // max_value - last max_value, x axis
@@ -241,7 +240,7 @@ do{
   
    Heart_rate_counter = ++Heart_rate_counter;
 
-   // Storage BPM each 15 seconds
+   // Update BPM each 15 seconds
    if(Heart_rate_counter = 15){
       input_array[3] = BPM;
       Heart_rate_counter = 0;
