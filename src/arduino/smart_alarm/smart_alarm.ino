@@ -16,6 +16,11 @@ limitations under the License.
 #include <TensorFlowLite.h>
 #include <Arduino_LSM9DS1.h>  // required library for IMU
 
+//-----------------------------
+#define USE_ARDUINO_INTERRUPTS true    // Set-up low-level interrupts for most acurate BPM math.
+#include <PulseSensorPlayground.h>     // Includes the PulseSensorPlayground Library.   
+//-----------------------------
+
 #include "main_functions.h"
 
 #include "tensorflow/lite/micro/all_ops_resolver.h"
@@ -61,7 +66,7 @@ namespace {
 
 }  // namespace
 
-//--------------------
+//----------------------
   int max_x = 0;
   int max_y = 0;
   int max_z = 0;
@@ -69,7 +74,15 @@ namespace {
   int input_array[6];
   int Heart_rate_counter = 0;
   int BPM = 0;
-//--------------------
+
+//  Variables
+const int PulseWire = 0;       // PulseSensor PURPLE WIRE connected to ANALOG PIN 0
+int Threshold = 550;           // Determine which Signal to "count as a beat" and which to ignore.
+                               // Use the "Gettting Started Project" to fine-tune Threshold Value beyond default setting.
+                               // Otherwise leave the default "550" value. 
+PulseSensorPlayground pulseSensor;  // Creates an instance of the PulseSensorPlayground object called "pulseSensor"                               
+
+//----------------------
 
 void setup() { 
   // Start serial
@@ -82,7 +95,13 @@ void setup() {
     Serial.println("Failed to initialize IMU");
     while (1);
   }
-  
+
+//------------------------
+  // Configure the PulseSensor object, by assigning our variables to it. 
+  pulseSensor.analogInput(PulseWire);   
+  pulseSensor.setThreshold(Threshold);   
+
+//------------------------
   static tflite::MicroErrorReporter micro_error_reporter;
   error_reporter = &micro_error_reporter;
 
@@ -172,7 +191,9 @@ void loop()
 
 
   // --- Read data from Heart Rate Sensor
-  
+
+BPM = pulseSensor.getBeatsPerMinute();  // Calls function on our pulseSensor object that returns BPM as an "int".
+                                            
 //------------------------Data Pre-processing--------------------------
 
 // Max value for each axis in 1 second
@@ -188,9 +209,9 @@ void loop()
   
  if(millis() - lastReportTime > 1000){
   
-   Serial.println("MAX X: " + String(max_x * 9.807) + "\t");
-   Serial.println("MAX Y: " + String(max_y * 9.807) + "\t");
-   Serial.println("MAX Z: " + String(max_z * 9.807) + "\t");
+   //Serial.println("MAX X: " + String(max_x * 9.807) + "\t");
+   //Serial.println("MAX Y: " + String(max_y * 9.807) + "\t");
+   //Serial.println("MAX Z: " + String(max_z * 9.807) + "\t");
 
    // Storage max values for each second and scale to m/s2
    input_array[0] = max_x * 9.807 ;
@@ -199,14 +220,14 @@ void loop()
    
    // Generate all features
 
-   // Clean max values 
+   // Clean max accelerometer values 
    max_x = 0;
    max_y = 0;
    max_z = 0;
 
    Heart_rate_counter = ++Heart_rate_counter
 
-  // Storage BPM each 15 seconds
+   // Storage BPM each 15 seconds
    if(Heart_rate_counter = 15{
       input_array[3] = BPM;
       Heart_rate_counter = 0;
