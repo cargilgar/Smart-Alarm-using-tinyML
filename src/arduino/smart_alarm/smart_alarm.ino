@@ -61,17 +61,13 @@ namespace {
 
 //----------------------------------
   constexpr int label_count = 5;
-  const char* labels[label_count] = {"0", "1", "2", "3", "4"};
-//---------------------------------- 
+  const char* labels[label_count] = {"0","1","2","3","4"}; 
 
-}  // namespace
-
-//----------------------
   int max_x = 0;
   int max_y = 0;
   int max_z = 0;
   int lastReportTime = 0;
-  int input_array[14] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  int input_array[14];
   int Heart_rate_counter = 0;
   int BPM = 0;
 
@@ -80,6 +76,9 @@ const int PulseWire = 0;       // PulseSensor PURPLE WIRE connected to ANALOG PI
 int Threshold = 550;           // Determine which Signal to "count as a beat" and which to ignore.
                                // Use the "Gettting Started Project" to fine-tune Threshold Value beyond default setting.
                                // Otherwise leave the default "550" value. 
+
+}  // namespace
+                              
 PulseSensorPlayground pulseSensor;  // Creates an instance of the PulseSensorPlayground object called "pulseSensor"                               
 
 //----------------------
@@ -117,15 +116,14 @@ void setup() {
   }
 
   // This pulls in all the operation implementations we need.
-  //static tflite::AllOpsResolver resolver;
+  static tflite::AllOpsResolver resolver;
   
-
-    static tflite::MicroMutableOpResolver<4> micro_op_resolver;
-    //micro_op_resolver.AddDepthwiseConv2D();
-    //micro_op_resolver.AddFullyConnected();
-    //micro_op_resolver.AddReshape();
+/*
+    static tflite::MicroMutableOpResolver<3> micro_op_resolver;
+    micro_op_resolver.AddFullyConnected();
+    micro_op_resolver.AddRelu();
     micro_op_resolver.AddSoftmax();
-
+*/
 
   // Instantiate the interpreter to run the model with.
   static tflite::MicroInterpreter static_interpreter(
@@ -183,9 +181,7 @@ void loop()
   {
     if (IMU.accelerationAvailable()) 
     {
-      // IMU.readAcceleration(accBuffer[0], accBuffer[1], accBuffer[3]);
       IMU.readAcceleration(x, y, z);
- 
     }
   }
 
@@ -218,17 +214,17 @@ BPM = pulseSensor.getBeatsPerMinute();  // Calls function on our pulseSensor obj
    input_array[5] = (max_y - input_array[1]); // max_value - last max_value, y axis
    input_array[6] = (max_z - input_array[2]); // max_value - last max_value, z axis
 
-   input_array[7] = ((max_x**2)+(max_y**2)+(max_z**2))**0.5 // max_value module 
+   input_array[7] = sqrt(sq(max_x) + sq(max_y) + sq(max_z)); // max_value module 
 
-   input_array[8] = ((input_array[4]**2) + (input_array[5]**2) + (input_array[6]**2))**0.5 // module 'acc subtraction'
+   input_array[8] = sqrt(sq(input_array[4]) + sq(input_array[5]) + sq(input_array[6])); // module 'acc subtraction'
 
-   input_array[9] = max_x**3 // max_x cubed
+   input_array[9] = max_x * max_x * max_x; // max_x cubed
 
-   input_array[10] = input_array[4]**2 //  (max_value - last max_value) squared, x axis
-   input_array[11] = input_array[6]**2 //  (max_value - last max_value) squared, z axis
-   input_array[12] = input_array[8]**2 //  (max_value - last max_value) squared, module 'acc subtraction'
+   input_array[10] = sq(input_array[4]); //  (max_value - last max_value) squared, x axis
+   input_array[11] = sq(input_array[6]); //  (max_value - last max_value) squared, z axis
+   input_array[12] = sq(input_array[8]); //  (max_value - last max_value) squared, module 'acc subtraction'
 
-   input_array[12] = 
+   input_array[13] = 0;
    
    // Storage max values for each second
    input_array[0] = max_x; //Last second max_value, x axis
@@ -243,18 +239,18 @@ BPM = pulseSensor.getBeatsPerMinute();  // Calls function on our pulseSensor obj
    Heart_rate_counter = ++Heart_rate_counter
 
    // Storage BPM each 15 seconds
-   if(Heart_rate_counter = 15{
+   if(Heart_rate_counter = 15){
       input_array[3] = BPM;
       Heart_rate_counter = 0;
    }
+
+  for(int i = 0; i < 14; i++){
+    Serial.print(input_array[i]);
+  }
    
    lastReportTime = millis();
  }
 
- 
-
- 
- 
 //---------------------------------------------------------------------
   
   // Calculate an x value to feed into the model. We compare the current
