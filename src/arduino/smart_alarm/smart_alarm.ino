@@ -206,9 +206,10 @@ void loop()
 
    Heart_rate_counter = ++Heart_rate_counter
 
+  // Storage BPM each 15 seconds
    if(Heart_rate_counter = 15{
-      input_array[3] = BPM
-      Heart_rate_counter = 0
+      input_array[3] = BPM;
+      Heart_rate_counter = 0;
    }
    
    lastReportTime = millis();
