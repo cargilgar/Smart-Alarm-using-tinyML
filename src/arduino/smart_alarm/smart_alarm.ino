@@ -17,8 +17,8 @@ limitations under the License.
 #include <Arduino_LSM9DS1.h>  // required library for IMU
 
 //-----------------------------
-#define USE_ARDUINO_INTERRUPTS true    // Set-up low-level interrupts for most acurate BPM math.
-#include <PulseSensorPlayground.h>     // Includes the PulseSensorPlayground Library.   
+//#define USE_ARDUINO_INTERRUPTS true    // Set-up low-level interrupts for most acurate BPM math.
+//#include <PulseSensorPlayground.h>     // Includes the PulseSensorPlayground Library.   
 //-----------------------------
 
 #include "main_functions.h"
@@ -63,13 +63,13 @@ namespace {
   constexpr int label_count = 5;
   const char* labels[label_count] = {"0","1","2","3","4"}; 
 
-  int max_x = 0;
-  int max_y = 0;
-  int max_z = 0;
+  float max_x = 0;
+  float max_y = 0;
+  float max_z = 0;
   int lastReportTime = 0;
-  int input_array[14];
+  float input_array[14];
   int Heart_rate_counter = 0;
-  int BPM = 0;
+  float BPM = 0;
 
 //  Variables
 const int PulseWire = 0;       // PulseSensor PURPLE WIRE connected to ANALOG PIN 0
@@ -79,7 +79,7 @@ int Threshold = 550;           // Determine which Signal to "count as a beat" an
 
 }  // namespace
                               
-PulseSensorPlayground pulseSensor;  // Creates an instance of the PulseSensorPlayground object called "pulseSensor"                               
+//PulseSensorPlayground pulseSensor;  // Creates an instance of the PulseSensorPlayground object called "pulseSensor"                               
 
 //----------------------
 
@@ -97,8 +97,8 @@ void setup() {
 
 //------------------------
   // Configure the PulseSensor object, by assigning our variables to it. 
-  pulseSensor.analogInput(PulseWire);   
-  pulseSensor.setThreshold(Threshold);   
+  //pulseSensor.analogInput(PulseWire);   
+  //pulseSensor.setThreshold(Threshold);   
 
 //------------------------
   static tflite::MicroErrorReporter micro_error_reporter;
@@ -188,28 +188,23 @@ void loop()
 
   // --- Read data from Heart Rate Sensor
 
-BPM = pulseSensor.getBeatsPerMinute();  // Calls function on our pulseSensor object that returns BPM as an "int".
+//BPM = pulseSensor.getBeatsPerMinute();  // Calls function on our pulseSensor object that returns BPM as an "int".
                                             
 //------------------------Data Pre-processing--------------------------
-
-// Max value for each axis in 1 second and scale to m/s2
-  if(abs(x) > abs(max_x)){
-     max_x = abs(x) * 9.807;
- }
-  if(abs(y) > abs(max_y)){
-     max_y = abs(y) * 9.807;
- }    
-  if(abs(z) > abs(max_z)){
-     max_z = abs(z) * 9.807;
- }
+do{
+  // Max value for each axis in 1 second and scale to m/s2
+    if(abs(x) > abs(max_x)){
+       max_x = abs(x) * 9.807;
+   }
+    if(abs(y) > abs(max_y)){
+       max_y = abs(y) * 9.807;
+   }    
+    if(abs(z) > abs(max_z)){
+       max_z = abs(z) * 9.807;
+   }
+}while(millis() - lastReportTime < 1000);
   
- if(millis() - lastReportTime > 1000){
-  
-   //Serial.println("MAX X: " + String(max_x * 9.807) + "\t");
-   //Serial.println("MAX Y: " + String(max_y * 9.807) + "\t");
-   //Serial.println("MAX Z: " + String(max_z * 9.807) + "\t");
-
-   // Generate all features
+   // Generate all model features
    input_array[4] = (max_x - input_array[0]); // max_value - last max_value, x axis
    input_array[5] = (max_y - input_array[1]); // max_value - last max_value, y axis
    input_array[6] = (max_z - input_array[2]); // max_value - last max_value, z axis
@@ -218,24 +213,32 @@ BPM = pulseSensor.getBeatsPerMinute();  // Calls function on our pulseSensor obj
 
    input_array[8] = sqrt(sq(input_array[4]) + sq(input_array[5]) + sq(input_array[6])); // module 'acc subtraction'
 
-   input_array[9] = max_x * max_x * max_x; // max_x cubed
+   input_array[9] = max_x * max_x * max_x; // max_x cubed (X**3)
 
-   input_array[10] = sq(input_array[4]); //  (max_value - last max_value) squared, x axis
-   input_array[11] = sq(input_array[6]); //  (max_value - last max_value) squared, z axis
-   input_array[12] = sq(input_array[8]); //  (max_value - last max_value) squared, module 'acc subtraction'
-
-   input_array[13] = 0;
+   input_array[10] = sq(input_array[6]); //  (max_value - last max_value) squared, z axis
    
+   input_array[11] = abs(input_array[6]); // absolute value (max_value - last max_value), z axis
+   
+   input_array[12] = sq(input_array[8]); // module 'acc subtraction' squared
+
+   input_array[13] = max_y * max_y * max_y; // max_y cubed (Y**3)
+
+
    // Storage max values for each second
    input_array[0] = max_x; //Last second max_value, x axis
    input_array[1] = max_y; //Last second max_value, y axis
    input_array[2] = max_z; //Last second max_value, z axis
+
    
    // Clean max accelerometer values 
    max_x = 0;
    max_y = 0;
    max_z = 0;
 
+  for(int i = 0; i < 14; i++){
+    Serial.print(String(input_array[i]) + " , ");
+  }
+  
    Heart_rate_counter = ++Heart_rate_counter;
 
    // Storage BPM each 15 seconds
@@ -243,13 +246,8 @@ BPM = pulseSensor.getBeatsPerMinute();  // Calls function on our pulseSensor obj
       input_array[3] = BPM;
       Heart_rate_counter = 0;
    }
-
-  for(int i = 0; i < 14; i++){
-    Serial.print(input_array[i]);
-  }
    
    lastReportTime = millis();
- }
 
 //---------------------------------------------------------------------
   
