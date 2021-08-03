@@ -58,13 +58,17 @@ namespace {
   constexpr int label_count = 5;
   const char* labels[label_count] = {"0", "1", "2", "3", "4"};
 //---------------------------------- 
+
 }  // namespace
 
- //--------------------
+//--------------------
   int max_x = 0;
   int max_y = 0;
   int max_z = 0;
   int lastReportTime = 0;
+  int input_array[6];
+  int Heart_rate_counter = 0;
+  int BPM = 0;
 //--------------------
 
 void setup() { 
@@ -94,16 +98,15 @@ void setup() {
   }
 
   // This pulls in all the operation implementations we need.
-  static tflite::AllOpsResolver resolver;
+  //static tflite::AllOpsResolver resolver;
   
-  /*Change to something like this
-   * 
+
     static tflite::MicroMutableOpResolver<4> micro_op_resolver;
-    micro_op_resolver.AddDepthwiseConv2D();
-    micro_op_resolver.AddFullyConnected();
-    micro_op_resolver.AddReshape();
+    //micro_op_resolver.AddDepthwiseConv2D();
+    //micro_op_resolver.AddFullyConnected();
+    //micro_op_resolver.AddReshape();
     micro_op_resolver.AddSoftmax();
-  */
+
 
   // Instantiate the interpreter to run the model with.
   static tflite::MicroInterpreter static_interpreter(
@@ -132,6 +135,16 @@ void setup() {
                          "Bad input tensor parameters in model");
     return;
   }
+
+    // Set model output settings
+  TfLiteTensor* model_output = interpreter->output(0);
+  if ((model_output->dims->size != 2) || (model_output->dims->data[0] != 1) ||
+      (model_output->dims->data[1] != label_count) ||
+      (model_output->type != kTfLiteInt8)) {
+    TF_LITE_REPORT_ERROR(error_reporter,
+                         "Bad output tensor parameters in model");
+    return;
+  }
 */
 
   // Validate input shape.
@@ -144,7 +157,7 @@ void setup() {
 void loop() 
 {
 
-  // --- Read data from IMU
+// --- Read data from IMU
   startStream = true;
   float x, y, z;
   if (startStream) 
@@ -160,32 +173,51 @@ void loop()
 
   // --- Read data from Heart Rate Sensor
   
-//------------------------Data Preprocessing---------------------------
+//------------------------Data Pre-processing--------------------------
 
-//Max value for each axis in 1 second
+// Max value for each axis in 1 second
   if(abs(x) > abs(max_x)){
-     max_x = x;
+     max_x = abs(x);
  }
   if(abs(y) > abs(max_y)){
-     max_y = y;
+     max_y = abs(y);
  }    
   if(abs(z) > abs(max_z)){
-     max_z = z;
-  }
+     max_z = abs(z);
+ }
   
  if(millis() - lastReportTime > 1000){
-   Serial.println("MAX X: " + String(max_x * 9.81) + "\t");
-   Serial.println("MAX Y: " + String(max_y * 9.81) + "\t");
-   Serial.println("MAX Z: " + String(max_z * 9.81) + "\t");
+  
+   Serial.println("MAX X: " + String(max_x * 9.807) + "\t");
+   Serial.println("MAX Y: " + String(max_y * 9.807) + "\t");
+   Serial.println("MAX Z: " + String(max_z * 9.807) + "\t");
+
+   // Storage max values for each second and scale to m/s2
+   input_array[0] = max_x * 9.807 ;
+   input_array[1] = max_y * 9.807 ;
+   input_array[2] = max_z * 9.807 ;
    
+   // Generate all features
+
+   // Clean max values 
    max_x = 0;
    max_y = 0;
    max_z = 0;
+
+   Heart_rate_counter = ++Heart_rate_counter
+
+   if(Heart_rate_counter = 15{
+      input_array[3] = BPM
+      Heart_rate_counter = 0
+   }
    
    lastReportTime = millis();
  }
 
- //Almacenar y pasar valores máximos de aceleración a m/s2
+ 
+
+ 
+ 
 //---------------------------------------------------------------------
   
   // Calculate an x value to feed into the model. We compare the current
