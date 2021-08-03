@@ -71,7 +71,7 @@ namespace {
   int max_y = 0;
   int max_z = 0;
   int lastReportTime = 0;
-  int input_array[6];
+  int input_array[14] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
   int Heart_rate_counter = 0;
   int BPM = 0;
 
@@ -196,15 +196,15 @@ BPM = pulseSensor.getBeatsPerMinute();  // Calls function on our pulseSensor obj
                                             
 //------------------------Data Pre-processing--------------------------
 
-// Max value for each axis in 1 second
+// Max value for each axis in 1 second and scale to m/s2
   if(abs(x) > abs(max_x)){
-     max_x = abs(x);
+     max_x = abs(x) * 9.807;
  }
   if(abs(y) > abs(max_y)){
-     max_y = abs(y);
+     max_y = abs(y) * 9.807;
  }    
   if(abs(z) > abs(max_z)){
-     max_z = abs(z);
+     max_z = abs(z) * 9.807;
  }
   
  if(millis() - lastReportTime > 1000){
@@ -213,13 +213,28 @@ BPM = pulseSensor.getBeatsPerMinute();  // Calls function on our pulseSensor obj
    //Serial.println("MAX Y: " + String(max_y * 9.807) + "\t");
    //Serial.println("MAX Z: " + String(max_z * 9.807) + "\t");
 
-   // Storage max values for each second and scale to m/s2
-   input_array[0] = max_x * 9.807 ;
-   input_array[1] = max_y * 9.807 ;
-   input_array[2] = max_z * 9.807 ;
-   
    // Generate all features
+   input_array[4] = (max_x - input_array[0]); // max_value - last max_value, x axis
+   input_array[5] = (max_y - input_array[1]); // max_value - last max_value, y axis
+   input_array[6] = (max_z - input_array[2]); // max_value - last max_value, z axis
 
+   input_array[7] = ((max_x**2)+(max_y**2)+(max_z**2))**0.5 // max_value module 
+
+   input_array[8] = ((input_array[4]**2) + (input_array[5]**2) + (input_array[6]**2))**0.5 // module 'acc subtraction'
+
+   input_array[9] = max_x**3 // max_x cubed
+
+   input_array[10] = input_array[4]**2 //  (max_value - last max_value) squared, x axis
+   input_array[11] = input_array[6]**2 //  (max_value - last max_value) squared, z axis
+   input_array[12] = input_array[8]**2 //  (max_value - last max_value) squared, module 'acc subtraction'
+
+   input_array[12] = 
+   
+   // Storage max values for each second
+   input_array[0] = max_x; //Last second max_value, x axis
+   input_array[1] = max_y; //Last second max_value, y axis
+   input_array[2] = max_z; //Last second max_value, z axis
+   
    // Clean max accelerometer values 
    max_x = 0;
    max_y = 0;
