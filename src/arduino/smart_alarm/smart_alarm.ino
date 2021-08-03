@@ -17,8 +17,20 @@ limitations under the License.
 #include <Arduino_LSM9DS1.h>  // required library for IMU
 
 //-----------------------------
-//#define USE_ARDUINO_INTERRUPTS true    // Set-up low-level interrupts for most acurate BPM math.
-//#include <PulseSensorPlayground.h>     // Includes the PulseSensorPlayground Library.   
+#define USE_ARDUINO_INTERRUPTS false   // Set-up low-level interrupts for most acurate BPM math.
+#include <PulseSensorPlayground.h>     // Includes the PulseSensorPlayground Library.   
+
+/*
+   The format of our output.
+
+   Set this to PROCESSING_VISUALIZER if you're going to run
+    the Processing Visualizer Sketch.
+    See https://github.com/WorldFamousElectronics/PulseSensor_Amped_Processing_Visualizer
+
+   Set this to SERIAL_PLOTTER if you're going to run
+    the Arduino IDE's Serial Plotter.
+*/
+const int OUTPUT_TYPE = SERIAL_PLOTTER;
 //-----------------------------
 
 #include "main_functions.h"
@@ -70,17 +82,36 @@ namespace {
   float input_array[14];
   int Heart_rate_counter = 0;
   float BPM = 0;
+  float e=2.71828;
 
-//  Variables
-const int PulseWire = 0;       // PulseSensor PURPLE WIRE connected to ANALOG PIN 0
-int Threshold = 550;           // Determine which Signal to "count as a beat" and which to ignore.
-                               // Use the "Gettting Started Project" to fine-tune Threshold Value beyond default setting.
-                               // Otherwise leave the default "550" value. 
+/*
+   Pinout Pulse Sensor:
+     PULSE_INPUT = Analog Input. Connected to the pulse sensor
+      purple (signal) wire.
+     PULSE_BLINK = digital Output. Connected to an LED (and 220 ohm resistor)
+      that will flash on each detected pulse.
+     PULSE_FADE = digital Output. PWM pin onnected to an LED (and resistor)
+      that will smoothly fade with each pulse.
+      NOTE: PULSE_FADE must be a pin that supports PWM.
+       If USE_INTERRUPTS is true, Do not use pin 9 or 10 for PULSE_FADE,
+       because those pins' PWM interferes with the sample timer.
+*/
+const int PULSE_INPUT = A0;
+const int PULSE_FADE = 5;
+const int THRESHOLD = 550;   // Adjust this number to avoid noise when idle
+
+byte samplesUntilReport; // the number of samples remaining to read
+  // until we want to report a sample over the serial connection.
+  // We want to report a sample value over the serial port
+  // only once every 20 milliseconds (10 samples) to avoid
+  // doing Serial output faster than the Arduino can send.
+  
+const byte SAMPLES_PER_SERIAL_SAMPLE = 10;
+
+PulseSensorPlayground pulseSensor; // All the PulseSensor Playground functions.
 
 }  // namespace
-                              
-//PulseSensorPlayground pulseSensor;  // Creates an instance of the PulseSensorPlayground object called "pulseSensor"                               
-
+                                                           
 //----------------------
 
 void setup() { 
@@ -95,12 +126,32 @@ void setup() {
     while (1);
   }
 
-//------------------------
-  // Configure the PulseSensor object, by assigning our variables to it. 
-  //pulseSensor.analogInput(PulseWire);   
-  //pulseSensor.setThreshold(Threshold);   
+//------------------------------------------------------- pulse sensor stuff
+  /*
+     Use 115200 baud because that's what the Processing Sketch expects to read,
+     and because that speed provides about 11 bytes per millisecond.
 
-//------------------------
+     If we used a slower baud rate, we'd likely write bytes faster than
+     they can be transmitted, which would mess up the timing
+     of readSensor() calls, which would make the pulse measurement
+     not work properly.
+  */
+  Serial.begin(115200);
+
+  // Configure the PulseSensor manager.
+  pulseSensor.analogInput(PULSE_INPUT);
+  pulseSensor.fadeOnPulse(PULSE_FADE);
+
+  pulseSensor.setSerial(Serial);
+  pulseSensor.setOutputType(OUTPUT_TYPE);
+  pulseSensor.setThreshold(THRESHOLD);
+
+  // Skip the first SAMPLES_PER_SERIAL_SAMPLE in the loop().
+  samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
+
+
+//-------------------------------------------------------------
+
   static tflite::MicroErrorReporter micro_error_reporter;
   error_reporter = &micro_error_reporter;
 
@@ -118,7 +169,7 @@ void setup() {
   // This pulls in all the operation implementations we need.
   static tflite::AllOpsResolver resolver;
   
-/*
+/*  // Micro ops used
     static tflite::MicroMutableOpResolver<3> micro_op_resolver;
     micro_op_resolver.AddFullyConnected();
     micro_op_resolver.AddRelu();
@@ -185,9 +236,50 @@ void loop()
     }
   }
 
-  // --- Read data from Heart Rate Sensor
+  // ------------------------ Read data from Heart Rate Sensor
 
-//BPM = pulseSensor.getBeatsPerMinute();  // Calls function on our pulseSensor object that returns BPM as an "int".
+
+  /*
+     See if a sample is ready from the PulseSensor.
+
+     If USE_INTERRUPTS is false, this call to sawNewSample()
+     will, if enough time has passed, read and process a
+     sample (analog voltage) from the PulseSensor.
+  */
+  if (pulseSensor.sawNewSample()) {
+    /*
+       Every so often, send the latest Sample.
+       We don't print every sample, because our baud rate
+       won't support that much I/O.
+    */
+    if (--samplesUntilReport == (byte) 0) {
+      samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
+
+      pulseSensor.outputSample();
+
+      /*
+         At about the beginning of every heartbeat,
+         report the heart rate and inter-beat-interval.
+      */
+      if (pulseSensor.sawStartOfBeat()) {
+        pulseSensor.outputBeat();
+      }
+    }
+
+    /*******
+      Here is a good place to add code that could take up
+      to a millisecond or so to run.
+    *******/
+  }
+
+  /******
+     Don't add code here, because it could slow the sampling
+     from the PulseSensor.
+  ******/
+
+
+//--------------------------------------------------------------------
+
                                             
 //------------------------Data Pre-processing--------------------------
 while(millis() - lastReportTime < 1000){
@@ -222,6 +314,8 @@ while(millis() - lastReportTime < 1000){
 
    input_array[13] = max_y * max_y * max_y; // max_y cubed (Y**3)
 
+   //input_array[13] = pow(e,input_array[4]); // exp(max_x - last max_x)
+    
 
    // Storage max values for each second
    input_array[0] = max_x; //Last second max_value, x axis
