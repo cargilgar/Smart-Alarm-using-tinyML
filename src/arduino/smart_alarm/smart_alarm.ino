@@ -236,7 +236,7 @@ BPM = pulseSensor.getBeatsPerMinute();  // Calls function on our pulseSensor obj
    max_y = 0;
    max_z = 0;
 
-   Heart_rate_counter = ++Heart_rate_counter
+   Heart_rate_counter = ++Heart_rate_counter;
 
    // Storage BPM each 15 seconds
    if(Heart_rate_counter = 15){
