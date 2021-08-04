@@ -16,15 +16,7 @@ limitations under the License.
 #ifndef TENSORFLOW_LITE_MICRO_SMART_ALARM_CONSTANTS_H_
 #define TENSORFLOW_LITE_MICRO_SMART_ALARM_CONSTANTS_H_
 
-const float kXrange = 2.f * 3.14159265359f;
 const float e = 2.71828;
-
-// This constant determines the number of inferences to perform across the range
-// of x values defined above. Since each inference takes time, the higher this
-// number, the more time it will take to run through the entire range. The value
-// of this constant can be tuned so that one full cycle takes a desired amount
-// of time. Since different devices take different amounts of time to perform
-// inference, this value should be defined per-device.
-extern const int kInferencesPerCycle;
+const float g = 9.807;
 
 #endif  // TENSORFLOW_LITE_MICRO_SMART_ALARM_CONSTANTS_H_

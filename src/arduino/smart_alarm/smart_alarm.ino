@@ -188,21 +188,18 @@ void setup() {
     return;
   }
 
-  // Validate input shape.
-  input = interpreter->input(0);
 
-/*  // Set model input settings
+ // Set model input settings
   TfLiteTensor* model_input = interpreter->input(0);
-  if ((model_input->dims->size != 4) || (model_input->dims->data[0] != 1) ||
-      (model_input->dims->data[1] != raster_height) ||
-      (model_input->dims->data[2] != raster_width) ||
-      (model_input->dims->data[3] != raster_channels) ||
-      (model_input->type != kTfLiteInt8)) {
+  if ((model_input->dims->size != 14)) // || 
+    //(model_input->dims->data[0] != 1) ||
+    // (model_input->type != kTfLiteInt8)) 
+    {
     TF_LITE_REPORT_ERROR(error_reporter,
                          "Bad input tensor parameters in model");
     return;
   }
-
+/*
     // Set model output settings
   TfLiteTensor* model_output = interpreter->output(0);
   if ((model_output->dims->size != 2) || (model_output->dims->data[0] != 1) ||
@@ -214,8 +211,6 @@ void setup() {
   }
 */
 
-  // Validate input shape.
-  output = interpreter->output(0);
 
   // Keep track of how many inferences we have performed.
   inference_count = 0;
@@ -284,13 +279,13 @@ void loop()
 while(millis() - lastReportTime < 1000){
   // Max value for each axis in 1 second and scale to m/s2
     if(abs(x) > abs(max_x)){
-       max_x = abs(x) * 9.807;
+       max_x = abs(x) * g;
    }
     if(abs(y) > abs(max_y)){
-       max_y = abs(y) * 9.807;
+       max_y = abs(y) * g;
    }    
     if(abs(z) > abs(max_z)){
-       max_z = abs(z) * 9.807;
+       max_z = abs(z) * g;
    }
 }
   
@@ -342,20 +337,22 @@ while(millis() - lastReportTime < 1000){
    lastReportTime = millis();
 
 //---------------------------------------------------------------------
-  
-  // Calculate an x value to feed into the model. We compare the current
-  // inference_count to the number of inferences per cycle to determine
-  // our position within the range of possible x values the model was
-  // trained on, and use this to calculate a value.
-  float position = static_cast<float>(inference_count) /
-                   static_cast<float>(kInferencesPerCycle);
-  x = position * kXrange;
+
+//-------------------------------------------------------------------
+     // Pass to the model and run the interpreter
+    TfLiteTensor* model_input = interpreter->input(0);
+    for (int i = 0; i < 14; ++i) {
+      model_input->data.int8[i] = input_array[i];
+    }
+ //---------------------------------------------------------------------
+   /*   
 
   // Quantize the input from floating-point to integer
   int8_t x_quantized = x / input->params.scale + input->params.zero_point;
   // Place the quantized input in the model's input tensor
   input->data.int8[0] = x_quantized;
 
+*/
   // Run inference, and report any error
   TfLiteStatus invoke_status = interpreter->Invoke();
   if (invoke_status != kTfLiteOk) {
@@ -373,8 +370,4 @@ while(millis() - lastReportTime < 1000){
   // for each supported hardware target.
   HandleOutput(error_reporter, x, y);
 
-  // Increment the inference_counter, and reset it if we have reached
-  // the total number per cycle
-  inference_count += 1;
-  if (inference_count >= kInferencesPerCycle) inference_count = 0;
 }
