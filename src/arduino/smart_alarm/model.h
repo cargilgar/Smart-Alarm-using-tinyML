@@ -17,10 +17,10 @@ limitations under the License.
 
 // For more information, check the Colab where the conversion has taken place.
 
-#ifndef TENSORFLOW_LITE_MICRO_EXAMPLES_HELLO_WORLD_MODEL_H_
-#define TENSORFLOW_LITE_MICRO_EXAMPLES_HELLO_WORLD_MODEL_H_
+#ifndef TENSORFLOW_LITE_MICRO_SMART_ALARM_MODEL_H_
+#define TENSORFLOW_LITE_MICRO_SMART_ALARM_MODEL_H_
 
 extern const unsigned char g_model[];
 extern const int g_model_len;
 
-#endif  // TENSORFLOW_LITE_MICRO_EXAMPLES_HELLO_WORLD_MODEL_H_
+#endif  // TENSORFLOW_LITE_MICRO_SMART_ALARM_MODEL_H_

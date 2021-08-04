@@ -82,7 +82,7 @@ namespace {
   float input_array[14];
   int Heart_rate_counter = 0;
   float BPM = 0;
-  float e=2.71828;
+ 
 
 /*
    Pinout Pulse Sensor:
@@ -148,7 +148,6 @@ void setup() {
 
   // Skip the first SAMPLES_PER_SERIAL_SAMPLE in the loop().
   samplesUntilReport = SAMPLES_PER_SERIAL_SAMPLE;
-
 
 //-------------------------------------------------------------
 
@@ -312,9 +311,9 @@ while(millis() - lastReportTime < 1000){
    
    input_array[12] = sq(input_array[8]); // module 'acc subtraction' squared
 
-   input_array[13] = max_y * max_y * max_y; // max_y cubed (Y**3)
+   // input_array[13] = max_y * max_y * max_y; // max_y cubed (Y**3)
 
-   //input_array[13] = pow(e,input_array[4]); // exp(max_x - last max_x)
+   input_array[13] = pow(e,input_array[4]); // exp(max_x - last max_x)
     
 
    // Storage max values for each second
