@@ -63,23 +63,21 @@ namespace {
   
   int inference_count = 0;
   
-  const int imuIndex = 0; // 0 - accelerometer, 1 - gyroscope, 2 - magnetometer
-  bool startStream = false;
-  //float accBuffer[3];
-  
+  // const int imuIndex = 0; // 0 - accelerometer, 1 - gyroscope, 2 - magnetometer
+  bool startStream = false;  
   
   constexpr int kTensorArenaSize = 2000;
   uint8_t tensor_arena[kTensorArenaSize];
 
 //----------------------------------
-  constexpr int label_count = 5;
+  //constexpr int label_count = 5;
   const char* labels[label_count] = {"0","1","2","3","4"}; 
 
   float max_x = 0;
   float max_y = 0;
   float max_z = 0;
-  long lastReportTime = 0;
-  float input_array[14];
+  unsigned long lastReportTime = 0;
+  float input_array[kFeatureCount];
   int Heart_rate_counter = 0;
   float BPM = 0;
  
@@ -191,7 +189,7 @@ void setup() {
 
  // Set model input settings
   TfLiteTensor* model_input = interpreter->input(0);
-  if ((model_input->dims->size != 14)) // || 
+  if ((model_input->dims->size != kFeatureCount)) // || 
     //(model_input->dims->data[0] != 1) ||
     // (model_input->type != kTfLiteInt8)) 
     {
@@ -276,7 +274,7 @@ void loop()
 
                                             
 //------------------------Data Pre-processing--------------------------
-while(millis() - lastReportTime < 1000){
+while(millis() - lastReportTime < kTimeInterval){
   // Max value for each axis in 1 second and scale to m/s2
     if(abs(x) > abs(max_x)){
        max_x = abs(x) * g;
@@ -322,7 +320,7 @@ while(millis() - lastReportTime < 1000){
    max_y = 0;
    max_z = 0;
 
-  for(int i = 0; i < 14; i++){
+  for(int i = 0; i < kFeatureCount; i++){
     Serial.print(String(input_array[i]) + " , ");
   }
   
@@ -341,7 +339,7 @@ while(millis() - lastReportTime < 1000){
 //-------------------------------------------------------------------
      // Pass to the model and run the interpreter
     TfLiteTensor* model_input = interpreter->input(0);
-    for (int i = 0; i < 14; ++i) {
+    for (int i = 0; i < kFeatureCount; ++i) {
       model_input->data.int8[i] = input_array[i];
     }
  //---------------------------------------------------------------------

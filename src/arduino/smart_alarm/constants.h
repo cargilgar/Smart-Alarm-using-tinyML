@@ -16,7 +16,21 @@ limitations under the License.
 #ifndef TENSORFLOW_LITE_MICRO_SMART_ALARM_CONSTANTS_H_
 #define TENSORFLOW_LITE_MICRO_SMART_ALARM_CONSTANTS_H_
 
-const float e = 2.71828;
-const float g = 9.807;
+/*
+Index(['X', 'Y', 'Z', 'Heart Rate', 'movement_x', 'movement_y', 'movement_z',
+       'modulo', 'modulo_movement', 'X**3', 'movement_x**2', 'movement_z**2',
+       'modulo_movement**2', 'exp_movement_x', 'Labels'],
+      dtype='object')
+*/
+
+// --- Arduino constants
+constexpr uint8_t kLabelCount = 5;
+constexpr uint8_t kFeatureCount = 14;
+
+constexpr uint16_t kTimeInterval = 1000;  // [ms]
+
+// --- Mathematical and physical constants
+constexpr float e = 2.71828;
+constexpr float g = 9.807;
 
 #endif  // TENSORFLOW_LITE_MICRO_SMART_ALARM_CONSTANTS_H_
