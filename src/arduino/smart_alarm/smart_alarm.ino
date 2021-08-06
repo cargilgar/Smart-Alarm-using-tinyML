@@ -18,7 +18,7 @@ limitations under the License.
 
 //-----------------------------
 #define USE_ARDUINO_INTERRUPTS false   // Set-up low-level interrupts for most acurate BPM math.
-#include <PulseSensorPlayground.h>     // Includes the PulseSensorPlayground Library.   
+#include <PulseSensorPlayground.h>     // Includes the PulseSensorPlayground Library.
 
 /*
    The format of our output.
@@ -33,19 +33,20 @@ limitations under the License.
 const int OUTPUT_TYPE = SERIAL_PLOTTER;
 //-----------------------------
 
-#include "main_functions.h"
-
 #include "tensorflow/lite/micro/all_ops_resolver.h"
-#include "constants.h"
-#include "model.h"
-#include "output_handler.h"
 #include "tensorflow/lite/micro/micro_error_reporter.h"
 #include "tensorflow/lite/micro/micro_interpreter.h"
 #include "tensorflow/lite/schema/schema_generated.h"
 #include "tensorflow/lite/version.h"
 
+#include "main_functions.h"
+#include "model.h"
+#include "input_handler.h"
+#include "output_handler.h"
+#include "constants.h"
+
 /*
-To include: test.cpp? 
+To include: test.cpp?
 - Include the unit test framework header (#include "tensorflow/lite/micro/testing/micro_test.h")
 - Validate input shape
 
@@ -60,18 +61,18 @@ namespace {
   const tflite::Model* model = nullptr;
   TfLiteTensor* input = nullptr;
   TfLiteTensor* output = nullptr;
-  
+
   int inference_count = 0;
-  
+
   // const int imuIndex = 0; // 0 - accelerometer, 1 - gyroscope, 2 - magnetometer
-  bool startStream = false;  
-  
+  bool startStream = false;
+
   constexpr int kTensorArenaSize = 2000;
   uint8_t tensor_arena[kTensorArenaSize];
 
 //----------------------------------
   //constexpr int label_count = 5;
-  const char* labels[label_count] = {"0","1","2","3","4"}; 
+  const char* labels[label_count] = {"0","1","2","3","4"};
 
   float max_x = 0;
   float max_y = 0;
@@ -80,7 +81,7 @@ namespace {
   float input_array[kFeatureCount];
   int Heart_rate_counter = 0;
   float BPM = 0;
- 
+
 
 /*
    Pinout Pulse Sensor:
@@ -103,16 +104,16 @@ byte samplesUntilReport; // the number of samples remaining to read
   // We want to report a sample value over the serial port
   // only once every 20 milliseconds (10 samples) to avoid
   // doing Serial output faster than the Arduino can send.
-  
+
 const byte SAMPLES_PER_SERIAL_SAMPLE = 10;
 
 PulseSensorPlayground pulseSensor; // All the PulseSensor Playground functions.
 
 }  // namespace
-                                                           
+
 //----------------------
 
-void setup() { 
+void setup() {
   // Start serial
   Serial.begin(9600);
   Serial.println("Started");
@@ -165,7 +166,7 @@ void setup() {
 
   // This pulls in all the operation implementations we need.
   static tflite::AllOpsResolver resolver;
-  
+
 /*  // Micro ops used
     static tflite::MicroMutableOpResolver<3> micro_op_resolver;
     micro_op_resolver.AddFullyConnected();
@@ -180,7 +181,7 @@ void setup() {
 
   // Allocate memory from the tensor_arena for the model's tensors.
   TfLiteStatus allocate_status = interpreter->AllocateTensors();
-  
+
   if (allocate_status != kTfLiteOk) {
     TF_LITE_REPORT_ERROR(error_reporter, "AllocateTensors() failed");
     return;
@@ -189,9 +190,22 @@ void setup() {
 
  // Set model input settings
   TfLiteTensor* model_input = interpreter->input(0);
-  if ((model_input->dims->size != kFeatureCount)) // || 
+
+  // --- TEST INPUT TENSOR
+  TF_LITE_MICRO_EXPECT_NE(nullptr, input);
+  TF_LITE_MICRO_EXPECT_EQ(2, input->dims->size);
+  TF_LITE_MICRO_EXPECT_EQ(kFeatureCount, input->dims->data[0]);
+  TF_LITE_MICRO_EXPECT_EQ(1, input->dims->data[1]);
+  TF_LITE_MICRO_EXPECT_EQ(kTfLiteInt8, input->type);
+
+
+  // TF_LITE_ENSURE(context,
+  //              input->type == kTfLiteFloat32 || input->type == kTfLiteInt8);
+
+  // To change, input size is 2 not 14!! In other words: [[14]] or (14,)
+  if ((model_input->dims->size != kFeatureCount)) // ||
     //(model_input->dims->data[0] != 1) ||
-    // (model_input->type != kTfLiteInt8)) 
+    // (model_input->type != kTfLiteInt8))
     {
     TF_LITE_REPORT_ERROR(error_reporter,
                          "Bad input tensor parameters in model");
@@ -214,15 +228,15 @@ void setup() {
   inference_count = 0;
 }
 
-void loop() 
+void loop()
 {
 
 // --- Read data from IMU
   startStream = true;
   float x, y, z;
-  if (startStream) 
+  if (startStream)
   {
-    if (IMU.accelerationAvailable()) 
+    if (IMU.accelerationAvailable())
     {
       IMU.readAcceleration(x, y, z);
     }
@@ -272,7 +286,7 @@ void loop()
 
 //--------------------------------------------------------------------
 
-                                            
+
 //------------------------Data Pre-processing--------------------------
 while(millis() - lastReportTime < kTimeInterval){
   // Max value for each axis in 1 second and scale to m/s2
@@ -281,41 +295,41 @@ while(millis() - lastReportTime < kTimeInterval){
    }
     if(abs(y) > abs(max_y)){
        max_y = abs(y) * g;
-   }    
+   }
     if(abs(z) > abs(max_z)){
        max_z = abs(z) * g;
    }
 }
-  
+
    // Generate all model features
    input_array[4] = (max_x - input_array[0]); // max_value - last max_value, x axis
    input_array[5] = (max_y - input_array[1]); // max_value - last max_value, y axis
    input_array[6] = (max_z - input_array[2]); // max_value - last max_value, z axis
 
-   input_array[7] = sqrt(sq(max_x) + sq(max_y) + sq(max_z)); // max_value module 
+   input_array[7] = sqrt(sq(max_x) + sq(max_y) + sq(max_z)); // max_value module
 
    input_array[8] = sqrt(sq(input_array[4]) + sq(input_array[5]) + sq(input_array[6])); // module 'acc subtraction'
 
    input_array[9] = max_x * max_x * max_x; // max_x cubed (X**3)
 
    input_array[10] = sq(input_array[6]); //  (max_value - last max_value) squared, z axis
-   
+
    input_array[11] = abs(input_array[6]); // absolute value (max_value - last max_value), z axis
-   
+
    input_array[12] = sq(input_array[8]); // module 'acc subtraction' squared
 
    // input_array[13] = max_y * max_y * max_y; // max_y cubed (Y**3)
 
    input_array[13] = pow(e,input_array[4]); // exp(max_x - last max_x)
-    
+
 
    // Storage max values for each second
    input_array[0] = max_x; //Last second max_value, x axis
    input_array[1] = max_y; //Last second max_value, y axis
    input_array[2] = max_z; //Last second max_value, z axis
 
-   
-   // Clean max accelerometer values 
+
+   // Clean max accelerometer values
    max_x = 0;
    max_y = 0;
    max_z = 0;
@@ -323,7 +337,7 @@ while(millis() - lastReportTime < kTimeInterval){
   for(int i = 0; i < kFeatureCount; i++){
     Serial.print(String(input_array[i]) + " , ");
   }
-  
+
    Heart_rate_counter = ++Heart_rate_counter;
 
    // Update BPM each 15 seconds
@@ -331,7 +345,7 @@ while(millis() - lastReportTime < kTimeInterval){
       input_array[3] = BPM;
       Heart_rate_counter = 0;
    }
-   
+
    lastReportTime = millis();
 
 //---------------------------------------------------------------------
@@ -343,7 +357,7 @@ while(millis() - lastReportTime < kTimeInterval){
       model_input->data.int8[i] = input_array[i];
     }
  //---------------------------------------------------------------------
-   /*   
+   /*
 
   // Quantize the input from floating-point to integer
   int8_t x_quantized = x / input->params.scale + input->params.zero_point;
@@ -359,13 +373,34 @@ while(millis() - lastReportTime < kTimeInterval){
     return;
   }
 
+  // --- TEST OUTPUT TENSOR
+  TF_LITE_MICRO_EXPECT_EQ(2, output->dims->size);
+  TF_LITE_MICRO_EXPECT_EQ(kFeatureCount, input->dims->data[0]);
+  TF_LITE_MICRO_EXPECT_EQ(1, input->dims->data[1]);
+  TF_LITE_MICRO_EXPECT_EQ(kTfLiteInt8, output->type);
+
   // Obtain the quantized output from model's output tensor
   int8_t y_quantized = output->data.int8[0];
   // Dequantize the output from integer to floating-point
- y = (y_quantized - output->params.zero_point) * output->params.scale;
+  y = (y_quantized - output->params.zero_point) * output->params.scale;
 
   // Output the results. A custom HandleOutput function can be implemented
   // for each supported hardware target.
   HandleOutput(error_reporter, x, y);
 
+  // --- TEST INFERENCES
+  input->data.f[0] = 1.;
+  interpreter.Invoke();
+  value = output->data.f[0];
+  TF_LITE_MICRO_EXPECT_NEAR(0.841, value, 0.05);
+
+  input->data.f[0] = 3.;
+  interpreter.Invoke();
+  value = output->data.f[0];
+  TF_LITE_MICRO_EXPECT_NEAR(0.141, value, 0.05);
+
+  input->data.f[0] = 5.;
+  interpreter.Invoke();
+  value = output->data.f[0];
+  TF_LITE_MICRO_EXPECT_NEAR(-0.959, value, 0.05);
 }
