@@ -1,4 +1,0 @@
-# Introduction
-
-
-# Model converter instructions
