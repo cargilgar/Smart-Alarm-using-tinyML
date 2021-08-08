@@ -18,29 +18,38 @@ limitations under the License.
 #include "Arduino.h"
 #include "constants.h"
 
-int led = LED_BUILTIN;
+int8_t recognizeLabel(int8_t* arr, bool msgVerbose){
+    int8_t maxValue = -128;
+    int8_t maxIndex = 0;
+    int8_t tmp = 0;
 
-// Track whether the function has run at least once
-bool initialized = false;
+    for(int8_t i = 0; i < kLabelCount; i++){
+        tmp = *(arr+i);
 
-// Animates a dot across the screen to represent the current x and y values
-void HandleOutput(tflite::ErrorReporter* error_reporter, float x_value,
-                  float y_value) {
-  // Do this only once
-  if (!initialized) {
-    // Set the LED pin to output
-    pinMode(led, OUTPUT);
-    initialized = true;
-  }
+        if(tmp > maxValue){
+            maxIndex = i;
+            maxValue = tmp;
+        }
+    }
 
-  // Calculate the brightness of the LED such that y=-1 is fully off
-  // and y=1 is fully on. The LED's brightness can range from 0-255.
-  int brightness = (int)(127.5f * (y_value + 1));
+    // -128 = 0 ; 127 = 100
+    // y = mx + b
 
-  // Set the brightness of the LED. If the specified pin does not support PWM,
-  // this will result in the LED being on when y > 127, off otherwise.
-  analogWrite(led, brightness);
+    // b = -128 ; 127 = m*100 - 128; m = 2.56
+    // y = 2.56*x - 127
+    // x = (y + 127)/2.56
 
-  // Log the current brightness value for display in the Arduino plotter
-  TF_LITE_REPORT_ERROR(error_reporter, "%d\n", brightness);
+    // Mapping the result obtained from the 1-bit range (-128, 127) to (0, 100) to express it in percentage
+    float probPred = (maxValue + 127)/2.56;
+    //float probPred = map(maxValue, -128., 127., 0., 100.);
+
+    if(msgVerbose){
+      Serial.print("Label predicted: ");
+      Serial.print(maxIndex);
+      Serial.print(", with a certainty of: ");
+      Serial.print(probPred);
+      Serial.print("%.\n\n");
+    }
+
+    return maxIndex;
 }

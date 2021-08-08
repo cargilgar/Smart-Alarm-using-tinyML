@@ -16,25 +16,50 @@ limitations under the License.
 #ifndef INPUT_HANDLER_H
 #define INPUT_HANDLER_H
 
-#include <stdint.h> 
+#include <stdint.h>
+#include "constants.h"
+#include "Arduino.h"
+
 // This class acts as a container to hold all the data that is going to be input
 // into the input Tensor of the model.
 //
 // It also provides a further level of abstraction by carrying out all the
-// calculations needed to generate the features. It takes the raw data, process
-// it, generate the required features by the model and stores them until new
-// data comes in, repeating again the process.
+// calculations needed to generate the features. It takes the raw data, processes
+// it, generates the required features by the model, normalizes them and stores 
+// them until new data comes in, repeating again the process.
 class InputHandler
 {
 public:
     InputHandler(uint8_t arrSize);
     InputHandler() = delete;
-    void generateFeatures(float x, float y, float z, float bpm);
+    ~InputHandler();
 
-    int populateInputTensor();
+    int generateFeatures(float x, float y, float z, float bpm);
+    void displayFeatures();
+
+    float* features = new float[kFeatureCount];
 
 private:
+    void _normalizeFeatures();
+
     uint8_t _arrSize;
+    bool _initialized;
+
+    float normalizer[2*kFeatureCount] = {
+        0.0009460000000000001, 3.7215117999999996,
+        0.0012817 , 4.2220154,
+        0.0007629 , 3.8670044000000003,
+        41.0, 130.0,
+        -3.0046843999999995, 3.5939482999999997,
+        -4.1145935, 3.9015198,
+        -3.0399017000000006, 2.9488220000000003,
+        0.9872664790650293, 5.876683519378206,
+        0.0, 5.102599946910135,
+        8.465905360000003e-10, 51.54163618943318,
+        0.0, 12.916464383072887,
+        0.0, 9.241002345662894,
+        0.0, 26.03652621820731,
+        0.0, 36.37742172835277};
 };
 
 
