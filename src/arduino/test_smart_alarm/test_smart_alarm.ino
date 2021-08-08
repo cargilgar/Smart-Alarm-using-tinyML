@@ -133,8 +133,8 @@ void loop()
 
             // Popullate model input
             for (int8_t i = 0; i < kFeatureCount; ++i) {
-                int8_t x_quantized = input_array[i] / model_input->params.scale + model_input->params.zero_point;
-                //int8_t x_quantized = input_handler.features[i] / model_input->params.scale + model_input->params.zero_point;
+                //int8_t x_quantized = input_array[i] / model_input->params.scale + model_input->params.zero_point;
+                int8_t x_quantized = input_handler.features[i] / model_input->params.scale + model_input->params.zero_point;
                 model_input->data.int8[i] = x_quantized;
             }
 
