@@ -18,6 +18,8 @@ limitations under the License.
 
 #include "tensorflow/lite/c/common.h"
 #include "tensorflow/lite/micro/micro_error_reporter.h"
+#include "Arduino.h"
+#include "constants.h"
 
 int8_t recognizeLabel(int8_t* arr, bool msgVerbose);
 

@@ -15,8 +15,6 @@ limitations under the License.
 
 #include <TensorFlowLite.h>
 
-//#include <Arduino_LSM9DS1.h>  // required library for IMU
-
 #include "tensorflow/lite/micro/all_ops_resolver.h"
 #include "tensorflow/lite/micro/micro_error_reporter.h"
 #include "tensorflow/lite/micro/micro_interpreter.h"
@@ -25,9 +23,8 @@ limitations under the License.
 
 #include "main_functions.h"
 #include "model.h"
-#include "input_handler.h"
 #include "output_handler.h"
-#include "constants.h"
+#include "input_handler.h"
 
 // Globals, used for compatibility with Arduino-style sketches.
 namespace {
@@ -40,10 +37,8 @@ namespace {
 
     int inference_count = 0;
 
-    // const int imuIndex = 0; // 0 - accelerometer, 1 - gyroscope, 2 - magnetometer
-
     uint8_t tensor_arena[kTensorArenaSize];
-    
+
     // float i0[kFeatureCount] = {0.1006, 0.1511, 0.1760, 0.3483, 0.4709, 0.5142, 0.4710, 0.1711, 0.0811, 0.0010, 0.0008, 0.0062, 0.0066, 0.0305}; // 0
     // float i1[kFeatureCount] = {0.0441, 0.1383, 0.2307, 0.5056, 0.4479, 0.5153, 0.4954, 0.0190, 0.0175, 0.0001, 0.0002, 0.0006, 0.0003, 0.0262}; // 1
     // float i2[kFeatureCount] = {0.0132, 0.1087, 0.2301, 0.1011, 0.4326, 0.5592, 0.4921, 0.0033, 0.0800, 0.0000, 0.0017, 0.0009, 0.0064, 0.0237}; // 2
@@ -53,9 +48,6 @@ namespace {
     float input_array[kFeatureCount];
     int8_t output_array[kLabelCount];
 
-    //----------------------------------
-    // constexpr int label_count = 5;
-    // const char* labels[kLabelCount] = {"0","1","2","3","4"};
 
     float max_x = 0;
     float max_y = 0;
@@ -77,14 +69,6 @@ void setup() {
     // Start serial
     Serial.begin(9600);
     Serial.println("Started");
-
-    // Start IMU
-    /*
-    if (!IMU.begin()) {
-        Serial.println("Failed to initialize IMU");
-        while (1);
-    }
-    */
 
     // Setting up logging
     error_reporter = &micro_error_reporter;
@@ -134,30 +118,13 @@ void loop()
           if(incommingByte != 0)
               break;
         }
-        
-        /*
-        lastReportTime = millis();
-
-        while(millis() - lastReportTime < kTimeInterval){
-            float x, y, z;
-            IMU.readAcceleration(x, y, z);
-            // Max value for each axis in 1 second and scale to m/s2
-            if(abs(x) > abs(max_x))
-                max_x = abs(x) * g;
-
-            if(abs(y) > abs(max_y))
-                max_y = abs(y) * g;
-
-            if(abs(z) > abs(max_z))
-                max_z = abs(z) * g;
-        }*/
 
         int result = 0;
-        
-        // result = input_handler.generateFeatures(0.157700, 0.354492, 0.931030, 59.);
-        // result = input_handler.generateFeatures(0.229553, 0.304962, 0.932907, 64.);
-        result = input_handler.generateFeatures(max_x, max_y, max_z, BPM);
-        
+
+        result = input_handler.generateFeatures(0.157700, 0.354492, 0.931030, 59.);
+        result = input_handler.generateFeatures(0.229553, 0.304962, 0.932907, 64.);
+        //result = input_handler.generateFeatures(max_x, max_y, max_z, BPM);
+
         if(result == 0){
 
             input_handler.displayFeatures();

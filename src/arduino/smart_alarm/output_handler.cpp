@@ -15,9 +15,6 @@ limitations under the License.
 
 #include "output_handler.h"
 
-#include "Arduino.h"
-#include "constants.h"
-
 int8_t recognizeLabel(int8_t* arr, bool msgVerbose){
     int8_t maxValue = -128;
     int8_t maxIndex = 0;

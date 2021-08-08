@@ -16,12 +16,16 @@ limitations under the License.
 #ifndef TENSORFLOW_LITE_MICRO_SMART_ALARM_CONSTANTS_H_
 #define TENSORFLOW_LITE_MICRO_SMART_ALARM_CONSTANTS_H_
 
+#include <stdint.h>
 /*
 Index(['X', 'Y', 'Z', 'Heart Rate', 'movement_x', 'movement_y', 'movement_z',
        'modulo', 'modulo_movement', 'X**3', 'movement_x**2', 'movement_z**2',
        'modulo_movement**2', 'exp_movement_x', 'Labels'],
       dtype='object')
 */
+
+// TensorFlow
+constexpr int kTensorArenaSize = 2*1024;
 
 // --- Arduino constants
 constexpr uint8_t kLabelCount = 5;

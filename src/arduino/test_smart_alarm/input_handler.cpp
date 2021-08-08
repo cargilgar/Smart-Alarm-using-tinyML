@@ -57,16 +57,15 @@ int InputHandler::generateFeatures(float x, float y, float z, float bpm){
     _normalizeFeatures();
 
     return 0;
-
 }
 
 void InputHandler::_normalizeFeatures(){
-    for(int i = 0; i < kFeatureCount; i++)
+    for(uint8_t i = 0; i < kFeatureCount; i++)
         features[i] = (features[i] - normalizer[i*2]) / (normalizer[i*2+1] - normalizer[i*2]);
 }
 
 void InputHandler::displayFeatures(){
-    for(int i = 0; i < kFeatureCount; i++)
+    for(uint8_t i = 0; i < kFeatureCount; i++)
         Serial.println(features[i], 4);
 }
 

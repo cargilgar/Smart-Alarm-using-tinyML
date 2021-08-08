@@ -16,7 +16,6 @@ limitations under the License.
 #ifndef INPUT_HANDLER_H
 #define INPUT_HANDLER_H
 
-#include <stdint.h>
 #include "constants.h"
 #include "Arduino.h"
 
@@ -25,7 +24,7 @@ limitations under the License.
 //
 // It also provides a further level of abstraction by carrying out all the
 // calculations needed to generate the features. It takes the raw data, processes
-// it, generates the required features by the model, normalizes them and stores 
+// it, generates the required features by the model, normalizes them and stores
 // them until new data comes in, repeating again the process.
 class InputHandler
 {
@@ -42,7 +41,7 @@ public:
 private:
     void _normalizeFeatures();
 
-    uint8_t _arrSize;
+    int _arrSize;
     bool _initialized;
 
     float normalizer[2*kFeatureCount] = {
