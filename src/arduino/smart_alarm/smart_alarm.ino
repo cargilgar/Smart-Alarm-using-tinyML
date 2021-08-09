@@ -242,6 +242,7 @@ void loop()
          from the PulseSensor.
          ******/
 
+
          Heart_rate_counter = ++Heart_rate_counter;
 
         // Update BPM each 15 seconds
@@ -296,6 +297,8 @@ void loop()
         max_x = 0;
         max_y = 0;
         max_z = 0;
+
+        Serial.println(features[0]); //DELETE
     }
 }
 
