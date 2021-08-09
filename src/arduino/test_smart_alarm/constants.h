@@ -13,28 +13,35 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
+/// @file constants.h
+///
+/// @brief This file contains all the constant parameters used throughout the source files.
+///
+/// @details More details here.
+///
+/// @see [tflite model training](https://github.com/cargilgar/Smart-Alarm-using-tinyML/blob/main/src/colabs/model_training/tflite_model_training_DNN.ipynb "Model Training colab")
+///
+/// @note Index(['X', 'Y', 'Z', 'Heart Rate', 'movement_x', 'movement_y',
+/// 'movement_z', 'modulo', 'modulo_movement', 'X**3', 'movement_x**2',
+/// 'movement_z**2', 'modulo_movement**2', 'exp_movement_x', 'Labels']).
+
+
 #ifndef TENSORFLOW_LITE_MICRO_SMART_ALARM_CONSTANTS_H_
 #define TENSORFLOW_LITE_MICRO_SMART_ALARM_CONSTANTS_H_
 
 #include <stdint.h>
-/*
-Index(['X', 'Y', 'Z', 'Heart Rate', 'movement_x', 'movement_y', 'movement_z',
-       'modulo', 'modulo_movement', 'X**3', 'movement_x**2', 'movement_z**2',
-       'modulo_movement**2', 'exp_movement_x', 'Labels'],
-      dtype='object')
-*/
 
 // TensorFlow
-constexpr int kTensorArenaSize = 2*1024;
+constexpr int kTensorArenaSize = 2*1024;    /**< Tensor Arena size for allocation of memory for input, output, and intermediate arrays [bytes]. */
 
 // --- Arduino constants
-constexpr uint8_t kLabelCount = 5;
-constexpr uint8_t kFeatureCount = 14;
+constexpr uint8_t kLabelCount = 5;          /**< Number of labels for classification. */
+constexpr uint8_t kFeatureCount = 14;       /**< Number of total features from which the model trained upon. */
 
-constexpr uint16_t kTimeInterval = 1000;  // [ms]
+constexpr uint16_t kTimeInterval = 1000;    /**< Time interval for accelerometer measurement [ms]. */
 
 // --- Mathematical and physical constants
-constexpr float e = 2.71828;
-constexpr float g = 9.807;
+constexpr float e = 2.71828;                /**< Euler's number. */
+constexpr float g = 9.807;                  /**< Gravitational constant [m/s2]. */
 
 #endif  // TENSORFLOW_LITE_MICRO_SMART_ALARM_CONSTANTS_H_
