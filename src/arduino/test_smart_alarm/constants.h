@@ -39,7 +39,7 @@ constexpr uint8_t kLabelCount = 5;           /**< Number of labels for classific
 constexpr uint8_t kFeatureCount = 14;       /**< Number of total features from which the model trained upon. */
 constexpr uint8_t kNumSamples = 75;
 
-constexpr uint8_t kNumTests = kNumSamples/kLabelCount;
+constexpr uint8_t kNumTests = kNumSamples/kFeatureCount;
 
 constexpr uint16_t kTimeInterval = 1000;    /**< Time interval for accelerometer measurement [ms]. */
 

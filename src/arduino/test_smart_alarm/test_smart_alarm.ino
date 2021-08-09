@@ -84,14 +84,14 @@ void setup() {
     // Set model's input and output settings
     model_input = interpreter->input(0);
     model_output = interpreter->output(0);
+
+    Serial.println("Please enter any key to start the test.");
 }
 
 void loop()
-{
-    while(Serial.available()>0)
-    {
-        Serial.println("Please enter any key to start the test");
-
+{    
+    if(Serial.available()>0)
+    {   
         for(;;){
           int incommingByte = Serial.read();
 
@@ -130,7 +130,7 @@ void loop()
         }
 
     TF_LITE_REPORT_ERROR(error_reporter, "Test finalized successfully!"
-        "\nNumber of correct predicitions: %d over %d samples",
+        "\nNumber of correct predicitions: %d over %d samples.\n\n",
         correctPredicition, kNumTests);
 
     }
