@@ -35,13 +35,12 @@ limitations under the License.
 constexpr int kTensorArenaSize = 2*1024;    /**< Tensor Arena size for allocation of memory for input, output, and intermediate arrays [bytes]. */
 
 // --- Arduino constants
-constexpr uint8_t kLabelCount = 5;          /**< Number of labels for classification. */
+constexpr uint8_t kLabelCount = 5;           /**< Number of labels for classification. */
 constexpr uint8_t kFeatureCount = 14;       /**< Number of total features from which the model trained upon. */
+constexpr uint8_t kNumSamples = 75;
+
+constexpr uint8_t kNumTests = kNumSamples/kLabelCount;
 
 constexpr uint16_t kTimeInterval = 1000;    /**< Time interval for accelerometer measurement [ms]. */
-
-// --- Mathematical and physical constants
-constexpr float e = 2.71828;                /**< Euler's number. */
-constexpr float g = 9.807;                  /**< Gravitational constant [m/s2]. */
 
 #endif  // TENSORFLOW_LITE_MICRO_SMART_ALARM_CONSTANTS_H_

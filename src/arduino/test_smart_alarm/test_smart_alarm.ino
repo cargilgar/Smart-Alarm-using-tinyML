@@ -24,7 +24,7 @@ limitations under the License.
 #include "main_functions.h"
 #include "model.h"
 #include "output_handler.h"
-#include "input_handler.h"
+#include "data_samples.h"
 
 // Globals, used for compatibility with Arduino-style sketches.
 namespace {
@@ -35,40 +35,20 @@ namespace {
     TfLiteTensor* model_input = nullptr;
     TfLiteTensor* model_output = nullptr;
 
-    int inference_count = 0;
-
     uint8_t tensor_arena[kTensorArenaSize];
 
-    // float i0[kFeatureCount] = {0.1006, 0.1511, 0.1760, 0.3483, 0.4709, 0.5142, 0.4710, 0.1711, 0.0811, 0.0010, 0.0008, 0.0062, 0.0066, 0.0305}; // 0
-    // float i1[kFeatureCount] = {0.0441, 0.1383, 0.2307, 0.5056, 0.4479, 0.5153, 0.4954, 0.0190, 0.0175, 0.0001, 0.0002, 0.0006, 0.0003, 0.0262}; // 1
-    // float i2[kFeatureCount] = {0.0132, 0.1087, 0.2301, 0.1011, 0.4326, 0.5592, 0.4921, 0.0033, 0.0800, 0.0000, 0.0017, 0.0009, 0.0064, 0.0237}; // 2
-    // float i3[kFeatureCount] = {0.1393, 0.1920, 0.0669, 0.1910, 0.5336, 0.5761, 0.3928, 0.0022, 0.1953, 0.0027, 0.0206, 0.0511, 0.0381, 0.0461}; // 3
-    // float i4[kFeatureCount] = {0.0545, 0.2239, 0.0610, 0.3034, 0.4696, 0.5135, 0.4940, 0.0019, 0.0243, 0.0002, 0.0007, 0.0007, 0.0006, 0.0302}; // 4
-    // float* input_array;
-    float input_array[kFeatureCount];
     int8_t output_array[kLabelCount];
+    uint8_t label_test;
+    int correctPredicition = 0;
 
-
-    float max_x = 0;
-    float max_y = 0;
-    float max_z = 0;
-    unsigned long lastReportTime = 0;
-
-    int Heart_rate_counter = 0;
-    float BPM = 0;
-
-    bool reset = false;
-
-    InputHandler input_handler(kFeatureCount);
 }  // namespace
 
 void testInputTensor();
 void testOutputTensor();
 
 void setup() {
-    // Start serial
+
     Serial.begin(9600);
-    Serial.println("Started");
 
     // Setting up logging
     error_reporter = &micro_error_reporter;
@@ -77,8 +57,7 @@ void setup() {
     model = tflite::GetModel(g_model);
 
     // Check the model has been converted with a compatible tflite converter version
-    if (model->version() != TFLITE_SCHEMA_VERSION)
-    {
+    if (model->version() != TFLITE_SCHEMA_VERSION){
         TF_LITE_REPORT_ERROR(error_reporter,
             "Model provided is schema version %d not equal "
             "to supported version %d.",
@@ -105,13 +84,14 @@ void setup() {
     // Set model's input and output settings
     model_input = interpreter->input(0);
     model_output = interpreter->output(0);
-
 }
 
 void loop()
 {
     while(Serial.available()>0)
     {
+        Serial.println("Please enter any key to start the test");
+
         for(;;){
           int incommingByte = Serial.read();
 
@@ -119,24 +99,18 @@ void loop()
               break;
         }
 
-        int result = 0;
-
-        result = input_handler.generateFeatures(0.157700, 0.354492, 0.931030, 59.);
-        result = input_handler.generateFeatures(0.229553, 0.304962, 0.932907, 64.);
-        //result = input_handler.generateFeatures(max_x, max_y, max_z, BPM);
-
-        if(result == 0){
-
-            input_handler.displayFeatures();
+        for(uint8_t i = 0; i < kNumTests; i++){
 
             testInputTensor();
 
-            // Popullate model input
-            for (int8_t i = 0; i < kFeatureCount; ++i) {
-                //int8_t x_quantized = input_array[i] / model_input->params.scale + model_input->params.zero_point;
-                int8_t x_quantized = input_handler.features[i] / model_input->params.scale + model_input->params.zero_point;
-                model_input->data.int8[i] = x_quantized;
+            // Popullate model input from samples
+            for (int8_t j = 0; j < kFeatureCount; j++) {
+                int8_t x_quantized = samples[j+i*14] / model_input->params.scale + model_input->params.zero_point;
+                model_input->data.int8[j] = x_quantized;
             }
+
+            // Take the 15th value for the label
+            label_test = samples[i*15];
 
             // Run inference, and report any error
             TfLiteStatus invoke_status = interpreter->Invoke();
@@ -151,32 +125,33 @@ void loop()
 
             int8_t prediction = recognizeLabel(output_array, true);
 
-            // Dequantize the output from integer to floating-point
-            float y = (prediction - model_output->params.zero_point) * model_output->params.scale;
-
-            Serial.println(y);
+            if(prediction == label_test)
+                correctPredicition++;
         }
 
-        // Output the results. A custom HandleOutput function can be implemented
-        // for each supported hardware target.
-        // HandleOutput(error_reporter, x, y);
+    TF_LITE_REPORT_ERROR(error_reporter, "Test finalized successfully!"
+        "\nNumber of correct predicitions: %d over %d samples",
+        correctPredicition, kNumTests);
 
-        // --- TEST INFERENCES
-        // input->data.f[0] = 1.;
-        // interpreter.Invoke();
-        // value = output->data.f[0];
-        // TF_LITE_MICRO_EXPECT_NEAR(0.841, value, 0.05);
-        //
-        // input->data.f[0] = 3.;
-        // interpreter.Invoke();
-        // value = output->data.f[0];
-        // TF_LITE_MICRO_EXPECT_NEAR(0.141, value, 0.05);
-        //
-        // input->data.f[0] = 5.;
-        // interpreter.Invoke();
-        // value = output->data.f[0];
-        // TF_LITE_MICRO_EXPECT_NEAR(-0.959, value, 0.05);
     }
+
+    correctPredicition = 0;
+
+    // --- TEST INFERENCES
+    // input->data.f[0] = 1.;
+    // interpreter.Invoke();
+    // value = output->data.f[0];
+    // TF_LITE_MICRO_EXPECT_NEAR(0.841, value, 0.05);
+    //
+    // input->data.f[0] = 3.;
+    // interpreter.Invoke();
+    // value = output->data.f[0];
+    // TF_LITE_MICRO_EXPECT_NEAR(0.141, value, 0.05);
+    //
+    // input->data.f[0] = 5.;
+    // interpreter.Invoke();
+    // value = output->data.f[0];
+    // TF_LITE_MICRO_EXPECT_NEAR(-0.959, value, 0.05);
 }
 
 void testInputTensor(){
