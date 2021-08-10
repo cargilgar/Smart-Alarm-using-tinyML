@@ -26,10 +26,10 @@ limitations under the License.
 constexpr int kTensorArenaSize = 2*1024;    /**< Tensor Arena size for allocation of memory for input, output, and intermediate arrays [bytes]. */
 
 // --- Arduino constants
-constexpr uint8_t kLabelCount = 5;           /**< Number of labels for classification. */
+constexpr uint8_t kLabelCount = 5;          /**< Number of labels for classification. */
 constexpr uint8_t kFeatureCount = 14;       /**< Number of total features from which the model trained upon. */
-constexpr uint16_t kSamplesLength = 15000;
+constexpr uint16_t kSamplesLength = 15000;  /**< Total length of array containing the samples. */
 
-constexpr uint8_t kNumTests = kSamplesLength/kFeatureCount;
+constexpr uint8_t kNumTests = kSamplesLength/kFeatureCount; /**< Number of inferences the model is going to carry out for the testing. */
 
 constexpr uint16_t kTimeInterval = 1000;    /**< Time interval for accelerometer measurement [ms]. */

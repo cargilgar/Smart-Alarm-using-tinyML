@@ -26,7 +26,6 @@ limitations under the License.
 #include "output_handler.h"
 #include "data_samples.h"
 
-// Globals, used for compatibility with Arduino-style sketches.
 namespace {
     tflite::MicroErrorReporter micro_error_reporter;
     tflite::MicroInterpreter* interpreter = nullptr;
@@ -37,15 +36,22 @@ namespace {
 
     uint8_t tensor_arena[kTensorArenaSize];
 
-    int8_t output_array[kLabelCount];
-    uint8_t label_test;
-    int correctPredicition = 0;
+    int8_t output_array[kLabelCount];   /**< Array containing the inference result. */
+    uint8_t label_test;                 /**< Number of label to compare with for each inference. */
+    int correctPredicition = 0;         /**< Counter for keeping track the number of correct predictions to calculate average accuracy. */
 
 }  // namespace
 
+/// Checks the input tensor is initialized, has the correct size and type.
 void testInputTensor();
+
+/// Checks the output tensor has the correct size and type after inference.
 void testOutputTensor();
 
+/// Converts 32-bit float to 8-bit integer. @returns quantized value int8_t data type.
+int8_t quantize(float val);
+
+/// Initializes all data needed for the application.
 void setup() {
 
     Serial.begin(9600);
@@ -82,81 +88,68 @@ void setup() {
         return;
     }
 
-    // Set model's input and output settings
+    // Set model's input and output.
     model_input = interpreter->input(0);
     model_output = interpreter->output(0);
 
     Serial.println("Please enter any key to start the test.");
 }
 
+/// Runs all tests in one iteration.
 void loop()
-{    
-    if(Serial.available()>0)
-    {   
+{
+    while(Serial.available())
+    {
         for(;;){
           int incommingByte = Serial.read();
 
           if(incommingByte != 0)
               break;
         }
+    }
 
-        for(uint8_t i = 0; i < kNumTests; i++){
+    for(uint8_t i = 0; i < kNumTests; i++){
 
-            testInputTensor();
+        testInputTensor();
 
-            // Popullate model input from samples
-            for (int8_t j = 0; j < kFeatureCount; j++) {
-                int8_t x_quantized = samples[j+i*14] / model_input->params.scale + model_input->params.zero_point;
-                model_input->data.int8[j] = x_quantized;
-            }
-
-            // Take the 15th value for the label
-            label_test = samples[i*15];
-
-            // Run inference, and report any error
-            TfLiteStatus invoke_status = interpreter->Invoke();
-
-            if (invoke_status != kTfLiteOk)
-                TF_LITE_REPORT_ERROR(error_reporter, "Invoke failed\n");
-
-            testOutputTensor();
-
-            for(int i = 0; i < kLabelCount; i++)
-                output_array[i] = model_output->data.int8[i];
-
-            int8_t prediction = recognizeLabel(output_array, true);
-
-            if(prediction == label_test)
-                correctPredicition++;
+        // Popullate model input from samples
+        for (int8_t j = 0; j < kFeatureCount; j++) {
+            // int8_t quantized = samples[j+i*14] / model_input->params.scale + model_input->params.zero_point;
+            int8_t quantized = quantize(samples[j+i*14]);
+            model_input->data.int8[j] = quantized;
         }
+
+        // Take the 15th value for the label
+        label_test = samples[i*15];
+
+        // Run inference, and report any error
+        TfLiteStatus invoke_status = interpreter->Invoke();
+
+        if (invoke_status != kTfLiteOk)
+            TF_LITE_REPORT_ERROR(error_reporter, "Invoke failed\n");
+
+        testOutputTensor();
+
+        for(int i = 0; i < kLabelCount; i++)
+            output_array[i] = model_output->data.int8[i];
+
+        int8_t prediction = recognizeLabel(output_array, true);
+
+        if(prediction == label_test)
+            correctPredicition++;
+    }
 
     TF_LITE_REPORT_ERROR(error_reporter, "Test finalized successfully!"
         "\nNumber of correct predicitions: %d over %d samples.\n\n",
         correctPredicition, kNumTests);
 
-    }
-
     correctPredicition = 0;
-
-    // --- TEST INFERENCES
-    // input->data.f[0] = 1.;
-    // interpreter.Invoke();
-    // value = output->data.f[0];
-    // TF_LITE_MICRO_EXPECT_NEAR(0.841, value, 0.05);
-    //
-    // input->data.f[0] = 3.;
-    // interpreter.Invoke();
-    // value = output->data.f[0];
-    // TF_LITE_MICRO_EXPECT_NEAR(0.141, value, 0.05);
-    //
-    // input->data.f[0] = 5.;
-    // interpreter.Invoke();
-    // value = output->data.f[0];
-    // TF_LITE_MICRO_EXPECT_NEAR(-0.959, value, 0.05);
 }
 
+int8_t quantize(float val)
+    return val / model_input->params.scale + model_input->params.zero_point;
+
 void testInputTensor(){
-    // TEST INPUT TENSOR
     if ((model_input == nullptr))
         TF_LITE_REPORT_ERROR(error_reporter, "Input Tensor does not exist.\n");
 
@@ -177,7 +170,6 @@ void testInputTensor(){
 }
 
 void testOutputTensor(){
-    // TEST OUTPUT TENSOR
     if ((model_output->dims->size != 2))
         TF_LITE_REPORT_ERROR(error_reporter, "Output Tensor size incorrect.\n");
 
