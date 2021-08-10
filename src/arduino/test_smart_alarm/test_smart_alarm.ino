@@ -71,8 +71,7 @@ void setup() {
             return;
     }
 
-    // Load the necessary operations got the model trained.
-    //static tflite::AllOpsResolver resolver;
+    // Load only the necessary operations.
     static tflite::MicroMutableOpResolver<3> resolver;
     resolver.AddFullyConnected();
     resolver.AddRelu();
