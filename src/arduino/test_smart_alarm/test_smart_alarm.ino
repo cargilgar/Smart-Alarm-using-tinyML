@@ -11,10 +11,25 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-==============================================================================*/l
+==============================================================================*/
+
+#include <TensorFlowLite.h>
+
+#include "tensorflow/lite/micro/micro_mutable_op_resolver.h"
+#include "tensorflow/lite/micro/micro_error_reporter.h"
+#include "tensorflow/lite/micro/micro_interpreter.h"
+#include "tensorflow/lite/schema/schema_generated.h"
+#include "tensorflow/lite/version.h"
+
+#include "main_functions.h"
+#include "model.h"
+#include "output_handler.h"
+#include "data_samples.h"
+
+namespace{
+    tflite::ErrorReporter* error_reporter = nullptr;
     tflite::MicroErrorReporter micro_error_reporter;
     tflite::MicroInterpreter* interpreter = nullptr;
-    tflite::ErrorReporter* error_reporter = nullptr;
     const tflite::Model* model = nullptr;
     TfLiteTensor* model_input = nullptr;
     TfLiteTensor* model_output = nullptr;
