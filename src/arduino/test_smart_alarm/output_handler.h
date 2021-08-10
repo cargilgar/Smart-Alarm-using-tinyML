@@ -20,4 +20,4 @@ limitations under the License.
 #include "Arduino.h"
 #include "constants.h"
 
-int8_t recognizeLabel(int8_t* arr, bool msgVerbose);
+uint8_t recognizeLabel(int8_t* arr, bool msgVerbose);

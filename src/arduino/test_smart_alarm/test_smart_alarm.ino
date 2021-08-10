@@ -11,22 +11,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-==============================================================================*/
-
-#include <TensorFlowLite.h>
-
-#include "tensorflow/lite/micro/all_ops_resolver.h"
-#include "tensorflow/lite/micro/micro_error_reporter.h"
-#include "tensorflow/lite/micro/micro_interpreter.h"
-#include "tensorflow/lite/schema/schema_generated.h"
-#include "tensorflow/lite/version.h"
-
-#include "main_functions.h"
-#include "model.h"
-#include "output_handler.h"
-#include "data_samples.h"
-
-namespace {
+==============================================================================*/l
     tflite::MicroErrorReporter micro_error_reporter;
     tflite::MicroInterpreter* interpreter = nullptr;
     tflite::ErrorReporter* error_reporter = nullptr;
@@ -55,6 +40,7 @@ int8_t quantize(float val);
 void setup() {
 
     Serial.begin(9600);
+    TF_LITE_REPORT_ERROR(error_reporter, "Please enter any key to start the test.\n");
 
     // Setting up logging
     error_reporter = &micro_error_reporter;
@@ -71,8 +57,11 @@ void setup() {
             return;
     }
 
-    static tflite::AllOpsResolver resolver;
-    // static tflite::MicroMutableOpResolver resolver(error_reporter);
+    // Load the necessary operations got the model trained.
+    static tflite::MicroMutableOpResolver<3> resolver;
+    resolver.AddFullyConnected();
+    resolver.AddRelu();
+    resolver.AddSoftmax();
 
     // Instantiate the interpreter to run the model with.
     static tflite::MicroInterpreter static_interpreter(
@@ -91,36 +80,37 @@ void setup() {
     // Set model's input and output.
     model_input = interpreter->input(0);
     model_output = interpreter->output(0);
-
-    Serial.println("Please enter any key to start the test.");
 }
 
 /// Runs all tests in one iteration.
 void loop()
 {
-    while(Serial.available())
-    {
-        for(;;){
+    //Serial.println("Please enter any key to start the test.");
+    TF_LITE_REPORT_ERROR(error_reporter, "Please enter any key to start the test.\n");
+    for(;;){
+        if(Serial.available() > 0){
           int incommingByte = Serial.read();
 
-          if(incommingByte != 0)
+          if(incommingByte == 49)
               break;
         }
     }
 
-    for(uint8_t i = 0; i < kNumTests; i++){
+    //Serial.println("Test started");
+    TF_LITE_REPORT_ERROR(error_reporter, "Test is running... \n");
+
+    for(uint16_t i = 0; i < kNumTests; i++){
 
         testInputTensor();
 
-        // Popullate model input from samples
-        for (int8_t j = 0; j < kFeatureCount; j++) {
-            // int8_t quantized = samples[j+i*14] / model_input->params.scale + model_input->params.zero_point;
-            int8_t quantized = quantize(samples[j+i*14]);
+        // Popullate model input from samples. 
+        for (uint8_t j = 0; j < kFeatureCount; j++) {
+            int8_t quantized = quantize(samples[j+i*(kFeatureCount+1)]); // Accessing each row from 0 up to 13
             model_input->data.int8[j] = quantized;
         }
 
         // Take the 15th value for the label
-        label_test = samples[i*15];
+        label_test = samples[kFeatureCount+i*(kFeatureCount+1)];
 
         // Run inference, and report any error
         TfLiteStatus invoke_status = interpreter->Invoke();
@@ -130,24 +120,26 @@ void loop()
 
         testOutputTensor();
 
-        for(int i = 0; i < kLabelCount; i++)
-            output_array[i] = model_output->data.int8[i];
+        for(uint8_t label = 0; label < kLabelCount; label++)
+            output_array[label] = model_output->data.int8[label];
 
-        int8_t prediction = recognizeLabel(output_array, true);
+        int8_t prediction = recognizeLabel(output_array, false);
 
         if(prediction == label_test)
             correctPredicition++;
     }
 
-    TF_LITE_REPORT_ERROR(error_reporter, "Test finalized successfully!"
-        "\nNumber of correct predicitions: %d over %d samples.\n\n",
+    TF_LITE_REPORT_ERROR(error_reporter, "Test finalized successfully!\n\n"
+        "Number of correct predicitions: %d over %d samples.\n",
         correctPredicition, kNumTests);
 
     correctPredicition = 0;
 }
 
-int8_t quantize(float val)
-    return val / model_input->params.scale + model_input->params.zero_point;
+int8_t quantize(float val){
+    int8_t ret = val / model_input->params.scale + model_input->params.zero_point;
+    return ret;
+}
 
 void testInputTensor(){
     if ((model_input == nullptr))
