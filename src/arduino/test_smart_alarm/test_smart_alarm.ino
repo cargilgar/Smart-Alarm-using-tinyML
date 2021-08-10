@@ -66,6 +66,7 @@ void setup() {
     }
 
     static tflite::AllOpsResolver resolver;
+    // static tflite::MicroMutableOpResolver resolver(error_reporter);
 
     // Instantiate the interpreter to run the model with.
     static tflite::MicroInterpreter static_interpreter(
