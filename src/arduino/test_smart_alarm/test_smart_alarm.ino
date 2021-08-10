@@ -55,7 +55,6 @@ int8_t quantize(float val);
 void setup() {
 
     Serial.begin(9600);
-    TF_LITE_REPORT_ERROR(error_reporter, "Please enter any key to start the test.\n");
 
     // Setting up logging
     error_reporter = &micro_error_reporter;
@@ -73,6 +72,7 @@ void setup() {
     }
 
     // Load the necessary operations got the model trained.
+    //static tflite::AllOpsResolver resolver;
     static tflite::MicroMutableOpResolver<3> resolver;
     resolver.AddFullyConnected();
     resolver.AddRelu();
@@ -191,5 +191,4 @@ void testOutputTensor(){
     if ((model_output->type != kTfLiteInt8))
         TF_LITE_REPORT_ERROR(error_reporter, "Output Tensor type is not %d. \n",
         kTfLiteInt8);
-
 }
