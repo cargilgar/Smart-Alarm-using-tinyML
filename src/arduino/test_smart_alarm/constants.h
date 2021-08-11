@@ -25,9 +25,10 @@ limitations under the License.
 // TensorFlow
 constexpr int kTensorArenaSize = 2*1024;    /**< Tensor Arena size for allocation of memory for input, output, and intermediate arrays [bytes]. */
 
-// --- Arduino constants
+// --- Tensor dimensions
 constexpr uint8_t kLabelCount = 5;          /**< Number of labels for classification. */
 constexpr uint8_t kFeatureCount = 14;       /**< Number of total features from which the model trained upon. */
-constexpr uint16_t kSamplesLength = 15000;  /**< Total length of array containing the samples. */
 
+// --- Test
+constexpr uint16_t kSamplesLength = 15000;  /**< Total length of array containing the samples. */
 constexpr uint16_t kNumTests = kSamplesLength/(kFeatureCount+1); /**< Number of inferences the model is going to carry out for the testing. */
