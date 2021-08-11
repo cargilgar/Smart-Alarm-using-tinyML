@@ -55,7 +55,7 @@ while (millis()<starttime+10000)                   // Reading pulse sensor for 1
 
 sensorValue = analogRead(sensorPin);
 
-if (sensorValue > 550 && counted == false)  // Threshold value is 550 (~ 2.7V)
+if (sensorValue > 530 && counted == false)  // Threshold value is 550 (~ 2.7V)
 
 {
 
