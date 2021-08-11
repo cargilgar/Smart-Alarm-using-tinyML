@@ -1,27 +1,26 @@
 //  Variables
-int PulseSensorPurplePin = 0;        // Pulse Sensor connected to ANALOG PIN 0
-int LED13 = 13;                      //  The on-board Arduion LED
+int pulseSensorPin = 0;               // Pulse Sensor connected to ANALOG PIN 0
+int blinkPin = 13;                    //  The on-board Arduion LED
 
-
-int Signal;                          // holds the incoming raw data. Signal value can range from 0-1024
-int Threshold = 348;                 // Determine which Signal to "count as a beat", and which to ingore.
+int sensorValue;                      // Holds the incoming raw data. sensorValue can range from 0-1024
+int threshold = 346;                  // Determine which sensorValue to "count as a beat", and which to ingore.
 
 void setup() {
-  pinMode(LED13,OUTPUT);             // pin that will blink to your heartbeat
-   Serial.begin(9600);               // Set's up Serial Communication at certain speed.
+  pinMode(blinkPin, OUTPUT);          // Pin that will blink 
+  Serial.begin(9600);                 // Set's up Serial Communication at certain speed. @9600
 
 }
 
 void loop() {
 
-  Signal = analogRead(PulseSensorPurplePin);  // Read the PulseSensor's value.
-                                              // Assign this value to the "Signal" variable.
-   Serial.println(Signal);                    // Send the Signal value to Serial Plotter.
+  sensorValue = analogRead(pulseSensorPin);    // Read the PulseSensor's value.
+                                               // Assign this value to the "sensorValue" variable.
+   Serial.println(sensorValue);                // Send the sensorValue to Serial Plotter.
    
-   if(Signal > Threshold){                          // If the signal is above "550", then "turn-on" Arduino's on-Board LED.
-     digitalWrite(LED13,HIGH);
+   if(sensorValue > threshold){                // If the signal is above threshold value, then "turn-on" Arduino's on-Board LED.
+     digitalWrite(blinkPin,HIGH);
    } else {
-     digitalWrite(LED13,LOW);                //  Else, the sigal must be below "550", so "turn-off" this LED.
+     digitalWrite(blinkPin,LOW);               //  Else, the sensorValue must be below threshold value, so "turn-off" this LED.
    }
 
 delay(10);
