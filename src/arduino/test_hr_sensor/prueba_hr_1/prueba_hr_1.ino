@@ -59,7 +59,7 @@ void loop(){
     time_counter++;
     
     if (time_counter = 5){
-        for (int a = 0; a < (sizeof hr_data/sizeof hr_data[0]); a++) {
+        for (int a = 0; a < (sizeof (hr_data)/sizeof (hr_data[0])); a++) {
                 BPM = BPM + hr_data[a];
                 BPM = BPM * 2;
     }
