@@ -10,9 +10,9 @@ unsigned long last_time = 0;
 int heartrate = 0;
 int BPM = 0;
 int count = 0;
-int threshold = 550; 
+int threshold = 348; 
 
-boolean counted = false;                          //Adjust threshold fo a correct measurement
+boolean counted = false;                          //Adjust threshold for a correct measurement
 
 
 void setup () {

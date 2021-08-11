@@ -4,7 +4,7 @@ int LED13 = 13;                      //  The on-board Arduion LED
 
 
 int Signal;                          // holds the incoming raw data. Signal value can range from 0-1024
-int Threshold = 550;                 // Determine which Signal to "count as a beat", and which to ingore.
+int Threshold = 348;                 // Determine which Signal to "count as a beat", and which to ingore.
 
 void setup() {
   pinMode(LED13,OUTPUT);             // pin that will blink to your heartbeat
