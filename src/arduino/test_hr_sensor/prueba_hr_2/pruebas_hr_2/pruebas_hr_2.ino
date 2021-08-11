@@ -1,17 +1,3 @@
-/*
-
-* Basic BPM Measurement with Pulse Sensor
-
-* Quick Test Sketch for Arduino Uno/Nano
-
-* Adapted code - Thanks to Floris Wouterlood
-
-* T.K.Hareendran/2019
-
-*/
-
-
-
 
 int sensorPin = A0;                                // A0 is the input pin for the heart rate sensor
 
@@ -31,7 +17,7 @@ int BPM = 0;
 boolean counted = false;
 
 
-void setup (void) {
+void setup () {
 
 Serial.begin (9600);                               // Start Serial Communication @ 9600
 
@@ -42,12 +28,12 @@ void loop (){
 
 
 starttime = millis();
+//Serial.println ("1");
 
-
-while (millis() < starttime + 5000)                   // Reading pulse sensor for 5 seconds
-{
+while (millis() < starttime + 5000){                  // Reading pulse sensor for 5 seconds
 
 sensorValue = analogRead(sensorPin);
+//Serial.println (sensorValue);
 
     if (sensorValue > 530 && counted == false && IBI > 420)  // Threshold value is 530 (~ 2.7V) 
     
@@ -67,7 +53,7 @@ sensorValue = analogRead(sensorPin);
         
     }
 
-    if (count!= 0){
+    if (count > 0){
     
         hr = 60000 / (IBI - last_time);
         heartrate = heartrate + hr;
