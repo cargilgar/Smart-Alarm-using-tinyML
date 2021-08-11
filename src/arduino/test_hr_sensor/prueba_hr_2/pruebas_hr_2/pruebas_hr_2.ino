@@ -22,19 +22,16 @@ int count = 0;
 float hr = 0;
 
 unsigned long starttime = 0;
-unsigned long IBI = 0;
+unsigned long IBI = 750;                           // 80 BPM
 unsigned long last_time = 0;
 
 int heartrate = 0;
+int BPM = 0;
 
-//boolean counted = false;
-
-
+boolean counted = false;
 
 
 void setup (void) {
-
-pinMode (13, OUTPUT);                              // D13 LED as Status Indicator
 
 Serial.begin (9600);                               // Start Serial Communication @ 9600
 
@@ -47,45 +44,45 @@ void loop (){
 starttime = millis();
 
 
-while (millis() < starttime + 5000)                   // Reading pulse sensor for 10 seconds
+while (millis() < starttime + 5000)                   // Reading pulse sensor for 5 seconds
 {
 
 sensorValue = analogRead(sensorPin);
 
-    if (sensorValue > 530 )  // Threshold value is 550 (~ 2.7V) && counted == false
+    if (sensorValue > 530 && counted == false && IBI > 420)  // Threshold value is 530 (~ 2.7V) 
     
     {
-        last_time = IBI;
-        IBI = millis();
+        last_time = IBI;                  // Storage last time to calculate BPM
+        IBI = millis();                   // Storage IBI to calculate BPM
+        
         count++;
     
-  
         counted = true;
     }
   
   
-  else if (sensorValue < 530)
-  
-  {
-  
-  // counted = false;
-  
-  digitalWrite (13, LOW);
-  
-  }
+    else if (sensorValue < 530){
+    
+        counted = false;
+        
+    }
 
     if (count!= 0){
     
         hr = 60000 / (IBI - last_time);
         heartrate = heartrate + hr;
         hr = 0;
-  }
+    }
   
 }
-Serial.print ("BPM = ");
 
-Serial.println (heartrate/count);  
+BPM = heartrate / count;
+
+Serial.print ("BPM = ");
+Serial.println (BPM);  
 
 count = 0;
+counted = false;
+heartrate = 0;
 
 }
