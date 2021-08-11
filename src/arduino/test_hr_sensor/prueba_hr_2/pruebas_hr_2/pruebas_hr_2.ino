@@ -17,13 +17,17 @@ int sensorPin = A0;                                // A0 is the input pin for th
 
 float sensorValue = 0;                             // Variable to store the value coming from the sensor
 
-int count = 9;
+int count = 0;
+
+float hr = 0;
 
 unsigned long starttime = 0;
+unsigned long IBI = 0;
+unsigned long last_time = 0;
 
 int heartrate = 0;
 
-boolean counted = false;
+//boolean counted = false;
 
 
 
@@ -37,72 +41,51 @@ Serial.begin (9600);                               // Start Serial Communication
 }
 
 
-
-
 void loop (){
-
-
 
 
 starttime = millis();
 
 
-
-
-while (millis()<starttime+10000)                   // Reading pulse sensor for 10 seconds
-
+while (millis() < starttime + 5000)                   // Reading pulse sensor for 10 seconds
 {
 
 sensorValue = analogRead(sensorPin);
 
-if (sensorValue > 530 && counted == false)  // Threshold value is 550 (~ 2.7V)
+    if (sensorValue > 530 )  // Threshold value is 550 (~ 2.7V) && counted == false
+    
+    {
+        last_time = IBI;
+        IBI = millis();
+        count++;
+    
+  
+        counted = true;
+    }
+  
+  
+  else if (sensorValue < 530)
+  
+  {
+  
+  // counted = false;
+  
+  digitalWrite (13, LOW);
+  
+  }
 
-{
-
-count++;
-
-Serial.print ("count = ");
-
-Serial.println (count);
-
-digitalWrite (13,HIGH);
-
-delay (50);
-
-digitalWrite (13, LOW);
-
-counted = true;
-
+    if (count!= 0){
+    
+        hr = 60000 / (IBI - last_time);
+        heartrate = heartrate + hr;
+        hr = 0;
+  }
+  
 }
-
-else if (sensorValue < 550)
-
-{
-
-counted = false;
-
-digitalWrite (13, LOW);
-
-}
-
-}
-
-
-
-
-heartrate = count*6;                               // Multiply the count by 6 to get beats per minute
-
-Serial.println ();
-
 Serial.print ("BPM = ");
 
-Serial.println (heartrate);                        // Display BPM in the Serial Monitor
-
-Serial.println ();
+Serial.println (heartrate/count);  
 
 count = 0;
-
-
-
 
 }
