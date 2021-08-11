@@ -13,8 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-#ifndef TENSORFLOW_LITE_MICRO_SMART_ALARM_MAIN_FUNCTIONS_H_
-#define TENSORFLOW_LITE_MICRO_SMART_ALARM_MAIN_FUNCTIONS_H_
+#pragma once
 
 // Expose a C friendly interface for main functions.
 #ifdef __cplusplus
@@ -33,5 +32,3 @@ void loop();
 #ifdef __cplusplus
 }
 #endif
-
-#endif  // TENSORFLOW_LITE_MICRO_SMART_ALARM_MAIN_FUNCTIONS_H_

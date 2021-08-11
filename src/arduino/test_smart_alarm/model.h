@@ -13,14 +13,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-// The model has been made from a TensorFlow Lite flatbuffer into a C data array.
+#pragma once
 
-// For more information, check the Colab where the conversion has taken place.
-
-#ifndef TENSORFLOW_LITE_MICRO_SMART_ALARM_MODEL_H_
-#define TENSORFLOW_LITE_MICRO_SMART_ALARM_MODEL_H_
+/// @file model.h
+///
+/// @brief This file contains the model in a C-format array.
+///
+/// @details. The *.tflite* model has been handed to a Flattbuffer compiler that
+/// creates C++ code to access the data held in the serialised byte array.
+///
+/// @see [FlatBuffers](https://google.github.io/flatbuffers/ "FlatBuffers Overview")
 
 extern const unsigned char g_model[];
 extern const int g_model_len;
-
-#endif  // TENSORFLOW_LITE_MICRO_SMART_ALARM_MODEL_H_

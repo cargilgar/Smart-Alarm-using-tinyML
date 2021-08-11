@@ -13,14 +13,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-#ifndef TENSORFLOW_LITE_MICRO_SMART_ALARM_OUTPUT_HANDLER_H_
-#define TENSORFLOW_LITE_MICRO_SMART_ALARM_OUTPUT_HANDLER_H_
+#pragma once
 
 #include "tensorflow/lite/c/common.h"
 #include "tensorflow/lite/micro/micro_error_reporter.h"
 #include "Arduino.h"
 #include "constants.h"
 
-int8_t recognizeLabel(int8_t* arr, bool msgVerbose);
-
-#endif  // TENSORFLOW_LITE_MICRO_SMART_ALARM_OUTPUT_HANDLER_H_
+uint8_t recognizeLabel(int8_t* arr, bool msgVerbose);

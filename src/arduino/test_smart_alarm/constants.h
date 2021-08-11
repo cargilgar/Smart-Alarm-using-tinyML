@@ -15,19 +15,10 @@ limitations under the License.
 
 /// @file constants.h
 ///
-/// @brief This file contains all the constant parameters used throughout the source files.
-///
-/// @details More details here.
-///
-/// @see [tflite model training](https://github.com/cargilgar/Smart-Alarm-using-tinyML/blob/main/src/colabs/model_training/tflite_model_training_DNN.ipynb "Model Training colab")
-///
-/// @note Index(['X', 'Y', 'Z', 'Heart Rate', 'movement_x', 'movement_y',
-/// 'movement_z', 'modulo', 'modulo_movement', 'X**3', 'movement_x**2',
-/// 'movement_z**2', 'modulo_movement**2', 'exp_movement_x', 'Labels']).
+/// @brief This file contains all the constant parameters used throughout the
+/// source files.
 
-
-#ifndef TENSORFLOW_LITE_MICRO_SMART_ALARM_CONSTANTS_H_
-#define TENSORFLOW_LITE_MICRO_SMART_ALARM_CONSTANTS_H_
+#pragma once
 
 #include <stdint.h>
 
@@ -37,11 +28,6 @@ constexpr int kTensorArenaSize = 2*1024;    /**< Tensor Arena size for allocatio
 // --- Arduino constants
 constexpr uint8_t kLabelCount = 5;          /**< Number of labels for classification. */
 constexpr uint8_t kFeatureCount = 14;       /**< Number of total features from which the model trained upon. */
+constexpr uint16_t kSamplesLength = 15000;  /**< Total length of array containing the samples. */
 
-constexpr uint16_t kTimeInterval = 1000;    /**< Time interval for accelerometer measurement [ms]. */
-
-// --- Mathematical and physical constants
-constexpr float e = 2.71828;                /**< Euler's number. */
-constexpr float g = 9.807;                  /**< Gravitational constant [m/s2]. */
-
-#endif  // TENSORFLOW_LITE_MICRO_SMART_ALARM_CONSTANTS_H_
+constexpr uint16_t kNumTests = kSamplesLength/(kFeatureCount+1); /**< Number of inferences the model is going to carry out for the testing. */
