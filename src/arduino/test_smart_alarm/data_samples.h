@@ -9,12 +9,17 @@
 /// @details This file contains an extract of the dataset resulting from a series
 /// of randomly drawn samples. The samples have been automatically generated in 
 /// the tflite model training colab.
+/// 
+/// @note This file could have been presented as a hex dump file or in any other 
+/// lossless compression format and then converted back when running the 
+/// application. But for the sake of convenience and ease of manipulation, it 
+/// is left as it appears in the dataset. 
+///
+/// @remark Columns: ['X', 'Y', 'Z', 'Heart Rate', 'movement_x', 'movement_y',
+/// 'movement_z', 'modulo', 'modulo_movement', 'X**3', 'movement_x**2',
+/// 'movement_z**2', 'modulo_movement**2', 'exp_movement_x', 'Labels']
 ///
 /// @see [tflite model training](https://github.com/cargilgar/Smart-Alarm-using-tinyML/blob/main/src/colabs/model_training/tflite_model_training_DNN.ipynb "Model Training colab")
-///
-/// @note Index(['X', 'Y', 'Z', 'Heart Rate', 'movement_x', 'movement_y',
-/// 'movement_z', 'modulo', 'modulo_movement', 'X**3', 'movement_x**2',
-/// 'movement_z**2', 'modulo_movement**2', 'exp_movement_x', 'Labels'])
 
 constexpr float samples[kSamplesLength]{
 //     X       Y       Z      HR    mov_x   mov_y    mov_z    mod   mod_mov   X^3  mov_x^2 mov_z^2 m_mov^2 e(mov_x) Label
