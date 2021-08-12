@@ -31,12 +31,12 @@ BLE to send a daily report to the smart-phone.
 
 ## Version/Date: 
 
-02/08/2021	
+12/08/2021	
 
 
 ## Expected due date:
 
-15/08/2021
+31/08/2021
 
 
 ## Authors
