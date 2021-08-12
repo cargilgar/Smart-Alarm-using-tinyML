@@ -16,16 +16,16 @@ limitations under the License.
 #include "output_handler.h"
 
 int8_t recognizeLabel(int8_t* arr, uint8_t arrSize, bool msgVerbose) {
+
+    int8_t maxIndex;
     int8_t maxValue = -128;
-    int8_t maxIndex = 0;
-    int8_t tmp = 0;
 
     for(int8_t i = 0; i < kLabelCount; i++) {
-        tmp = *(arr+i);
+        int8_t temp = *(arr+i);
 
-        if(tmp > maxValue) {
+        if(temp > maxValue) {
             maxIndex = i;
-            maxValue = tmp;
+            maxValue = temp;
         }
     }
 
