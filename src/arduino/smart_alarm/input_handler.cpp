@@ -15,11 +15,16 @@ limitations under the License.
 
 #include "input_handler.h"
 
-InputHandler::InputHandler(uint8_t arrSize) : _arrSize(arrSize), _initialized(false){}
+// InputHandler::InputHandler(uint8_t arrSize) : _arrSize(arrSize), _initialized(false) {}
+InputHandler::InputHandler(uint8_t arrSize, float scale, int zeroPoint)
+    : _arrSize(arrSize), _initialized(false), _zeroPoint(zeroPoint), _scale(scale)
+{
+    _normalizer = kNormalizationRanges;
+}
 
-int InputHandler::generateFeatures(float x, float y, float z, float bpm){
+int InputHandler::generateFeatures(float x, float y, float z, float bpm) {
 
-    if(!_initialized){
+    if(!_initialized) {
         features[0] = x; // x axis
         features[1] = y; // y axis
         features[2] = z; // z axis
@@ -59,15 +64,26 @@ int InputHandler::generateFeatures(float x, float y, float z, float bpm){
     return 0;
 }
 
-void InputHandler::_normalizeFeatures(){
-    for(uint8_t i = 0; i < kFeatureCount; i++)
-        features[i] = (features[i] - normalizer[i*2]) / (normalizer[i*2+1] - normalizer[i*2]);
+void InputHandler::_normalizeFeatures() {
+    for(int i = 0; i < kFeatureCount; i++)
+        features[i] = (features[i] - _normalizer[i*2]) / (_normalizer[i*2+1] - _normalizer[i*2]);
 }
 
-void InputHandler::displayFeatures(){
-    for(uint8_t i = 0; i < kFeatureCount; i++)
-        Serial.println(features[i], 4);
+void popullateModelInput(float* input) {
+    for(int i = 0; i < kFeatureCount; i++)
+        input[i] = _quantize(features[i]);
 }
+
+int8_t _quantize(float val) {
+    int8_t ret = val / _scale + _zeroPoint;
+    // int8_t ret = val / model_input->params.scale + model_input->params.zero_point;
+    return ret;
+}
+
+// void InputHandler::displayFeatures() {
+//     for(int i = 0; i < kFeatureCount; i++)
+//         Serial.println(features[i], 4);
+// }
 
 InputHandler::~InputHandler()
 {

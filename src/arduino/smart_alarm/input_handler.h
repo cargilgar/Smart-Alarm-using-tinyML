@@ -15,8 +15,11 @@ limitations under the License.
 
 #pragma once
 
-#include "Arduino.h"
+// #include "Arduino.h"
+// #include <stdint.h>
+#include "constants.h"
 
+/// @file input_hanlder.h
 
 // This class acts as a container to hold all the data that is going to be input
 // into the input Tensor of the model.
@@ -28,22 +31,27 @@ limitations under the License.
 class InputHandler
 {
 public:
-    InputHandler(uint8_t arrSize);
+    InputHandler(uint8_t arrSize, float scale, int zeroPoint);
     InputHandler() = delete;
     ~InputHandler();
 
     int generateFeatures(float x, float y, float z, float bpm);
-    void displayFeatures();
+    // void displayFeatures();
+    void popullateModelInput(float* input);
 
     float* features = new float[kFeatureCount];
 
 private:
     void _normalizeFeatures();
+    /// Converts 32-bit float to 8-bit integer. @returns quantized value int8_t data type.
+    int8_t _quantize(float val);
 
+    float _scale;
+    int _zeroPoint;
     int _arrSize;
     bool _initialized;
 
-    float* normalizer = kNormalizationRanges;
+    float* _normalizer;
 
     // float normalizer[2*kFeatureCount] = {
     //     0.0009460000000000001, 3.7215117999999996,

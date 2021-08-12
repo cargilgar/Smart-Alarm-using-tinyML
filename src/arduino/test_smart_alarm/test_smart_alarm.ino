@@ -27,9 +27,9 @@ limitations under the License.
 #include "data_samples.h"
 
 namespace{
-    tflite::ErrorReporter* error_reporter = nullptr;
     tflite::MicroErrorReporter micro_error_reporter;
     tflite::MicroInterpreter* interpreter = nullptr;
+    tflite::ErrorReporter* error_reporter = nullptr;
     const tflite::Model* model = nullptr;
     TfLiteTensor* model_input = nullptr;
     TfLiteTensor* model_output = nullptr;
@@ -63,7 +63,7 @@ void setup() {
     model = tflite::GetModel(g_model);
 
     // Check the model has been converted with a compatible tflite converter version
-    if (model->version() != TFLITE_SCHEMA_VERSION){
+    if (model->version() != TFLITE_SCHEMA_VERSION) {
         TF_LITE_REPORT_ERROR(error_reporter,
             "Model provided is schema version %d not equal "
             "to supported version %d.",
@@ -86,7 +86,7 @@ void setup() {
     // Allocate memory from the tensor_arena for the model's tensors.
     TfLiteStatus allocate_status = interpreter->AllocateTensors();
 
-    if (allocate_status != kTfLiteOk){
+    if (allocate_status != kTfLiteOk) {
         TF_LITE_REPORT_ERROR(error_reporter, "AllocateTensors() failed");
         return;
     }
@@ -101,8 +101,8 @@ void loop()
 {
     //Serial.println("Please enter any key to start the test.");
     TF_LITE_REPORT_ERROR(error_reporter, "Please enter any key to start the test.\n");
-    for(;;){
-        if(Serial.available() > 0){
+    for(;;) {
+        if(Serial.available() > 0) {
           int incommingByte = Serial.read();
 
           if(incommingByte == 49)
@@ -113,11 +113,11 @@ void loop()
     //Serial.println("Test started");
     TF_LITE_REPORT_ERROR(error_reporter, "Test is running... \n");
 
-    for(uint16_t i = 0; i < kNumTests; i++){
+    for(uint16_t i = 0; i < kNumTests; i++) {
 
         testInputTensor();
 
-        // Popullate model input from samples. 
+        // Popullate model input from samples.
         for (uint8_t j = 0; j < kFeatureCount; j++) {
             int8_t quantized = quantize(samples[j+i*(kFeatureCount+1)]); // Accessing each row from 0 up to 13
             model_input->data.int8[j] = quantized;
@@ -137,7 +137,7 @@ void loop()
         for(uint8_t label = 0; label < kLabelCount; label++)
             output_array[label] = model_output->data.int8[label];
 
-        int8_t prediction = recognizeLabel(output_array, false);
+        int8_t prediction = recognizeLabel(output_array, kLabelCount, false);
 
         if(prediction == label_test)
             correctPredicition++;
@@ -150,12 +150,12 @@ void loop()
     correctPredicition = 0;
 }
 
-int8_t quantize(float val){
+int8_t quantize(float val) {
     int8_t ret = val / model_input->params.scale + model_input->params.zero_point;
     return ret;
 }
 
-void testInputTensor(){
+void testInputTensor() {
     if ((model_input == nullptr))
         TF_LITE_REPORT_ERROR(error_reporter, "Input Tensor does not exist.\n");
 
@@ -175,7 +175,7 @@ void testInputTensor(){
         kTfLiteInt8);
 }
 
-void testOutputTensor(){
+void testOutputTensor() {
     if ((model_output->dims->size != 2))
         TF_LITE_REPORT_ERROR(error_reporter, "Output Tensor size incorrect.\n");
 
