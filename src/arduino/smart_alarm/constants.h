@@ -27,7 +27,7 @@ limitations under the License.
 
 #pragma once
 
-// #include <stdint.h>
+#include "Arduino.h"
 #include "tensorflow/lite/c/common.h"
 #include "tensorflow/lite/micro/micro_error_reporter.h"
 
@@ -42,7 +42,7 @@ constexpr uint16_t kIMUTimeInterval = 1000;
 constexpr uint16_t kHRTimeInterval = 15000;
 
 constexpr int kSensorPin = A0;                        // A0 is the input pin for the heart rate sensor
-constexpr uint16_t kAnalogReadThreshold = 345;        // Set threshold for correct measurement (check adjust_threshold.ino)
+constexpr uint16_t kAnalogReadThreshold = 525;        // Set threshold for correct measurement (check adjust_threshold.ino)  // 345
 
 // --- Mathematical and physical constants
 constexpr float e = 2.71828;                /**< Euler's number for lograithmic expressions. */

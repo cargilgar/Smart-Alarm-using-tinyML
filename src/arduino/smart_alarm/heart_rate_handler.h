@@ -19,8 +19,8 @@ limitations under the License.
 
 // #include "tensorflow/lite/c/common.h"
 // #include "tensorflow/lite/micro/micro_error_reporter.h"
-#include "Arduino.h"
+// #include "Arduino.h"
 #include "constants.h"
 
-extern TfLiteStatus setupHeartRate(tflite::ErrorReporter* error_reporter);
+extern TfLiteStatus setupHeartRateSensor();
 int readHeartRate(tflite::ErrorReporter* error_reporter);

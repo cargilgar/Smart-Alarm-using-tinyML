@@ -19,9 +19,9 @@ limitations under the License.
 
 // #include "tensorflow/lite/c/common.h"
 // #include "tensorflow/lite/micro/micro_error_reporter.h"
-#include "Arduino.h"
+// #include "Arduino.h"
 #include <Arduino_LSM9DS1.h>  // required library for IMU
 #include "constants.h"
 
-extern TfLiteStatus setupIMUSensor(tflite::ErrorReporter* error_reporter);
+extern TfLiteStatus setupIMUSensor();
 void readAccelerometer(float* arr);

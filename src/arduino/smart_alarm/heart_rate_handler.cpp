@@ -15,14 +15,11 @@ limitations under the License.
 
 #include "heart_rate_handler.h"
 
-TfLiteStatus setupHeartRateSensor(tflite::ErrorReporter* error_reporter) {
+TfLiteStatus setupHeartRateSensor() {
 
-    if(analogRead(kSensorPin) > 0) {
-        TF_LITE_REPORT_ERROR(error_reporter, "Heart Rate sensor is not present");
-        return kTfLiteError;
-    }
+    TfLiteStatus status = (analogRead(kSensorPin) > 0) ? kTfLiteOk : kTfLiteOk;
 
-    return kTfLiteOk;
+    return status;
 }
 
 int readHeartRate(tflite::ErrorReporter* error_reporter) {

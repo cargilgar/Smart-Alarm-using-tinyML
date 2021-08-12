@@ -31,13 +31,13 @@ limitations under the License.
 class InputHandler
 {
 public:
-    InputHandler(uint8_t arrSize, float scale, int zeroPoint);
+    InputHandler(uint8_t arrSize, float paramScale, int zeroPoint);
     InputHandler() = delete;
     ~InputHandler();
 
     int generateFeatures(float x, float y, float z, float bpm);
-    // void displayFeatures();
-    void popullateModelInput(float* input);
+    void displayFeatures();
+    void popullateModelInput(int8_t* input);
 
     float* features = new float[kFeatureCount];
 
@@ -51,7 +51,7 @@ private:
     int _arrSize;
     bool _initialized;
 
-    float* _normalizer;
+    const float* _normalizer = kNormalizationRanges;
 
     // float normalizer[2*kFeatureCount] = {
     //     0.0009460000000000001, 3.7215117999999996,

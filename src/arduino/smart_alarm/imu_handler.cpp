@@ -15,14 +15,11 @@ limitations under the License.
 
 #include "imu_handler.h"
 
-TfLiteStatus setupIMUSensor(tflite::ErrorReporter* error_reporter) {
+TfLiteStatus setupIMUSensor() {
 
-    if (!IMU.begin()) {
-        TF_LITE_REPORT_ERROR(error_reporter, "Failed to initialize IMU");
-        return kTfLiteError;
-    }
+    TfLiteStatus status = (!IMU.begin()) ? kTfLiteError : kTfLiteOk;
 
-    return kTfLiteOk;
+    return status;
 }
 
 void readAccelerometer(float* arr) {

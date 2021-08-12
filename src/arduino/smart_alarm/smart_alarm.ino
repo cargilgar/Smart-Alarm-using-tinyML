@@ -61,14 +61,14 @@ void setup() {
 
     // Serial.begin(9600);
 
-    TfLiteStatus imu_setup_status = setupAccelerometer(error_reporter);
+    TfLiteStatus imu_setup_status = setupIMUSensor();
     if (imu_setup_status != kTfLiteOk) {
-        TF_LITE_REPORT_ERROR(error_reporter, "Set up failed\n");
+        TF_LITE_REPORT_ERROR(error_reporter, "Failed to initialize IMU\n");
     }
 
-    TfLiteStatus hr_setup_status = setupHeartRate(error_reporter);
+    TfLiteStatus hr_setup_status = setupHeartRateSensor();
     if (hr_setup_status != kTfLiteOk) {
-        TF_LITE_REPORT_ERROR(error_reporter, "Set up failed\n");
+        TF_LITE_REPORT_ERROR(error_reporter, "Heart Rate sensor is not present\n");
     }
 
     // Setting up logging
@@ -123,55 +123,46 @@ void setup() {
 /// This proccess is then repeated inference_count times to ensure a good
 /// prediction.
 void loop() {
-    while(Serial.available()>0)
-    {
-        Serial.println("Press any key and hit enter to start");
-        for(;;) {
-            int incommingByte = Serial.read();
 
-            if(incommingByte != 0)
-                break;
-        }
+    Serial.println("Press any key and hit enter to start");
+    for(;;) {
+        int incommingByte = Serial.read();
 
-        readAccelerometer(imu_input);
-        int bpm = readHeartRate(error_reporter);
+        if(incommingByte != 0)
+            break;
+    }
+
+    Serial.println("Starting inference!");
+
+    readAccelerometer(imu_input);
+    int bpm = readHeartRate(error_reporter);
 
 
-        // --- Send input values to input handler
+    // --- Send input values to input handler
+    
+    int result = input_handler->generateFeatures(imu_input[0], imu_input[1], imu_input[2], bpm);
 
-        int result;
+    if(result == 0) {
 
-        // result = input_handler.generateFeatures(0.157700, 0.354492, 0.931030, 59.);
-        // result = input_handler.generateFeatures(0.229553, 0.304962, 0.932907, 64.);
-        result = input_handler->generateFeatures(imu_input[0], imu_input[1], imu_input[2], bpm);
+        // input_handler->displayFeatures();
 
-        if(result == 0) {
+        // Popullate model input
+        input_handler->popullateModelInput(model_input->data.int8);
+        // for (int8_t i = 0; i < kFeatureCount; ++i) {
+        //     int8_t x_quantized = quantize(input_handler.features[i]);
+        //     model_input->data.int8[i] = x_quantized;
+        // }
 
-            // input_handler.displayFeatures();
+        // Run inference, and report any error
+        TfLiteStatus invoke_status = interpreter->Invoke();
 
-            // Popullate model input
-            input_handler->popullateModelInput(model_input->data.int8);
-            // for (int8_t i = 0; i < kFeatureCount; ++i) {
-            //     int8_t x_quantized = quantize(input_handler.features[i]);
-            //     model_input->data.int8[i] = x_quantized;
-            // }
+        if (invoke_status != kTfLiteOk)
+            TF_LITE_REPORT_ERROR(error_reporter, "Invoke failed\n");
 
-            // Run inference, and report any error
-            TfLiteStatus invoke_status = interpreter->Invoke();
+        for(int i = 0; i < kLabelCount; i++)
+            output_array[i] = model_output->data.int8[i];
 
-            if (invoke_status != kTfLiteOk)
-                TF_LITE_REPORT_ERROR(error_reporter, "Invoke failed\n");
-
-            for(int i = 0; i < kLabelCount; i++)
-                output_array[i] = model_output->data.int8[i];
-
-            int8_t prediction = recognizeLabel(output_array, kLabelCount, true);
-
-            // Dequantize the output from integer to floating-point
-            float y = (prediction - model_output->params.zero_point) * model_output->params.scale;
-
-            Serial.println(y);
-        }
+        int8_t prediction = recognizeLabel(output_array, kLabelCount, true);
     }
 }
 
