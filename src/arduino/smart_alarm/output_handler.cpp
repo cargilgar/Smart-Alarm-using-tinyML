@@ -15,6 +15,13 @@ limitations under the License.
 
 #include "output_handler.h"
 
+TfLiteStatus setupOutputDevice() {
+
+    TfLiteStatus status = (analogRead(kMotorPin) > 0) ? kTfLiteOk : kTfLiteOk;
+
+    return status;
+}
+
 int8_t recognizeLabel(int8_t* arr, uint8_t arrSize, bool msgVerbose) {
 
     int8_t maxIndex;
@@ -41,4 +48,23 @@ int8_t recognizeLabel(int8_t* arr, uint8_t arrSize, bool msgVerbose) {
     }
 
     return maxIndex;
+}
+
+void setAlarmOn() {
+    // vibrate motor
+    digitalWrite(kMotorPin, HIGH);
+
+    // Constant beep buzzer
+    unsigned char i;
+    for (i = 0; i < 80; i++)                   // output a frequency sound
+    {
+        digitalWrite(kBuzzerPin, HIGH);        // sound
+        delayMicroseconds(500);
+        digitalWrite(kBuzzerPin, LOW);         //not sound
+        delayMicroseconds(500);
+    }
+}
+
+void setAlarmOff() {
+    digitalWrite(kMotorPin, LOW);
 }

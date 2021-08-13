@@ -30,7 +30,9 @@ limitations under the License.
 
 #pragma once
 
-//#include "Arduino.h"
 #include "constants.h"
 
+extern TfLiteStatus setupOutputDevice();
 int8_t recognizeLabel(int8_t* arr, uint8_t arrSize, bool msgVerbose);
+void setAlarmOn();
+void setAlarmOff();

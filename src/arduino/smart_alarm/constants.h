@@ -24,6 +24,8 @@ limitations under the License.
 /// as a way to process the data coming in from the sensors.
 ///
 /// @see [tflite model training](https://github.com/cargilgar/Smart-Alarm-using-tinyML/blob/main/src/colabs/model_training/tflite_model_training_DNN.ipynb "Model Training colab")
+///
+/// [adjust_threshold.ino](https://github.com/cargilgar/Smart-Alarm-using-tinyML/tree/main/src/arduino/test_hr_sensor/adjust_threshold/adjust_threshold.ino)
 
 #pragma once
 
@@ -32,21 +34,28 @@ limitations under the License.
 #include "tensorflow/lite/micro/micro_error_reporter.h"
 
 // TensorFlow
-constexpr int kTensorArenaSize = 2*1024;    /**< Tensor Arena size for allocation of memory for input, output, and intermediate arrays [bytes]. */
+constexpr int kTensorArenaSize = 2*1024;        /**< Tensor Arena size for allocation of memory for input, output, and intermediate arrays [bytes]. */
 
 // --- Tensor dimensions
-constexpr uint8_t kLabelCount = 5;          /**< Number of labels for classification. */
-constexpr uint8_t kFeatureCount = 14;       /**< Number of total features from which the model trained upon. */
+constexpr uint8_t kLabelCount = 5;              /**< Number of labels for classification. */
+constexpr uint8_t kFeatureCount = 14;           /**< Number of total features from which the model trained upon. */
 
-constexpr uint16_t kIMUTimeInterval = 1000;
-constexpr uint16_t kHRTimeInterval = 15000;
+// --- Time intervals
+constexpr uint16_t kTimeIMUInterval = 1000;     /**< Interval time to extract the maximum accelerometer value of each axis. */
+constexpr uint16_t kTimeHRInterval = 15000;     /**< Interval time to take an average heart rate measurement. */
+constexpr uint16_t kTimeAlarmOn  = 10000;       /**< Interval time the alarm takes after going off. */
 
-constexpr int kSensorPin = A0;                        // A0 is the input pin for the heart rate sensor
-constexpr uint16_t kAnalogReadThreshold = 525;        // Set threshold for correct measurement (check adjust_threshold.ino)  // 345
+constexpr int kSensorPin = A0;                  /**< Analog input pin for the heart rate sensor. */
+constexpr uint16_t kAnalogReadThreshold = 525;  /**< Set threshold for correct measurement (check adjust_threshold.ino)  345. */
+
+constexpr int kMotorPin = 2;                    /**< Digital output for the vibration motor module. */
+constexpr int kBuzzerPin = 3;                   /**< Digital output for the buzzer. */
+
+constexpr uint8_t kInferenceSequence = 10;      /**< Number of consecutive inferences to ensure a confident prediction . */
 
 // --- Mathematical and physical constants
-constexpr float e = 2.71828;                /**< Euler's number for lograithmic expressions. */
-constexpr float g = 9.807;                  /**< Gravity of Earth [m/s2]. */
+constexpr float e = 2.71828;                    /**< Euler's number for lograithmic expressions. */
+constexpr float g = 9.807;                      /**< Gravity of Earth [m/s2]. */
 
 // --- Data processing
 constexpr float kNormalizationRanges[2*kFeatureCount] = {
@@ -64,4 +73,9 @@ constexpr float kNormalizationRanges[2*kFeatureCount] = {
     0.000000, 9.241002,         // mov_z^2
     0.000000, 26.03653,         // m_mov^2
     0.000000, 36.37742          // e(mov_x)
+};
+
+// --- Labels
+enum LabelStage : uint8_t {
+  Wake = 0, N1, N2, N3, REM
 };

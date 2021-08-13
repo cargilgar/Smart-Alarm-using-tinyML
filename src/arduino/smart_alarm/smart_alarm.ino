@@ -39,37 +39,33 @@ namespace {
     uint8_t tensor_arena[kTensorArenaSize];
 
     int inference_count = 0;
-
-    // const int imuIndex = 0; // 0 - accelerometer, 1 - gyroscope, 2 - magnetometer
+    int8_t lastInference:
+    bool interruptAlarm = false;
 
     float imu_input[3];
-    float input_array[kFeatureCount];
-    int8_t output_array[kLabelCount];
 
-    // InputHandler input_handler(kFeatureCount);
     InputHandler* input_handler;
 }  // namespace
 
 /// Checks the input tensor is initialized, has the correct size and type.
 void testInputTensor();
 
-/// Checks the output tensor has the correct size and type after inference.
-void testOutputTensor();
-
 /// Initializes all data needed for the application.
 void setup() {
 
-    // Serial.begin(9600);
-
+    // Setup sensors and output devices. Check all are OK.
     TfLiteStatus imu_setup_status = setupIMUSensor();
-    if (imu_setup_status != kTfLiteOk) {
+    if (imu_setup_status != kTfLiteOk)
         TF_LITE_REPORT_ERROR(error_reporter, "Failed to initialize IMU\n");
-    }
 
     TfLiteStatus hr_setup_status = setupHeartRateSensor();
-    if (hr_setup_status != kTfLiteOk) {
-        TF_LITE_REPORT_ERROR(error_reporter, "Heart Rate sensor is not present\n");
-    }
+    if (hr_setup_status != kTfLiteOk)
+        TF_LITE_REPORT_ERROR(error_reporter, "Heart Rate sensor not present\n");
+
+    // TODO
+    TfLiteStatus output_status = setupOutputDevice();
+    if (output_status != kTfLiteOk)
+        TF_LITE_REPORT_ERROR(error_reporter, "Output device not present\n");
 
     // Setting up logging
     error_reporter = &micro_error_reporter;
@@ -124,46 +120,57 @@ void setup() {
 /// prediction.
 void loop() {
 
-    Serial.println("Press any key and hit enter to start");
-    for(;;) {
-        int incommingByte = Serial.read();
+    // TODO: Start inferences only when time to wake up arrives.
 
-        if(incommingByte != 0)
-            break;
-    }
+    while(inference_count < kInferenceSequence) {
 
-    Serial.println("Starting inference!");
+        Serial.println("Starting new inference");
 
-    readAccelerometer(imu_input);
-    int bpm = readHeartRate(error_reporter);
+        // --- Read data from sensors
+        readAccelerometer(imu_input);
+        int bpm = readHeartRate(error_reporter);
 
 
-    // --- Send input values to input handler
-    
-    int result = input_handler->generateFeatures(imu_input[0], imu_input[1], imu_input[2], bpm);
+        // --- Send input values to input handler
+        int result = input_handler->generateFeatures(imu_input[0], imu_input[1], imu_input[2], bpm);
 
-    if(result == 0) {
+        if(result == 0) {
 
-        // input_handler->displayFeatures();
+            // input_handler->displayFeatures();
 
-        // Popullate model input
-        input_handler->popullateModelInput(model_input->data.int8);
-        // for (int8_t i = 0; i < kFeatureCount; ++i) {
-        //     int8_t x_quantized = quantize(input_handler.features[i]);
-        //     model_input->data.int8[i] = x_quantized;
-        // }
+            // Popullate model input
+            input_handler->popullateModelInput(model_input->data.int8);
 
-        // Run inference, and report any error
-        TfLiteStatus invoke_status = interpreter->Invoke();
+            // Run inference, and report any error
+            TfLiteStatus invoke_status = interpreter->Invoke();
 
-        if (invoke_status != kTfLiteOk)
+            if (invoke_status != kTfLiteOk)
             TF_LITE_REPORT_ERROR(error_reporter, "Invoke failed\n");
 
-        for(int i = 0; i < kLabelCount; i++)
-            output_array[i] = model_output->data.int8[i];
-
-        int8_t prediction = recognizeLabel(output_array, kLabelCount, true);
+            // for(int i = 0; i < kLabelCount; i++)
+            //     output_array[i] = model_output->data.int8[i];
+            //
+            // int8_t lastInference = recognizeLabel(output_array, kLabelCount, true);
+            lastInference = recognizeLabel(model_output->data.int8, kLabelCount, true);
+        }
     }
+
+    if(lastInference == LabelStage::REM)
+        triggerAlarm();
+
+    inference_count = 0;
+}
+
+void triggerAlarm() {
+    unsigned long alarmCountDown = millis();
+
+    // Trigger the alarm for 10 seconds
+    while(millis() - alarmCountDown < kTimeAlarmOn) {
+        setAlarmOn();
+        if(interruptAlarm)  // TODO: set a callback that allows set interruptalarm to true.
+            break;
+    }
+    setAlarmOff();
 }
 
 void testInputTensor() {

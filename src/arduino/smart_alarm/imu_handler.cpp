@@ -32,8 +32,8 @@ void readAccelerometer(float* arr) {
 
     unsigned long lastReportTime = millis();
 
-    // Read accelerometer measurements during kIMUTimeInterval
-    while(millis() - lastReportTime < kIMUTimeInterval) {
+    // Read accelerometer measurements during kTimeIMUInterval
+    while(millis() - lastReportTime < kTimeIMUInterval) {
 
         IMU.readAcceleration(x, y, z);
 

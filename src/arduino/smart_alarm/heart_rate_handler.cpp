@@ -61,8 +61,8 @@ int readHeartRate(tflite::ErrorReporter* error_reporter) {
 
     unsigned long startTime = millis();
 
-    // Read heart rate measurements during kHRTimeInterval
-    while (millis() < (startTime + kHRTimeInterval)) {
+    // Read heart rate measurements during kTimeHRInterval
+    while (millis() < (startTime + kTimeHRInterval)) {
 
         sensorValue = analogRead(kSensorPin);                 // Read SensorValue
         newBeatTime = millis();                              // Storage new time to calculate IBI
@@ -73,7 +73,7 @@ int readHeartRate(tflite::ErrorReporter* error_reporter) {
                 IBI = newBeatTime - lastTime;                    // Calculate IBI
                 lastTime = millis();                             // Store last time to calculate IBI
 
-                hr = (60000 / IBI);                              // Calculates 1 BPM
+                hr = 60000 / IBI;                              // Calculates 1 BPM
 
                 heartRate += hr;                                  // Add BPMs calculated
                 // hr = 0;                                          // Reset the value to use it again in the next beat

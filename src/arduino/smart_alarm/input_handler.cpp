@@ -70,6 +70,10 @@ void InputHandler::_normalizeFeatures() {
 }
 
 void InputHandler::popullateModelInput(int8_t* input) {
+    Serial.print("scale: ");
+    Serial.println(_scale);
+    Serial.print("zeroPoint: ");
+    Serial.println(_zeroPoint);
     for(int i = 0; i < kFeatureCount; i++)
         input[i] = _quantize(features[i]);
 }
