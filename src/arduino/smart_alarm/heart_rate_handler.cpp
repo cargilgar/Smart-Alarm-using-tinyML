@@ -47,7 +47,7 @@ int readHeartRate(tflite::ErrorReporter* error_reporter) {
     // }  // End of waves sequence
 
 
-    int sensorValue;        // Variable to store the value coming from the sensor
+    // int sensorValue;        // Variable to store the value coming from the sensor
     float hr;               // Variable to calculate 1 BPM
     float heartRate = 0;      // Variable to calculate the mean of the detected beats
 
@@ -64,10 +64,10 @@ int readHeartRate(tflite::ErrorReporter* error_reporter) {
     // Read heart rate measurements during kTimeHRInterval
     while (millis() < (startTime + kTimeHRInterval)) {
 
-        sensorValue = analogRead(kSensorPin);                 // Read SensorValue
+        // sensorValue = analogRead(kSensorPin);                 // Read SensorValue
         newBeatTime = millis();                              // Storage new time to calculate IBI
 
-        if (sensorValue >= kAnalogReadThreshold) {
+        if (analogRead(kSensorPin) >= kAnalogReadThreshold) {
             if(!waveDetected && ((newBeatTime - lastTime) > 420)) {  // Check wave rising and IBI > 420 ms
 
                 IBI = newBeatTime - lastTime;                    // Calculate IBI

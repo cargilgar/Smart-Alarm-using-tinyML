@@ -19,54 +19,55 @@ limitations under the License.
 InputHandler::InputHandler(uint8_t arrSize, float paramScale, int zeroPoint)
     : _arrSize(arrSize), _initialized(false), _zeroPoint(zeroPoint), _scale(paramScale)
 {
-    //_normalizer = kNormalizationRanges;
 }
 
-int InputHandler::generateFeatures(float x, float y, float z, float bpm) {
+void InputHandler::generateFeatures(float x, float y, float z, float bpm) {
 
     if(!_initialized) {
         features[0] = x; // x axis
         features[1] = y; // y axis
         features[2] = z; // z axis
         _initialized = true;
-        return 1;
     }
+    else {
+        features[3] = bpm;
 
-    features[3] = bpm;
-
-    features[4] = x - features[0]; // max_value - last max_value, x axis
-    features[5] = y - features[1]; // max_value - last max_value, y axis
-    features[6] = z - features[2]; // max_value - last max_value, z axis
+        features[4] = x - features[0]; // max_value - last max_value, x axis
+        features[5] = y - features[1]; // max_value - last max_value, y axis
+        features[6] = z - features[2]; // max_value - last max_value, z axis
 
 
-    features[0] = x; // x axis
-    features[1] = y; // y axis
-    features[2] = z; // z axis
+        features[0] = x; // x axis
+        features[1] = y; // y axis
+        features[2] = z; // z axis
 
-    features[7] = sqrt(sq(x) + sq(y) + sq(z)); // max_value module
+        features[7] = sqrt(sq(x) + sq(y) + sq(z)); // max_value module
 
-    features[8] = sqrt(sq(features[4]) + sq(features[5]) + sq(features[6])); // module 'acc subtraction'
+        features[8] = sqrt(sq(features[4]) + sq(features[5]) + sq(features[6])); // module 'acc subtraction'
 
-    features[9] = x * x * x; // max_x cubed (X**3)
+        features[9] = x * x * x; // max_x cubed (X**3)
 
-    features[10] = sq(features[4]); //  (max_value - last max_value) squared, x axis
+        features[10] = sq(features[4]); //  (max_value - last max_value) squared, x axis
 
-    features[11] = sq(features[6]); //  (max_value - last max_value) squared, z axis
+        features[11] = sq(features[6]); //  (max_value - last max_value) squared, z axis
 
-    features[12] = sq(features[8]); // module 'acc subtraction' squared
+        features[12] = sq(features[8]); // module 'acc subtraction' squared
 
-    features[13] = pow(e, features[4]); // exp(max_x - last max_x)
+        features[13] = pow(e, features[4]); // exp(max_x - last max_x)
 
-    _initialized = false;
+        _initialized = false;
 
-    _normalizeFeatures();
-
-    return 0;
+        _normalizeFeatures();
+    }
 }
 
 void InputHandler::_normalizeFeatures() {
     for(int i = 0; i < kFeatureCount; i++)
         features[i] = (features[i] - _normalizer[i*2]) / (_normalizer[i*2+1] - _normalizer[i*2]);
+}
+
+bool InputHandler::isInitialized() {
+    return _initialized;
 }
 
 void InputHandler::popullateModelInput(int8_t* input) {

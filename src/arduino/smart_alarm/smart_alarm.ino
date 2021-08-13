@@ -39,7 +39,8 @@ namespace {
     uint8_t tensor_arena[kTensorArenaSize];
 
     int inference_count = 0;
-    int8_t lastInference:
+    //int8_t lastInference;
+    uint8_t inferences[kInferenceSequence];
     bool interruptAlarm = false;
 
     float imu_input[3];
@@ -49,6 +50,8 @@ namespace {
 
 /// Checks the input tensor is initialized, has the correct size and type.
 void testInputTensor();
+
+void triggerAlarm();
 
 /// Initializes all data needed for the application.
 void setup() {
@@ -122,19 +125,22 @@ void loop() {
 
     // TODO: Start inferences only when time to wake up arrives.
 
+    TF_LITE_REPORT_ERROR(error_reporter, "Starting new sequence of %d inferences\n",
+                        kInferenceSequence);
+
     while(inference_count < kInferenceSequence) {
 
-        Serial.println("Starting new inference");
-
-        // --- Read data from sensors
         readAccelerometer(imu_input);
-        int bpm = readHeartRate(error_reporter);
 
+        // First time new data comes in, no Hr is needed, only imu data
+        if(!input_handler->isInitialized)
+            input_handler->generateFeatures(imu_input[0], imu_input[1], imu_input[2], 0);
 
-        // --- Send input values to input handler
-        int result = input_handler->generateFeatures(imu_input[0], imu_input[1], imu_input[2], bpm);
+        else {
+            int bpm = readHeartRate(error_reporter);
 
-        if(result == 0) {
+            // --- Send input values to input handler
+            input_handler->generateFeatures(imu_input[0], imu_input[1], imu_input[2], bpm);
 
             // input_handler->displayFeatures();
 
@@ -151,12 +157,21 @@ void loop() {
             //     output_array[i] = model_output->data.int8[i];
             //
             // int8_t lastInference = recognizeLabel(output_array, kLabelCount, true);
-            lastInference = recognizeLabel(model_output->data.int8, kLabelCount, true);
+            inferences[inference_count] = recognizeLabel(model_output->data.int8, kLabelCount, true);
+
+            inference_count++;
         }
     }
 
-    if(lastInference == LabelStage::REM)
+
+    // TODO: add weights to inferences
+
+    uint8_t prediction = getMostFrequent(inferences, kInferenceSequence);
+
+    if(prediction == LabelStage::REM)
         triggerAlarm();
+
+    // TODO: keep track of labels inferred to know what the model should predict in the following inferences
 
     inference_count = 0;
 }

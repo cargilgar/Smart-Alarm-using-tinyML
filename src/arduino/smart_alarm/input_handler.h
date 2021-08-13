@@ -15,8 +15,6 @@ limitations under the License.
 
 #pragma once
 
-// #include "Arduino.h"
-// #include <stdint.h>
 #include "constants.h"
 
 /// @file input_hanlder.h
@@ -35,7 +33,7 @@ public:
     InputHandler() = delete;
     ~InputHandler();
 
-    int generateFeatures(float x, float y, float z, float bpm);
+    void generateFeatures(float x, float y, float z, float bpm);
     void displayFeatures();
     void popullateModelInput(int8_t* input);
 

@@ -22,7 +22,7 @@ TfLiteStatus setupOutputDevice() {
     return status;
 }
 
-int8_t recognizeLabel(int8_t* arr, uint8_t arrSize, bool msgVerbose) {
+uint8_t recognizeLabel(int8_t* arr, uint8_t arrSize, bool msgVerbose) {
 
     int8_t maxIndex;
     int8_t maxValue = -128;
@@ -48,6 +48,11 @@ int8_t recognizeLabel(int8_t* arr, uint8_t arrSize, bool msgVerbose) {
     }
 
     return maxIndex;
+}
+
+uint8_t getMostFrequent(uint8_t* arr, uint8_t arrSize) {
+    // TODO: Get label that has been predicted the most in the kInferenceSequence and return the index
+    return 0;
 }
 
 void setAlarmOn() {

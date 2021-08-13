@@ -33,6 +33,7 @@ limitations under the License.
 #include "constants.h"
 
 extern TfLiteStatus setupOutputDevice();
-int8_t recognizeLabel(int8_t* arr, uint8_t arrSize, bool msgVerbose);
+uint8_t recognizeLabel(int8_t* arr, uint8_t arrSize, bool msgVerbose);
+uint8_t getMostFrequent(uint8_t* arr);
 void setAlarmOn();
 void setAlarmOff();

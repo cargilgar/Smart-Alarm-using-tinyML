@@ -17,9 +17,6 @@ limitations under the License.
 
 #pragma once
 
-// #include "tensorflow/lite/c/common.h"
-// #include "tensorflow/lite/micro/micro_error_reporter.h"
-// #include "Arduino.h"
 #include <Arduino_LSM9DS1.h>  // required library for IMU
 #include "constants.h"
 
