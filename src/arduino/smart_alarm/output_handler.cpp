@@ -82,13 +82,7 @@ uint8_t getMostFrequent(uint8_t* arrInferences, uint8_t arrSize, bool addWeights
         N3: 1               N3: 1
         REM: 1              REM: 1
     */
-    /*
-    struct FreqLabel {
-        int freq;
-        uint8_t label;
-        explicit FreqLabel(uint8_t l) : label(l), freq(0) {}
-    };
-    */
+ 
     FreqLabel freqLabelsContainer[kLabelCount] = {
         FreqLabel(LabelStage::Wake),
         FreqLabel(LabelStage::N1),
