@@ -42,7 +42,8 @@ public:
 
 private:
     void _normalizeFeatures();
-    /// Converts 32-bit float to 8-bit integer. @returns quantized value int8_t data type.
+    /// Converts 32-bit float to 8-bit integer.
+    /// @returns quantized value int8_t data type.
     int8_t _quantize(float val);
 
     float _scale;
@@ -51,20 +52,4 @@ private:
     bool _initialized;
 
     const float* _normalizer = kNormalizationRanges;
-
-    // float normalizer[2*kFeatureCount] = {
-    //     0.0009460000000000001, 3.7215117999999996,
-    //     0.0012817 , 4.2220154,
-    //     0.0007629 , 3.8670044000000003,
-    //     41.0, 130.0,
-    //     -3.0046843999999995, 3.5939482999999997,
-    //     -4.1145935, 3.9015198,
-    //     -3.0399017000000006, 2.9488220000000003,
-    //     0.9872664790650293, 5.876683519378206,
-    //     0.0, 5.102599946910135,
-    //     8.465905360000003e-10, 51.54163618943318,
-    //     0.0, 12.916464383072887,
-    //     0.0, 9.241002345662894,
-    //     0.0, 26.03652621820731,
-    //     0.0, 36.37742172835277};
 };

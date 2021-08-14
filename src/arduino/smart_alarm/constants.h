@@ -45,12 +45,14 @@ constexpr uint16_t kTimeIMUInterval = 1000;     /**< Interval time to extract th
 constexpr uint16_t kTimeHRInterval = 15000;     /**< Interval time to take an average heart rate measurement. */
 constexpr uint16_t kTimeAlarmOn  = 10000;       /**< Interval time the alarm takes after going off. */
 
-constexpr int kSensorPin = A0;                  /**< Analog input pin for the heart rate sensor. */
 constexpr uint16_t kAnalogReadThreshold = 525;  /**< Set threshold for correct measurement (check adjust_threshold.ino)  345. */
+constexpr uint16_t kMinIBI = 420;               /**< Minimum Interbeat interval (IBI) [ms]. @note 60s/0.420s = 140 BPMs (BPMs should not be above this in normal heart function) */
 
+// --- Arduino constants
+constexpr int kSensorPin = A0;                  /**< Analog input pin for the heart rate sensor. */
 constexpr int kMotorPin = 2;                    /**< Digital output for the vibration motor module. */
 constexpr int kPasiveBuzzerPin = 3;             /**< Digital output for the buzzer. */
-constexpr uint16_t kRingTone = 300;              /**< Frequency for the buzzer. */
+constexpr uint16_t kRingTone = 300;             /**< Frequency for the buzzer. */
 
 constexpr uint8_t kInferenceSequence = 10;      /**< Number of consecutive inferences to ensure a confident prediction . */
 

@@ -77,7 +77,6 @@ void InputHandler::popullateModelInput(int8_t* input) {
 
 int8_t InputHandler::_quantize(float val) {
     int8_t ret = val / _scale + _zeroPoint;
-    // int8_t ret = val / model_input->params.scale + model_input->params.zero_point;
     return ret;
 }
 
@@ -86,7 +85,6 @@ void InputHandler::displayFeatures() {
         Serial.println(features[i], 4);
 }
 
-InputHandler::~InputHandler()
-{
+InputHandler::~InputHandler() {
     delete [] features;
 }

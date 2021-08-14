@@ -24,14 +24,20 @@ limitations under the License.
 /// recognizeLabel(int8_t*, uint8_t, bool) and extracts the place where the
 /// maximum value of the resultant vector is located.
 ///
-/// It also calculates the certainty of the prediction by mapping the 8-bit
-/// range (-128, 127) to a scale 0-100 to display it when the formal parameter
-/// `msgVerbose` is set to `true`.
+/// In the case of running multiple inferences to improve prediction reliability,
+/// output handler, via getMostFrequent(uint8_t*, uint8_t, bool), can receive all
+/// the labels result of each inference and determine which was predicted the most.
+///
+/// It also takes care of enabling/disabling the devices in charge of emit the
+/// corresponding singal to wake up the user. For this application, these are a
+/// vibration motor and/or a passive buzzer.
 
 #pragma once
 
 #include "constants.h"
 
+/// Struct to store the value of a label and its frequency (i.e. how much is
+/// repeated in a sequence)
 struct FreqLabel {
     int freq;
     uint8_t label;
@@ -39,6 +45,12 @@ struct FreqLabel {
 };
 
 extern TfLiteStatus setupOutputDevice(tflite::ErrorReporter* error_reporter);
+
+/// This function transforms the distribution from model_output and gives back
+/// the maximum value.
+/// It also calculates the certainty of the prediction by mapping the 8-bit
+/// range (-128, 127) to a scale 0-100 to display it when the formal parameter
+/// `msgVerbose` is set to `true`.
 uint8_t recognizeLabel(int8_t* arr, uint8_t arrSize, bool msgVerbose);
 uint8_t getMostFrequent(uint8_t* arrInferences, uint8_t arrSize, bool addWeights);
 

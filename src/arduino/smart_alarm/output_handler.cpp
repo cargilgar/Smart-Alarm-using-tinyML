@@ -16,7 +16,7 @@ limitations under the License.
 #include "output_handler.h"
 
 TfLiteStatus setupOutputDevice(tflite::ErrorReporter* error_reporter) {
-    
+
     // TODO: this causes the application to crash on runtime, check another way.
     /*
     // Only when no output device is detected, send error back.
@@ -28,7 +28,7 @@ TfLiteStatus setupOutputDevice(tflite::ErrorReporter* error_reporter) {
         TF_LITE_REPORT_ERROR(error_reporter, "Vibration motor not connected.\n");
     else
         return kTfLiteError;*/
-    
+
     return kTfLiteOk;
 }
 
@@ -50,11 +50,11 @@ uint8_t recognizeLabel(int8_t* arr, uint8_t arrSize, bool msgVerbose) {
     float probPred = (maxValue + 127)/2.56;
 
     if(msgVerbose) {
-      Serial.print("Label predicted: ");
-      Serial.print(maxIndex);
-      Serial.print(", with a certainty of: ");
-      Serial.print(probPred);
-      Serial.print("%.\n\n");
+        Serial.print("Label predicted: ");
+        Serial.print(maxIndex);
+        Serial.print(", with a certainty of: ");
+        Serial.print(probPred);
+        Serial.print("%.\n\n");
     }
 
     return maxIndex;
@@ -63,26 +63,20 @@ uint8_t recognizeLabel(int8_t* arr, uint8_t arrSize, bool msgVerbose) {
 // Get label that has been predicted the most in the kInferenceSequence and return the index
 uint8_t getMostFrequent(uint8_t* arrInferences, uint8_t arrSize, bool addWeights) {
 
-    /* Explanatory example of how this function operates
+    /* --------------------------------------------
+    Explanatory example of how this function operates
 
-    Input array with the inference sequence:
+    Input array with the following inference sequence:
         (2, 0, 1, 2, 1, 4, 2, 3, 1, 2)
 
-    Get frequency table for each label:
-        Wake: 1
-        N1: 3
-        N2: 4
-        N3: 1
-        REM: 1
+    Get frequency table for each label and sort them in descending order:
+        Wake: 1              N2: 4   <- Most frequent label
+        N1: 3       sort     N1: 3
+        N2: 4       ===>     Wake: 1
+        N3: 1                N3: 1
+        REM: 1               REM: 1
+    --------------------------------------------- */
 
-    And sort them in descending order:
-        Wake: 1             N2: 4   <- Most frequent label
-        N1: 3               N1: 3
-        N2: 4       ==>     Wake: 1
-        N3: 1               N3: 1
-        REM: 1              REM: 1
-    */
- 
     FreqLabel freqLabelsContainer[kLabelCount] = {
         FreqLabel(LabelStage::Wake),
         FreqLabel(LabelStage::N1),
@@ -144,10 +138,7 @@ void _swapPointers(FreqLabel* ptr1, FreqLabel* ptr2) {
 }
 
 void setAlarmOn() {
-    // vibrate motor
     digitalWrite(kMotorPin, HIGH);
-
-    // Constant beep buzzer
     tone(kPasiveBuzzerPin, kRingTone);
 }
 
