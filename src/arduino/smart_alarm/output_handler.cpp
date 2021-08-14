@@ -73,3 +73,17 @@ void setAlarmOn() {
 void setAlarmOff() {
     digitalWrite(kMotorPin, LOW);
 }
+
+
+/*
+// DECLARACION VARIABLES PARA PINES
+  const int kPasiveBuzzerPin = 6;
+
+// DECLARACIÓN VARIABLES PARA BUZZER 
+  int buzzTime = 250;
+  int tono = 300;
+
+    tone(kPasiveBuzzerPin,tono); // Establece la frecuencia del pitido
+    delay(buzzTime);   // Tiempo que está el pitido activo
+    noTone(speakerPin);    // Detiene el pitido
+*/
