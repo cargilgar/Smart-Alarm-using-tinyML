@@ -15,11 +15,21 @@ limitations under the License.
 
 #include "output_handler.h"
 
-TfLiteStatus setupOutputDevice() {
-
-    TfLiteStatus status = (analogRead(kMotorPin) > 0) ? kTfLiteOk : kTfLiteOk;
-
-    return status;
+TfLiteStatus setupOutputDevice(tflite::ErrorReporter* error_reporter) {
+    
+    // TODO: this causes the application to crash on runtime, check another way.
+    /*
+    // Only when no output device is detected, send error back.
+    if((digitalRead(kMotorPin) > 0) && (digitalRead(kPasiveBuzzerPin) > 0))
+        TF_LITE_REPORT_ERROR(error_reporter, "System ready.\n");
+    else if(digitalRead(kMotorPin) > 0)
+        TF_LITE_REPORT_ERROR(error_reporter, "Buzzer not connected.\n");
+    else if(digitalRead(kPasiveBuzzerPin) > 0)
+        TF_LITE_REPORT_ERROR(error_reporter, "Vibration motor not connected.\n");
+    else
+        return kTfLiteError;*/
+    
+    return kTfLiteOk;
 }
 
 uint8_t recognizeLabel(int8_t* arr, uint8_t arrSize, bool msgVerbose) {
@@ -50,9 +60,93 @@ uint8_t recognizeLabel(int8_t* arr, uint8_t arrSize, bool msgVerbose) {
     return maxIndex;
 }
 
-uint8_t getMostFrequent(uint8_t* arr, uint8_t arrSize) {
-    // TODO: Get label that has been predicted the most in the kInferenceSequence and return the index
-    return 0;
+// Get label that has been predicted the most in the kInferenceSequence and return the index
+uint8_t getMostFrequent(uint8_t* arrInferences, uint8_t arrSize, bool addWeights) {
+
+    /* Explanatory example of how this function operates
+
+    Input array with the inference sequence:
+        (2, 0, 1, 2, 1, 4, 2, 3, 1, 2)
+
+    Get frequency table for each label:
+        Wake: 1
+        N1: 3
+        N2: 4
+        N3: 1
+        REM: 1
+
+    And sort them in descending order:
+        Wake: 1             N2: 4   <- Most frequent label
+        N1: 3               N1: 3
+        N2: 4       ==>     Wake: 1
+        N3: 1               N3: 1
+        REM: 1              REM: 1
+    */
+    /*
+    struct FreqLabel {
+        int freq;
+        uint8_t label;
+        explicit FreqLabel(uint8_t l) : label(l), freq(0) {}
+    };
+    */
+    FreqLabel freqLabelsContainer[kLabelCount] = {
+        FreqLabel(LabelStage::Wake),
+        FreqLabel(LabelStage::N1),
+        FreqLabel(LabelStage::N2),
+        FreqLabel(LabelStage::N3),
+        FreqLabel(LabelStage::REM)
+    };
+
+    _getFreqLabels(arrInferences, kFeatureCount, freqLabelsContainer, addWeights);
+
+    _insertionSort(freqLabelsContainer, kLabelCount);
+
+    // The resulting array will contain the label most repeated at the first position
+    return freqLabelsContainer[0].label;
+}
+
+void _getFreqLabels(uint8_t* arr, uint8_t arrSize, FreqLabel* labels, bool addWeights) {
+
+    for(int i = 0; i < arrSize; i++) {
+        if(arr[i] == LabelStage::Wake)
+            labels[0].freq ++;
+        else if(arr[i] == LabelStage::N1)
+            labels[1].freq++;
+        else if(arr[i] == LabelStage::N2)
+            labels[2].freq++;
+        else if(arr[i] == LabelStage::N3)
+            labels[3].freq++;
+        else
+            labels[4].freq++;
+
+        // TODO: adapt weights and change to type float
+        /*if(addWeights) {
+            labels[0].freq *= 1;
+            labels[1].freq *= 0.3;
+            labels[2].freq *= 0.2;
+            labels[3].freq *= 0.7;
+            labels[4].freq *= 0.8;
+        }*/
+    }
+}
+
+void _insertionSort(FreqLabel* arr, uint8_t arrSize) {
+
+    for(int j = 1; j < arrSize; j++) {
+        int key = arr[j].freq;
+        int i = j - 1;
+
+        while((i > -1) && (arr[i].freq < key)) {
+            _swapPointers(arr + i + 1, arr + i);
+            i --;
+        }
+    }
+}
+
+void _swapPointers(FreqLabel* ptr1, FreqLabel* ptr2) {
+    FreqLabel temp = *ptr1;
+    *ptr1 = *ptr2;
+    *ptr2 = temp;
 }
 
 void setAlarmOn() {
@@ -60,30 +154,10 @@ void setAlarmOn() {
     digitalWrite(kMotorPin, HIGH);
 
     // Constant beep buzzer
-    unsigned char i;
-    for (i = 0; i < 80; i++)                   // output a frequency sound
-    {
-        digitalWrite(kBuzzerPin, HIGH);        // sound
-        delayMicroseconds(500);
-        digitalWrite(kBuzzerPin, LOW);         //not sound
-        delayMicroseconds(500);
-    }
+    tone(kPasiveBuzzerPin, kRingTone);
 }
 
 void setAlarmOff() {
     digitalWrite(kMotorPin, LOW);
+    noTone(kPasiveBuzzerPin);
 }
-
-
-/*
-// DECLARACION VARIABLES PARA PINES
-  const int kPasiveBuzzerPin = 6;
-
-// DECLARACIÓN VARIABLES PARA BUZZER 
-  int buzzTime = 250;
-  int tono = 300;
-
-    tone(kPasiveBuzzerPin,tono); // Establece la frecuencia del pitido
-    delay(buzzTime);   // Tiempo que está el pitido activo
-    noTone(speakerPin);    // Detiene el pitido
-*/

@@ -39,7 +39,6 @@ namespace {
     uint8_t tensor_arena[kTensorArenaSize];
 
     int inference_count = 0;
-    //int8_t lastInference;
     uint8_t inferences[kInferenceSequence];
     bool interruptAlarm = false;
 
@@ -64,11 +63,10 @@ void setup() {
     TfLiteStatus hr_setup_status = setupHeartRateSensor();
     if (hr_setup_status != kTfLiteOk)
         TF_LITE_REPORT_ERROR(error_reporter, "Heart Rate sensor not present\n");
-
-    // TODO
-    TfLiteStatus output_status = setupOutputDevice();
+    
+    TfLiteStatus output_status = setupOutputDevice(error_reporter);
     if (output_status != kTfLiteOk)
-        TF_LITE_REPORT_ERROR(error_reporter, "Output device not present\n");
+        TF_LITE_REPORT_ERROR(error_reporter, "Output devices not present\n");
 
     // Setting up logging
     error_reporter = &micro_error_reporter;
@@ -111,7 +109,8 @@ void setup() {
 
     // Instantiate input handler with tensor quantization parameters
     input_handler = new InputHandler(kFeatureCount, model_input->params.scale,
-                                    model_input->params.zero_point);
+                                    model_input->params.zero_point);  // scale: 0.003922, zeroPoint: -128
+
 
     // Set model's output.
     model_output = interpreter->output(0);
@@ -122,8 +121,9 @@ void setup() {
 /// This proccess is then repeated inference_count times to ensure a good
 /// prediction.
 void loop() {
-
-    // TODO: Start inferences only when time to wake up arrives.
+   
+    // TODO: Start inferences only when time to wake up arrives. 
+    // For now, it starts doing inferences as soon as it is powered up.
 
     TF_LITE_REPORT_ERROR(error_reporter, "Starting new sequence of %d inferences\n",
                         kInferenceSequence);
@@ -132,10 +132,10 @@ void loop() {
 
         readAccelerometer(imu_input);
 
-        // First time new data comes in, no Hr is needed, only imu data
-        if(!input_handler->isInitialized)
+        // First time new data comes in, no Hr is needed, only imu data.
+        if(!input_handler->isInitialized())
             input_handler->generateFeatures(imu_input[0], imu_input[1], imu_input[2], 0);
-
+        
         else {
             int bpm = readHeartRate(error_reporter);
 
@@ -153,20 +153,21 @@ void loop() {
             if (invoke_status != kTfLiteOk)
             TF_LITE_REPORT_ERROR(error_reporter, "Invoke failed\n");
 
-            // for(int i = 0; i < kLabelCount; i++)
-            //     output_array[i] = model_output->data.int8[i];
-            //
-            // int8_t lastInference = recognizeLabel(output_array, kLabelCount, true);
+            // Extract the maximum value of the probabilistic distribution from the model output
             inferences[inference_count] = recognizeLabel(model_output->data.int8, kLabelCount, true);
+
+            TF_LITE_REPORT_ERROR(error_reporter, "Inference %d successful, label predicted: %d.\n", 
+                                inference_count, inferences[inference_count]);
 
             inference_count++;
         }
     }
 
-
     // TODO: add weights to inferences
 
-    uint8_t prediction = getMostFrequent(inferences, kInferenceSequence);
+    uint8_t prediction = getMostFrequent(inferences, kInferenceSequence, false);
+    
+    TF_LITE_REPORT_ERROR(error_reporter, "Most frequent label: %d.\n", prediction);
 
     if(prediction == LabelStage::REM)
         triggerAlarm();
@@ -177,11 +178,12 @@ void loop() {
 }
 
 void triggerAlarm() {
+    
     unsigned long alarmCountDown = millis();
 
-    // Trigger the alarm for 10 seconds
+    // Trigger the alarm for kTimeAlarmOn (10 seconds)
+    setAlarmOn();
     while(millis() - alarmCountDown < kTimeAlarmOn) {
-        setAlarmOn();
         if(interruptAlarm)  // TODO: set a callback that allows set interruptalarm to true.
             break;
     }

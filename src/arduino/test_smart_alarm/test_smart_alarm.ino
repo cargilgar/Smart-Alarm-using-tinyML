@@ -36,7 +36,6 @@ namespace{
 
     uint8_t tensor_arena[kTensorArenaSize];
 
-    int8_t output_array[kLabelCount];   /**< Array containing the inference result. */
     uint8_t label_test;                 /**< Number of label to compare with for each inference. */
     int correctPredicition = 0;         /**< Counter for keeping track the number of correct predictions to calculate average accuracy. */
 
@@ -53,8 +52,6 @@ int8_t quantize(float val);
 
 /// Initializes all data needed for the application.
 void setup() {
-
-    Serial.begin(9600);
 
     // Setting up logging
     error_reporter = &micro_error_reporter;
@@ -111,7 +108,7 @@ void loop()
     }
 
     //Serial.println("Test started");
-    TF_LITE_REPORT_ERROR(error_reporter, "Test is running... \n");
+    TF_LITE_REPORT_ERROR(error_reporter, "The test is running... \n");
 
     for(uint16_t i = 0; i < kNumTests; i++) {
 
@@ -134,10 +131,8 @@ void loop()
 
         testOutputTensor();
 
-        for(uint8_t label = 0; label < kLabelCount; label++)
-            output_array[label] = model_output->data.int8[label];
-
-        int8_t prediction = recognizeLabel(output_array, kLabelCount, false);
+        // Extract the maximum value of the probabilistic distribution from the model output
+        int8_t prediction = recognizeLabel(model_output->data.int8, kLabelCount, false);
 
         if(prediction == label_test)
             correctPredicition++;

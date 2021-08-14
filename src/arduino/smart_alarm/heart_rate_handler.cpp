@@ -17,7 +17,7 @@ limitations under the License.
 
 TfLiteStatus setupHeartRateSensor() {
 
-    TfLiteStatus status = (analogRead(kSensorPin) > 0) ? kTfLiteOk : kTfLiteOk;
+    TfLiteStatus status = (analogRead(kSensorPin) > 0) ? kTfLiteOk : kTfLiteError;
 
     return status;
 }

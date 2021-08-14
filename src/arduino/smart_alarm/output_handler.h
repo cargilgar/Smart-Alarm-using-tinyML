@@ -32,8 +32,19 @@ limitations under the License.
 
 #include "constants.h"
 
-extern TfLiteStatus setupOutputDevice();
+struct FreqLabel {
+    int freq;
+    uint8_t label;
+    explicit FreqLabel(uint8_t labelNumber) : label(labelNumber), freq(0) {}
+};
+
+extern TfLiteStatus setupOutputDevice(tflite::ErrorReporter* error_reporter);
 uint8_t recognizeLabel(int8_t* arr, uint8_t arrSize, bool msgVerbose);
-uint8_t getMostFrequent(uint8_t* arr);
+uint8_t getMostFrequent(uint8_t* arrInferences, uint8_t arrSize, bool addWeights);
+
+void _getFreqLabels(uint8_t* arr, uint8_t arrSize, FreqLabel* labels, bool addWeights);
+void _insertionSort(FreqLabel* arr, uint8_t arrSize);
+void _swapPointers(FreqLabel* ptr1, FreqLabel* ptr2);
+
 void setAlarmOn();
 void setAlarmOff();

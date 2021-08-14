@@ -36,6 +36,7 @@ public:
     void generateFeatures(float x, float y, float z, float bpm);
     void displayFeatures();
     void popullateModelInput(int8_t* input);
+    bool isInitialized();
 
     float* features = new float[kFeatureCount];
 

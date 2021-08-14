@@ -49,7 +49,8 @@ constexpr int kSensorPin = A0;                  /**< Analog input pin for the he
 constexpr uint16_t kAnalogReadThreshold = 525;  /**< Set threshold for correct measurement (check adjust_threshold.ino)  345. */
 
 constexpr int kMotorPin = 2;                    /**< Digital output for the vibration motor module. */
-constexpr int kBuzzerPin = 3;                   /**< Digital output for the buzzer. */
+constexpr int kPasiveBuzzerPin = 3;             /**< Digital output for the buzzer. */
+constexpr uint16_t kRingTone = 300;              /**< Frequency for the buzzer. */
 
 constexpr uint8_t kInferenceSequence = 10;      /**< Number of consecutive inferences to ensure a confident prediction . */
 
