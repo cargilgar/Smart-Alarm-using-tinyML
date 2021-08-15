@@ -33,7 +33,12 @@ limitations under the License.
 #include "tensorflow/lite/c/common.h"
 #include "tensorflow/lite/micro/micro_error_reporter.h"
 
-// TensorFlow
+// --- User input. Change these to the user's needs.
+const char* const kStrCurrentTime = "23:00";
+const char* const kStrWakeUpTime = "07:30";
+constexpr uint8_t kTimeRangeAlarm = 30;         // [mins]
+
+// --- TensorFlow
 constexpr int kTensorArenaSize = 2*1024;        /**< Tensor Arena size for allocation of memory for input, output, and intermediate arrays [bytes]. */
 
 // --- Tensor dimensions
@@ -42,7 +47,7 @@ constexpr uint8_t kFeatureCount = 14;           /**< Number of total features fr
 
 // --- Time intervals
 constexpr uint16_t kTimeIMUInterval = 1000;     /**< Interval time to extract the maximum accelerometer value of each axis. */
-constexpr uint16_t kTimeHRInterval = 15000;     /**< Interval time to take an average heart rate measurement. */
+constexpr uint16_t kTimeHRInterval = 10000;     /**< Interval time to take an average heart rate measurement. */
 constexpr uint16_t kTimeAlarmOn  = 10000;       /**< Interval time the alarm takes after going off. */
 
 constexpr uint16_t kAnalogReadThreshold = 525;  /**< Set threshold for correct measurement (check adjust_threshold.ino)  345. */

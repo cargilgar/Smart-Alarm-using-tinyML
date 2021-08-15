@@ -22,6 +22,7 @@ limitations under the License.
 #include "tensorflow/lite/version.h"
 
 #include "main_functions.h"
+#include "alarm_setup.h"
 #include "model.h"
 #include "input_handler.h"
 #include "output_handler.h"
@@ -44,6 +45,8 @@ namespace {
 
     float imu_input[3];
 
+    unsigned long wakeUpTimeRange[2];
+
     InputHandler* input_handler;
 }  // namespace
 
@@ -54,6 +57,11 @@ void triggerAlarm();
 
 /// Initializes all data needed for the application.
 void setup() {
+
+    while(!Serial);
+
+    // Setting up logging
+    error_reporter = &micro_error_reporter;
 
     // Setup sensors and output devices. Check all are OK.
     TfLiteStatus imu_setup_status = setupIMUSensor();
@@ -67,9 +75,6 @@ void setup() {
     TfLiteStatus output_status = setupOutputDevice(error_reporter);
     if (output_status != kTfLiteOk)
         TF_LITE_REPORT_ERROR(error_reporter, "Output devices not present\n");
-
-    // Setting up logging
-    error_reporter = &micro_error_reporter;
 
     // Map the model into a usable data structure.
     model = tflite::GetModel(g_model);
@@ -114,6 +119,14 @@ void setup() {
 
     // Set model's output.
     model_output = interpreter->output(0);
+
+    // Get intervals in milliseconds to let know Arduino when to start inferences
+
+    
+    getwakeUpTimeRange(kStrCurrentTime, kStrWakeUpTime, kTimeRangeAlarm, wakeUpTimeRange);
+
+    // Display all introductory information
+    displayAlarmConfiguration(wakeUpTimeRange);
 }
 
 /// Each iteration loop() takes measurements from IMU and HR sensors, processes
@@ -122,59 +135,75 @@ void setup() {
 /// prediction.
 void loop() {
 
-    // TODO: Start inferences only when time to wake up arrives.
-    // For now, it starts doing inferences as soon as it is powered up.
+    // Wait until the time to wake up arrives.
+    while(millis() < wakeUpTimeRange[0]) { /*The arduino will remain idle here*/}
 
-    TF_LITE_REPORT_ERROR(error_reporter, "Starting new sequence of %d inferences\n",
-                        kInferenceSequence);
+    // We are within the interval range for waking up, start doing inferences during this time.
+    while(millis() < wakeUpTimeRange[1]) {
 
-    while(inference_count < kInferenceSequence) {
+        TF_LITE_REPORT_ERROR(error_reporter, "Starting new sequence of %d inferences\n",
+                            kInferenceSequence);
 
-        readAccelerometer(imu_input);
+        // First time doing inferences, we will fill up the inferences buffer
+        while(inference_count < kInferenceSequence) {
 
-        // First time new data comes in, no HR is needed, only imu data.
-        if(!input_handler->isInitialized())
-            input_handler->generateFeatures(imu_input[0], imu_input[1], imu_input[2], 0);
+            readAccelerometer(imu_input);
 
-        else {
-            int bpm = readHeartRate(error_reporter);
+            // First time new data comes in, no HR is needed, only imu data.
+            if(!input_handler->isInitialized())
+                input_handler->generateFeatures(imu_input[0], imu_input[1], imu_input[2], 0);
 
-            // --- Send input values to input handler
-            input_handler->generateFeatures(imu_input[0], imu_input[1], imu_input[2], bpm);
+            else {
+                int bpm = readHeartRate(error_reporter);
 
-            // input_handler->displayFeatures();
+                // --- Send input values to input handler
+                input_handler->generateFeatures(imu_input[0], imu_input[1], imu_input[2], bpm);
 
-            // Popullate model input
-            input_handler->popullateModelInput(model_input->data.int8);
+                // input_handler->displayFeatures();
 
-            // Run inference, and report any error
-            TfLiteStatus invoke_status = interpreter->Invoke();
+                // Popullate model input
+                input_handler->popullateModelInput(model_input->data.int8);
 
-            if (invoke_status != kTfLiteOk)
-            TF_LITE_REPORT_ERROR(error_reporter, "Invoke failed\n");
+                // Run inference, and report any error
+                TfLiteStatus invoke_status = interpreter->Invoke();
 
-            // Extract the maximum value of the probabilistic distribution from the model output
-            inferences[inference_count] = recognizeLabel(model_output->data.int8, kLabelCount, true);
+                if (invoke_status != kTfLiteOk)
+                    TF_LITE_REPORT_ERROR(error_reporter, "Invoke failed\n");
 
-            TF_LITE_REPORT_ERROR(error_reporter, "Inference %d successful, label predicted: %d.\n",
-                                inference_count, inferences[inference_count]);
+                // Extract the maximum value of the probabilistic distribution from the model output
+                inferences[inference_count] = recognizeLabel(model_output->data.int8, kLabelCount, true);
 
-            inference_count++;
+                TF_LITE_REPORT_ERROR(error_reporter, "Inference %d successful, label predicted: %d.\n",
+                                    inference_count, inferences[inference_count]);
+
+                inference_count++;
+            }
         }
+
+        // TODO: add weights to inferences
+        // With the inferences buffer filled up, let's get the most frequent label.
+        uint8_t prediction = getMostFrequent(inferences, kInferenceSequence, false);
+
+        TF_LITE_REPORT_ERROR(error_reporter, "Most frequent label: %d.\n", prediction);
+
+        // REM label predicted, break the loop and trigger the alarm.
+        if(prediction == LabelStage::REM)
+            break;
+
+        // TODO: keep track of labels inferred to know what the model should predict in the following inferences
+
+        // Once inferences buffer is full, we will only perform one inference
+        // dequeuing the oldest inference. Decrasing inference_count by one will
+        // enqueue only one new inference nito the buffer.
+        // inference_count -= 1;
+        inference_count = 0;
     }
 
-    // TODO: add weights to inferences
+    // If we arrive here, we have either predicted a REM label or reached the
+    // end of the waking up time range with no success finding the appropiate
+    // moment. Either way, set the alarm ON.
 
-    uint8_t prediction = getMostFrequent(inferences, kInferenceSequence, false);
-
-    TF_LITE_REPORT_ERROR(error_reporter, "Most frequent label: %d.\n", prediction);
-
-    if(prediction == LabelStage::REM)
-        triggerAlarm();
-
-    // TODO: keep track of labels inferred to know what the model should predict in the following inferences
-
-    inference_count = 0;
+    triggerAlarm();
 }
 
 void triggerAlarm() {

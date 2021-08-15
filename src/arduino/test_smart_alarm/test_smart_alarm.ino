@@ -53,8 +53,13 @@ int8_t quantize(float val);
 /// Initializes all data needed for the application.
 void setup() {
 
+    while(!Serial);
+
     // Setting up logging
     error_reporter = &micro_error_reporter;
+    TF_LITE_REPORT_ERROR(error_reporter, "Welcome to the test!\n"
+        "This example will undergo a series of inferences over %d samples"
+        " randomly selected from the processed dataset.\n", kNumTests);
 
     // Map the model into a usable data structure.
     model = tflite::GetModel(g_model);
@@ -91,6 +96,8 @@ void setup() {
     // Set model's input and output.
     model_input = interpreter->input(0);
     model_output = interpreter->output(0);
+
+    testInputTensor();
 }
 
 /// Runs all tests in one iteration.
@@ -111,8 +118,6 @@ void loop()
     TF_LITE_REPORT_ERROR(error_reporter, "The test is running... \n");
 
     for(uint16_t i = 0; i < kNumTests; i++) {
-
-        testInputTensor();
 
         // Popullate model input from samples.
         for (uint8_t j = 0; j < kFeatureCount; j++) {
@@ -149,6 +154,8 @@ int8_t quantize(float val) {
     int8_t ret = val / model_input->params.scale + model_input->params.zero_point;
     return ret;
 }
+
+// TODO: pass function tests to macros/header files
 
 void testInputTensor() {
     if ((model_input == nullptr))
