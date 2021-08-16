@@ -22,7 +22,7 @@ TfLiteStatus setupIMUSensor() {
     return status;
 }
 
-void readAccelerometer(float* arr) {
+void readAccelerometer(float* arr, tflite::ErrorReporter* error_reporter) {
 
     float x, y, z;
 
@@ -30,6 +30,8 @@ void readAccelerometer(float* arr) {
     float max_y = 0;
     float max_z = 0;
 
+    TF_LITE_REPORT_ERROR(error_reporter, "Measuring accelerometer.\n");
+    
     unsigned long lastReportTime = millis();
 
     // Read accelerometer measurements during kTimeIMUInterval

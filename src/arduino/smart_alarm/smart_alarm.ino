@@ -21,13 +21,14 @@ limitations under the License.
 #include "tensorflow/lite/schema/schema_generated.h"
 #include "tensorflow/lite/version.h"
 
-#include "main_functions.h"
 #include "alarm_setup.h"
-#include "model.h"
-#include "input_handler.h"
-#include "output_handler.h"
 #include "heart_rate_handler.h"
 #include "imu_handler.h"
+#include "input_handler.h"
+#include "main_functions.h"
+#include "model.h"
+#include "output_handler.h"
+#include "queue.h"
 
 namespace {
     tflite::MicroErrorReporter micro_error_reporter;
@@ -39,9 +40,9 @@ namespace {
 
     uint8_t tensor_arena[kTensorArenaSize];
 
-    int inference_count = 0;
-    uint8_t inferences[kInferenceSequence];
-    bool interruptAlarm = false;
+    uint16_t inference_count = 0;
+    Queue inferences;
+    uint16_t totalInferences = 0;
 
     float imu_input[3];
 
@@ -49,11 +50,6 @@ namespace {
 
     InputHandler* input_handler;
 }  // namespace
-
-/// Checks the input tensor is initialized, has the correct size and type.
-void testInputTensor();
-
-void triggerAlarm();
 
 /// Initializes all data needed for the application.
 void setup() {
@@ -121,8 +117,6 @@ void setup() {
     model_output = interpreter->output(0);
 
     // Get intervals in milliseconds to let know Arduino when to start inferences
-
-    
     getwakeUpTimeRange(kStrCurrentTime, kStrWakeUpTime, kTimeRangeAlarm, wakeUpTimeRange);
 
     // Display all introductory information
@@ -138,23 +132,22 @@ void loop() {
     // Wait until the time to wake up arrives.
     while(millis() < wakeUpTimeRange[0]) { /*The arduino will remain idle here*/}
 
+     TF_LITE_REPORT_ERROR(error_reporter, "It's about time! Predicting sleep stages for waking up.\n");
+     
     // We are within the interval range for waking up, start doing inferences during this time.
     while(millis() < wakeUpTimeRange[1]) {
-
-        TF_LITE_REPORT_ERROR(error_reporter, "Starting new sequence of %d inferences\n",
-                            kInferenceSequence);
 
         // First time doing inferences, we will fill up the inferences buffer
         while(inference_count < kInferenceSequence) {
 
-            readAccelerometer(imu_input);
+            readAccelerometer(imu_input, error_reporter);
 
             // First time new data comes in, no HR is needed, only imu data.
             if(!input_handler->isInitialized())
                 input_handler->generateFeatures(imu_input[0], imu_input[1], imu_input[2], 0);
 
             else {
-                int bpm = readHeartRate(error_reporter);
+                int bpm = readHeartRate(error_reporter, false);
 
                 // --- Send input values to input handler
                 input_handler->generateFeatures(imu_input[0], imu_input[1], imu_input[2], bpm);
@@ -171,18 +164,20 @@ void loop() {
                     TF_LITE_REPORT_ERROR(error_reporter, "Invoke failed\n");
 
                 // Extract the maximum value of the probabilistic distribution from the model output
-                inferences[inference_count] = recognizeLabel(model_output->data.int8, kLabelCount, true);
+                // inferences[inference_count] = recognizeLabel(model_output->data.int8, kLabelCount, true);
+                int new_inference = recognizeLabel(model_output->data.int8, kLabelCount, true);
+
+                inferences.enqueue(new_inference);
 
                 TF_LITE_REPORT_ERROR(error_reporter, "Inference %d successful, label predicted: %d.\n",
-                                    inference_count, inferences[inference_count]);
+                                    ++totalInferences, inferences.getItemAt(inference_count));
 
                 inference_count++;
             }
         }
 
-        // TODO: add weights to inferences
         // With the inferences buffer filled up, let's get the most frequent label.
-        uint8_t prediction = getMostFrequent(inferences, kInferenceSequence, false);
+        uint8_t prediction = getMostFrequent(inferences.getQueuePointer(), kInferenceSequence);
 
         TF_LITE_REPORT_ERROR(error_reporter, "Most frequent label: %d.\n", prediction);
 
@@ -195,28 +190,16 @@ void loop() {
         // Once inferences buffer is full, we will only perform one inference
         // dequeuing the oldest inference. Decrasing inference_count by one will
         // enqueue only one new inference nito the buffer.
-        // inference_count -= 1;
-        inference_count = 0;
+        inference_count -= 1;
+        // inference_count = 0;
     }
 
     // If we arrive here, we have either predicted a REM label or reached the
     // end of the waking up time range with no success finding the appropiate
     // moment. Either way, set the alarm ON.
+    TF_LITE_REPORT_ERROR(error_reporter, "Good Morning! \nTotal inferences %d.\n", totalInferences);
 
     triggerAlarm();
-}
-
-void triggerAlarm() {
-
-    unsigned long alarmCountDown = millis();
-
-    // Trigger the alarm for kTimeAlarmOn (10 seconds)
-    setAlarmOn();
-    while(millis() - alarmCountDown < kTimeAlarmOn) {
-        if(interruptAlarm)  // TODO: set a callback that allows set interruptalarm to true.
-            break;
-    }
-    setAlarmOff();
 }
 
 void testInputTensor() {

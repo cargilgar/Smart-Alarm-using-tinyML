@@ -61,7 +61,7 @@ uint8_t recognizeLabel(int8_t* arr, uint8_t arrSize, bool msgVerbose) {
 }
 
 // Get label that has been predicted the most in the kInferenceSequence and return the index
-uint8_t getMostFrequent(uint8_t* arrInferences, uint8_t arrSize, bool addWeights) {
+uint8_t getMostFrequent(uint8_t* arrInferences, uint8_t arrSize) {
 
     /* --------------------------------------------
     Explanatory example of how this function operates
@@ -85,7 +85,7 @@ uint8_t getMostFrequent(uint8_t* arrInferences, uint8_t arrSize, bool addWeights
         FreqLabel(LabelStage::REM)
     };
 
-    _getFreqLabels(arrInferences, kFeatureCount, freqLabelsContainer, addWeights);
+    _getFreqLabels(arrInferences, kFeatureCount, freqLabelsContainer);
 
     _insertionSort(freqLabelsContainer, kLabelCount);
 
@@ -93,7 +93,7 @@ uint8_t getMostFrequent(uint8_t* arrInferences, uint8_t arrSize, bool addWeights
     return freqLabelsContainer[0].label;
 }
 
-void _getFreqLabels(uint8_t* arr, uint8_t arrSize, FreqLabel* labels, bool addWeights) {
+void _getFreqLabels(uint8_t* arr, uint8_t arrSize, FreqLabel* labels) {
 
     for(int i = 0; i < arrSize; i++) {
         if(arr[i] == LabelStage::Wake)
@@ -106,15 +106,6 @@ void _getFreqLabels(uint8_t* arr, uint8_t arrSize, FreqLabel* labels, bool addWe
             labels[3].freq++;
         else
             labels[4].freq++;
-
-        // TODO: adapt weights and change to type float
-        /*if(addWeights) {
-            labels[0].freq *= 1;
-            labels[1].freq *= 0.3;
-            labels[2].freq *= 0.2;
-            labels[3].freq *= 0.7;
-            labels[4].freq *= 0.8;
-        }*/
     }
 }
 
@@ -135,6 +126,19 @@ void _swapPointers(FreqLabel* ptr1, FreqLabel* ptr2) {
     FreqLabel temp = *ptr1;
     *ptr1 = *ptr2;
     *ptr2 = temp;
+}
+
+void triggerAlarm() {
+
+    unsigned long alarmCountDown = millis();
+
+    // Trigger the alarm for kTimeAlarmOn (10 seconds)
+    setAlarmOn();
+    while(millis() - alarmCountDown < kTimeAlarmOn) {
+        // if(interruptAlarm)  // TODO: set a callback that allows set interruptalarm to true.
+        //     break;
+    }
+    setAlarmOff();
 }
 
 void setAlarmOn() {

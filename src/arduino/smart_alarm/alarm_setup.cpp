@@ -27,7 +27,7 @@ void displayAlarmConfiguration(unsigned long* arrRange) {
     Serial.print(" to ");
     display24HourFormat(charToSeconds(kStrCurrentTime), arrRange[1]/1000);
     Serial.println(" looking for the most pleasant time.");
-    Serial.println("\nGood night :)");
+    Serial.println("\nGood night :)\n");
 }
 
 void getwakeUpTimeRange(const char* currentTime, const char* wakeUpTime, uint8_t interval, unsigned long* arrRange) {

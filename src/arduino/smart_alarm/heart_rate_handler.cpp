@@ -22,7 +22,7 @@ TfLiteStatus setupHeartRateSensor() {
     return status;
 }
 
-int readHeartRate(tflite::ErrorReporter* error_reporter) {
+int readHeartRate(tflite::ErrorReporter* error_reporter, bool msgVerbose) {
 
     float hr;               // Variable to calculate 1 BPM
     float heartRate = 0;      // Variable to calculate the mean of the detected beats
@@ -36,6 +36,8 @@ int readHeartRate(tflite::ErrorReporter* error_reporter) {
     unsigned long lastTime = 0;                                     // Timer to Calculate IBI
 
     unsigned long startTime = millis();
+
+    TF_LITE_REPORT_ERROR(error_reporter, "Measuring Beats per Minute.\n");
 
     // Read heart rate measurements during kTimeHRInterval
     while (millis() < (startTime + kTimeHRInterval)) {
@@ -64,8 +66,10 @@ int readHeartRate(tflite::ErrorReporter* error_reporter) {
     // Mean of BPMs calculated (value needed to feed into the model)
     int BPM = heartRate / heartBeatCounter;
 
-    TF_LITE_REPORT_ERROR(error_reporter, "Beats detected = %d.\n", heartBeatCounter);
-    TF_LITE_REPORT_ERROR(error_reporter, "BPM = %d.\n", BPM);
+    if(msgVerbose) {
+        TF_LITE_REPORT_ERROR(error_reporter, "Beats detected = %d.\n", heartBeatCounter);
+        TF_LITE_REPORT_ERROR(error_reporter, "BPM = %d.\n", BPM);
+    }
 
     return BPM;
 }

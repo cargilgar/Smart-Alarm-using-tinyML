@@ -13,11 +13,37 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-/// @file heart_rate_handler.h
+#include "queue.h"
 
-#pragma once
+Queue::Queue() : _qSize(kInferenceSequence), _stored(0) { }
 
-#include "constants.h"
+uint8_t* Queue::getQueuePointer() {
+    return _queue;
+}
 
-extern TfLiteStatus setupHeartRateSensor();
-int readHeartRate(tflite::ErrorReporter* error_reporter, bool msgVerbose);
+uint8_t Queue::getItemAt(uint8_t index) {
+    return _queue[index];
+}
+
+bool Queue::isFull() {
+
+    bool ret = (_stored == _qSize) ? true : false;
+    return ret;
+}
+
+void Queue::enqueue(int newItem) {
+
+    if(isFull()) {
+        _dequeue();
+        _queue[_qSize - 1] = newItem;
+    }
+    else {
+        _queue[_stored] = newItem;
+        _stored ++;
+    }
+}
+
+void Queue::_dequeue() {
+    for(int i = 0; i < _qSize - 1; i++)
+        _queue[i] = _queue[i + 1];
+}

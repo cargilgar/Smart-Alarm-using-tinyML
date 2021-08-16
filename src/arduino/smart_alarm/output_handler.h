@@ -52,11 +52,12 @@ extern TfLiteStatus setupOutputDevice(tflite::ErrorReporter* error_reporter);
 /// range (-128, 127) to a scale 0-100 to display it when the formal parameter
 /// `msgVerbose` is set to `true`.
 uint8_t recognizeLabel(int8_t* arr, uint8_t arrSize, bool msgVerbose);
-uint8_t getMostFrequent(uint8_t* arrInferences, uint8_t arrSize, bool addWeights);
+uint8_t getMostFrequent(uint8_t* arrInferences, uint8_t arrSize);
 
-void _getFreqLabels(uint8_t* arr, uint8_t arrSize, FreqLabel* labels, bool addWeights);
+void _getFreqLabels(uint8_t* arr, uint8_t arrSize, FreqLabel* labels);
 void _insertionSort(FreqLabel* arr, uint8_t arrSize);
 void _swapPointers(FreqLabel* ptr1, FreqLabel* ptr2);
 
+void triggerAlarm();
 void setAlarmOn();
 void setAlarmOff();

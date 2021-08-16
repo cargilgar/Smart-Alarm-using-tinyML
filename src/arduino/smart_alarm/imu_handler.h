@@ -21,4 +21,4 @@ limitations under the License.
 #include "constants.h"
 
 extern TfLiteStatus setupIMUSensor();
-void readAccelerometer(float* arr);
+void readAccelerometer(float* arr, tflite::ErrorReporter* error_reporter);
