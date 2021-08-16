@@ -37,7 +37,8 @@ int readHeartRate(tflite::ErrorReporter* error_reporter, bool msgVerbose) {
 
     unsigned long startTime = millis();
 
-    TF_LITE_REPORT_ERROR(error_reporter, "Measuring Beats per Minute.\n");
+    if(msgVerbose) 
+        TF_LITE_REPORT_ERROR(error_reporter, "Measuring Beats per Minute.\n");
 
     // Read heart rate measurements during kTimeHRInterval
     while (millis() < (startTime + kTimeHRInterval)) {

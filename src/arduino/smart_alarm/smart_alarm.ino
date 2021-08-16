@@ -132,7 +132,7 @@ void loop() {
     // Wait until the time to wake up arrives.
     while(millis() < wakeUpTimeRange[0]) { /*The arduino will remain idle here*/}
 
-     TF_LITE_REPORT_ERROR(error_reporter, "It's about time! Predicting sleep stages for waking up.\n");
+     TF_LITE_REPORT_ERROR(error_reporter, "It's about time! Predicting sleep stages for awakening.\n");
      
     // We are within the interval range for waking up, start doing inferences during this time.
     while(millis() < wakeUpTimeRange[1]) {
@@ -140,7 +140,7 @@ void loop() {
         // First time doing inferences, we will fill up the inferences buffer
         while(inference_count < kInferenceSequence) {
 
-            readAccelerometer(imu_input, error_reporter);
+            readAccelerometer(imu_input, error_reporter, false);
 
             // First time new data comes in, no HR is needed, only imu data.
             if(!input_handler->isInitialized())
@@ -152,8 +152,6 @@ void loop() {
                 // --- Send input values to input handler
                 input_handler->generateFeatures(imu_input[0], imu_input[1], imu_input[2], bpm);
 
-                // input_handler->displayFeatures();
-
                 // Popullate model input
                 input_handler->popullateModelInput(model_input->data.int8);
 
@@ -163,15 +161,15 @@ void loop() {
                 if (invoke_status != kTfLiteOk)
                     TF_LITE_REPORT_ERROR(error_reporter, "Invoke failed\n");
 
-                // Extract the maximum value of the probabilistic distribution from the model output
-                // inferences[inference_count] = recognizeLabel(model_output->data.int8, kLabelCount, true);
+                // Extract the maximum value of the probabilistic distribution from the model output.
                 int new_inference = recognizeLabel(model_output->data.int8, kLabelCount, true);
 
                 inferences.enqueue(new_inference);
 
-                TF_LITE_REPORT_ERROR(error_reporter, "Inference %d successful, label predicted: %d.\n",
-                                    ++totalInferences, inferences.getItemAt(inference_count));
-
+                //TF_LITE_REPORT_ERROR(error_reporter, "Inference %d successful, label predicted: %d.\n",
+                //                    totalInferences, inferences.getItemAt(inference_count));
+                
+                totalInferences++;
                 inference_count++;
             }
         }
@@ -179,7 +177,8 @@ void loop() {
         // With the inferences buffer filled up, let's get the most frequent label.
         uint8_t prediction = getMostFrequent(inferences.getQueuePointer(), kInferenceSequence);
 
-        TF_LITE_REPORT_ERROR(error_reporter, "Most frequent label: %d.\n", prediction);
+        TF_LITE_REPORT_ERROR(error_reporter, "Most frequent label in the last %d inferences: %d.\n", 
+                            kInferenceSequence, prediction);
 
         // REM label predicted, break the loop and trigger the alarm.
         if(prediction == LabelStage::REM)
@@ -191,13 +190,13 @@ void loop() {
         // dequeuing the oldest inference. Decrasing inference_count by one will
         // enqueue only one new inference nito the buffer.
         inference_count -= 1;
-        // inference_count = 0;
     }
 
     // If we arrive here, we have either predicted a REM label or reached the
     // end of the waking up time range with no success finding the appropiate
     // moment. Either way, set the alarm ON.
-    TF_LITE_REPORT_ERROR(error_reporter, "Good Morning! \nTotal inferences %d.\n", totalInferences);
+    TF_LITE_REPORT_ERROR(error_reporter, "Good Morning! \n\n"
+                        "Total number of inferences %d.\n", totalInferences);
 
     triggerAlarm();
 }

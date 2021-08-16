@@ -50,7 +50,7 @@ uint8_t recognizeLabel(int8_t* arr, uint8_t arrSize, bool msgVerbose) {
     float probPred = (maxValue + 127)/2.56;
 
     if(msgVerbose) {
-        Serial.print("Label predicted: ");
+        Serial.print("New label predicted: ");
         Serial.print(maxIndex);
         Serial.print(", with a certainty of: ");
         Serial.print(probPred);
@@ -135,7 +135,7 @@ void triggerAlarm() {
     // Trigger the alarm for kTimeAlarmOn (10 seconds)
     setAlarmOn();
     while(millis() - alarmCountDown < kTimeAlarmOn) {
-        // if(interruptAlarm)  // TODO: set a callback that allows set interruptalarm to true.
+        // if(interruptAlarm)  // TODO: set a callback that allows set interruptAlarm to true.
         //     break;
     }
     setAlarmOff();
