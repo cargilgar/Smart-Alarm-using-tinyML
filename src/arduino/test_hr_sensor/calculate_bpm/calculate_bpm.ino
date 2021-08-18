@@ -11,13 +11,13 @@
     unsigned long IBI = 0;                           // Inter Beat Interval (ms)
     unsigned long newBeatTime = 0;                   // Timer to Calculate IBI
     unsigned long lastTime = 0;                      // Timer to Calculate IBI
+    unsigned long readingTime = 15000;               // Reading sensor Time (15 seconds)
     
     bool counted = false;                            // Boolean to avoid false positives when the wave decreases
 
 void setup(){
 
     Serial.begin(9600);                              // Start Serial Communication @ 9600
-    //delay(100);
 
 }
 
@@ -25,7 +25,7 @@ void loop(){
 
     startTime = millis();
     
-    while (millis() < (startTime + 15000)){                  // Reading pulse sensor for 15 seconds
+    while (millis() < (startTime + readingTime)){               // Reading pulse sensor for readingTime seconds
     
         sensorValue = analogRead(sensorPin);                 // Read SensorValue                                   
         newBeatTime = millis();                              // Storage new time to calculate IBI 
@@ -59,7 +59,7 @@ void loop(){
     Serial.println(count);                                    // Print counted beats (just for checking)
     
     BPM = heartRate / count;                                  // Mean of BPMs calculated (value needed to feed into the model)
-    //BPM = count * 4;                                        // Simple method (less accurate)
+    //BPM = count * (60000 / readingTime);                    // Simple method (less accurate)
     
     Serial.print("BPM = ");
     Serial.println(BPM);                                      // Print BPM (just for checking)
