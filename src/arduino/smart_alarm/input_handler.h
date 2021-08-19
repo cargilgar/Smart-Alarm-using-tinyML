@@ -26,6 +26,7 @@ limitations under the License.
 // calculations needed to generate the features. It takes the raw data, processes
 // it, generates the required features by the model, normalizes them and stores
 // them until new data comes in, repeating again the process.
+
 class InputHandler
 {
 public:

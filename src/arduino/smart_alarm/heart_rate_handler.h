@@ -13,11 +13,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-/// @file heart_rate_handler.h
-
 #pragma once
 
 #include "constants.h"
+
+/// @file heart_rate_handler.h
 
 extern TfLiteStatus setupHeartRateSensor();
 int readHeartRate(tflite::ErrorReporter* error_reporter, bool msgVerbose);

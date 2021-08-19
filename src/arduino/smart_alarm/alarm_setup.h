@@ -13,11 +13,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-/// @file alarm_setup.h
-
 #pragma once
 
 #include "constants.h"
+
+/// @file alarm_setup.h
 
 void displayAlarmConfiguration(unsigned long* arrRange);
 

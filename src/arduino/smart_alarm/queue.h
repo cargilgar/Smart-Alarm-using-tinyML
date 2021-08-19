@@ -13,6 +13,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
+#pragma once
+
+#include "constants.h"
+
 /// @file queue.h
 ///
 /// @brief This file is a very simplistic representation of a FIFO data structure
@@ -23,10 +27,6 @@ limitations under the License.
 /// the next time it receives a new item, it then proceeds to dequeue the oldest
 /// item (i.e. the first introduced). Dequeuing is done automatically avoiding
 /// emptying the queue unintencionally from the caller.
-
-#pragma once
-
-#include "constants.h"
 
 class Queue {
 public:

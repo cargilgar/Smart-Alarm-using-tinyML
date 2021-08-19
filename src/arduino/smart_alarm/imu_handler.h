@@ -13,12 +13,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-/// @file imu_handler.h
-
 #pragma once
 
 #include <Arduino_LSM9DS1.h>  // required library for IMU
 #include "constants.h"
+
+/// @file imu_handler.h
 
 extern TfLiteStatus setupIMUSensor();
 void readAccelerometer(float* arr, tflite::ErrorReporter* error_reporter, bool msgVerbose);

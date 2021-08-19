@@ -13,6 +13,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
+#pragma once
+
+#include "Arduino.h"
+#include "tensorflow/lite/c/common.h"
+#include "tensorflow/lite/micro/micro_error_reporter.h"
+
 /// @file constants.h
 ///
 /// @brief This file contains all the constant parameters used throughout the
@@ -27,16 +33,10 @@ limitations under the License.
 ///
 /// [adjust_threshold.ino](https://github.com/cargilgar/Smart-Alarm-using-tinyML/tree/main/src/arduino/test_hr_sensor/adjust_threshold/adjust_threshold.ino)
 
-#pragma once
-
-#include "Arduino.h"
-#include "tensorflow/lite/c/common.h"
-#include "tensorflow/lite/micro/micro_error_reporter.h"
-
 // --- User input. Change these to the user's needs.
-const char* const kStrCurrentTime = "23:00";
-const char* const kStrWakeUpTime = "07:30";
-constexpr uint8_t kTimeRangeAlarm = 30;         // [mins]
+const char* const kStrCurrentTime = "23:00";    /**< Time at which the user is expected to go to bed. At this time, the Arduino has to be switched on (24-hours format). */
+const char* const kStrWakeUpTime = "07:30";     /**< Time at which the user would ideally like to be awakened (24-hours format). */
+constexpr uint8_t kTimeRangeAlarm = 30;         /**< Range of time (split into two halves) which the Arduino is allowed to trigger the alarm [mins]. */
 
 // --- TensorFlow
 constexpr int kTensorArenaSize = 2*1024;        /**< Tensor Arena size for allocation of memory for input, output, and intermediate arrays [bytes]. */
