@@ -7,7 +7,7 @@ For example: the user wishes to wake up at around 8 am and it is okay if the sys
 
 
 ## Purpose of the project:
-The aim of this project is to develop an alarm system that adjusts the waking up time to the best moment depending on data gathered from different sensors.
+The aim of this project is to develop an alarm system that adjusts the waking up time to the best moment based on data collected from different sensors.
 
 A number of systems already employ Machine Learning (ML) to achieve this goal, but they depend on performing the calculations on external machines (for the time this project started). These systems fall into two categories:
 
@@ -22,7 +22,7 @@ In light of the above, this project is mainly focused on conflating the benefits
 
 ## Constraints and challenges: 
 
-A major challenge is to shrink down a reasonable ML model (to less than 1 MB of size) that still carries out predictions with high accuracy, low latency and low power consuption.
+A major challenge is to shrink down a reasonable ML model (to less than 1 MB of size) that still carries out predictions with high accuracy, low latency and low power consumption.
 
 
 ## Additions and features
@@ -31,7 +31,7 @@ BLE to send a daily report to the smart-phone.
 
 ## Version/Date: 
 
-14/08/2021	
+19/08/2021	
 
 
 ## Expected due date:
@@ -50,8 +50,8 @@ Daniel Moreno París, Carlos Gil García
 
 ## Disclaimer
 
-The main objective of this project is purely for research. All components listed here as well as code or documentation are prototype-wise and not meant to be commercialzed.
+For the time being, the main objective of this project is purely for research. All components listed here as well as code or documentation are prototype-wise and not meant to be commercialized.
 
-It is also worth mentioning that the authors of the project are not experts in the field, thus non-accurate use of terminology or information may be foreseen. Additionally, constructive feedback and suggestions for improvement will be always welcome.
+It is also worth mentioning that the authors of the project are not experts in the field of sleep medicine, thus non-accurate use of terminology or information may be foreseen. Additionally, constructive feedback and suggestions for improvement will be always welcome.
 
 
