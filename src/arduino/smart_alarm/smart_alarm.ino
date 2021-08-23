@@ -117,7 +117,7 @@ void setup() {
     model_output = interpreter->output(0);
 
     // Get intervals in milliseconds to let know Arduino when to start inferences
-    getwakeUpTimeRange(kStrCurrentTime, kStrWakeUpTime, kTimeRangeAlarm, wakeUpTimeRange);
+    getwakeUpTimeRange(wakeUpTimeRange);
 
     // Display all introductory information
     displayAlarmConfiguration(wakeUpTimeRange);
@@ -133,7 +133,7 @@ void loop() {
     while(millis() < wakeUpTimeRange[0]) { /*The arduino will remain idle here*/}
 
      TF_LITE_REPORT_ERROR(error_reporter, "It's about time! Predicting sleep stages for awakening.\n");
-     
+
     // We are within the interval range for waking up, start doing inferences during this time.
     while(millis() < wakeUpTimeRange[1]) {
 
@@ -168,7 +168,7 @@ void loop() {
 
                 //TF_LITE_REPORT_ERROR(error_reporter, "Inference %d successful, label predicted: %d.\n",
                 //                    totalInferences, inferences.getItemAt(inference_count));
-                
+
                 totalInferences++;
                 inference_count++;
             }
@@ -177,7 +177,7 @@ void loop() {
         // With the inferences buffer filled up, let's get the most frequent label.
         uint8_t prediction = getMostFrequent(inferences.getQueuePointer(), kInferenceSequence);
 
-        TF_LITE_REPORT_ERROR(error_reporter, "Most frequent label in the last %d inferences: %d.\n", 
+        TF_LITE_REPORT_ERROR(error_reporter, "Most frequent label in the last %d inferences: %d.\n",
                             kInferenceSequence, prediction);
 
         // REM label predicted, break the loop and trigger the alarm.

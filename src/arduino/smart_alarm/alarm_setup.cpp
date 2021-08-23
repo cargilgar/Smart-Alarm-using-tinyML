@@ -23,28 +23,28 @@ void displayAlarmConfiguration(unsigned long* arrRange) {
     Serial.println(kStrWakeUpTime);
 
     Serial.print("\nThe alarm will go off in a range from ");
-    display24HourFormat(charToSeconds(kStrCurrentTime), arrRange[0]/1000);
+    display24HourFormat(charToSeconds(kStrCurrentTime) + arrRange[0]/1000);
     Serial.print(" to ");
-    display24HourFormat(charToSeconds(kStrCurrentTime), arrRange[1]/1000);
-    Serial.println(" looking for the most pleasant time.");
+    display24HourFormat(charToSeconds(kStrCurrentTime) + arrRange[1]/1000);
+    Serial.println(" looking for the most pleasant moment.");
     Serial.println("\nGood night :)\n");
 }
 
-void getwakeUpTimeRange(const char* currentTime, const char* wakeUpTime, uint8_t interval, unsigned long* arrRange) {
+void getwakeUpTimeRange(unsigned long* arrRange) {
 
-    unsigned long time1 = charToSeconds(currentTime);
-    unsigned long time2 = charToSeconds(wakeUpTime);
+    unsigned long time1 = charToSeconds(kStrCurrentTime);
+    unsigned long time2 = charToSeconds(kStrWakeUpTime);
 
     // Add 24 hours (86400s) when time2 is the next day.
     // For example: (time1 = 23:00, time2 = 07:00)
     if(time1 > time2)
         time2 += 86400;
 
-    arrRange[0] = (time2 - time1 - interval * 60 / 2) * 1000;
-    arrRange[1] = (time2 - time1 + interval * 60 / 2) * 1000;
+    arrRange[0] = (time2 - time1 - kTimeRangeAlarm * 60 / 2) * 1000;
+    arrRange[1] = (time2 - time1 + kTimeRangeAlarm * 60 / 2) * 1000;
 }
 
-unsigned long charToSeconds(const char* time) {
+unsigned long charToSeconds(const char* inputTime) {
 
     unsigned long acc = 0;
 
@@ -56,15 +56,14 @@ unsigned long charToSeconds(const char* time) {
     return acc;
 }
 
-void display24HourFormat(unsigned long time1, unsigned long time2) {
+void display24HourFormat(unsigned long inputTime) {
 
     int minutes, hours;
-    time1 += time2;
 
-    if(time1 > 86400)
-        time1 -= 86400;
+    if(inputTime > 86400)
+        inputTime -= 86400;
 
-    minutes = time1 / 60;
+    minutes = inputTime / 60;
     hours = minutes / 60;
 
     Serial.print(int(hours));

@@ -21,9 +21,43 @@ limitations under the License.
 
 void displayAlarmConfiguration(unsigned long* arrRange);
 
-void getwakeUpTimeRange(const char* currentTime, const char* wakeUpTime,
-                        uint8_t interval, unsigned long* arrRange);
+/// This function calculates the interval time in milliseconds necessary for
+/// the microcontroller to know when to start and stop making inferences.
+///
+/// It gets kStrCurrentTime, kStrWakeUpTime, kTimeRangeAlarm which are set by
+/// the user beforehand according to his needs.
+///
+/// @param arrRange Array to be filled with time to start making inferences (ms)
+/// and time to stop (ms), in positions 0 and 1 respectively.
+void getwakeUpTimeRange(unsigned long* arrRange);
 
-unsigned long charToSeconds(const char* time);
+/// This function converts a string in 24-hour format into the corresponding numeric seconds.
+/// As a reference, it considers "00:00" = 0s up to "23:59" = 86400s
+///
+/// @note The value returned in seconds is needed to make the Arduino aware what time it is
+/// compared to its internal clock, which initializes at 0 when the device is powered on.
+///
+/// @param inputTime Time in 24-hour format.
+/// @return acc Equivalent in seconds
+///
+/// ### Example:
+/// ~~~~~~~~~~~~~~~~~~~~~~~~~.cpp
+/// charToSeconds("01:00");
+/// >>> 3600
+/// ~~~~~~~~~~~~~~~~~~~~~~~~~
+unsigned long charToSeconds(const char* inputTime);
 
-void display24HourFormat(unsigned long time1, unsigned long time);
+/// This function converts a given time in seconds into its equivalent in 24-hour format,
+/// to display it in a more readable form.
+///
+/// It accepts from 0s up to 86400s (1 day), being 0 = 00:00 and 86400 = 23:59.
+/// If the time given is greater than 86400, it then cycles through the difference.
+///
+/// @param inputTime Time in seconds.
+///
+/// ### Example:
+/// ~~~~~~~~~~~~~~~~~~~~~~~~~.cpp
+/// display24HourFormat(3600);
+/// >>> 01:00
+/// ~~~~~~~~~~~~~~~~~~~~~~~~~
+void display24HourFormat(unsigned long inputTime);
