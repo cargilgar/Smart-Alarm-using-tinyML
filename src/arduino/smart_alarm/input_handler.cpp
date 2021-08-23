@@ -85,6 +85,4 @@ void InputHandler::displayFeatures() {
         Serial.println(features[i], 4);
 }
 
-InputHandler::~InputHandler() {
-    delete [] features;
-}
+InputHandler::~InputHandler() { }
