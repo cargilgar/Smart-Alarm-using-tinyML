@@ -39,7 +39,7 @@ public:
     void popullateModelInput(int8_t* input);
     bool isInitialized();
 
-    float* features = new float[kFeatureCount];
+    float features[kFeatureCount];
 
 private:
     void _normalizeFeatures();
