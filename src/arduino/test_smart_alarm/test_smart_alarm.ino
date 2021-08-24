@@ -21,10 +21,12 @@ limitations under the License.
 #include "tensorflow/lite/schema/schema_generated.h"
 #include "tensorflow/lite/version.h"
 
-#include "main_functions.h"
+
 #include "model.h"
-#include "output_handler.h"
+#include "tflite_test.h"
 #include "data_samples.h"
+#include "main_functions.h"
+#include "output_handler.h"
 
 namespace{
     tflite::MicroErrorReporter micro_error_reporter;
@@ -41,11 +43,6 @@ namespace{
 
 }  // namespace
 
-/// Checks the input tensor is initialized, has the correct size and type.
-void testInputTensor();
-
-/// Checks the output tensor has the correct size and type after inference.
-void testOutputTensor();
 
 /// Converts 32-bit float to 8-bit integer. @returns quantized value int8_t data type.
 int8_t quantize(float val);
@@ -64,13 +61,13 @@ void setup() {
     // Map the model into a usable data structure.
     model = tflite::GetModel(g_model);
 
-    // Check the model has been converted with a compatible tflite converter version
+    //checkModelVersion(error_reporter, model);
     if (model->version() != TFLITE_SCHEMA_VERSION) {
-        TF_LITE_REPORT_ERROR(error_reporter,
-            "Model provided is schema version %d not equal "
-            "to supported version %d.",
-            model->version(), TFLITE_SCHEMA_VERSION);
-            return;
+    TF_LITE_REPORT_ERROR(error_reporter,
+        "Model provided is schema version %d not equal "
+        "to supported version %d.",
+        model->version(), TFLITE_SCHEMA_VERSION);
+        return;
     }
 
     // Load only the necessary operations.
@@ -97,24 +94,20 @@ void setup() {
     model_input = interpreter->input(0);
     model_output = interpreter->output(0);
 
-    testInputTensor();
+    testInputTensor(error_reporter, model_input);
 }
 
 /// Runs all tests in one iteration.
 void loop()
 {
-    //Serial.println("Please enter any key to start the test.");
-    TF_LITE_REPORT_ERROR(error_reporter, "Please enter any key to start the test.\n");
+    TF_LITE_REPORT_ERROR(error_reporter, "Press any key to start the test:\n");
     for(;;) {
-        if(Serial.available() > 0) {
-          int incommingByte = Serial.read();
-
-          if(incommingByte == 49)
-              break;
-        }
+        if(Serial.read() > 31)  // ASCII
+            break;
     }
 
-    //Serial.println("Test started");
+    unsigned long startTime = millis();
+    
     TF_LITE_REPORT_ERROR(error_reporter, "The test is running... \n");
 
     for(uint16_t i = 0; i < kNumTests; i++) {
@@ -134,7 +127,7 @@ void loop()
         if (invoke_status != kTfLiteOk)
             TF_LITE_REPORT_ERROR(error_reporter, "Invoke failed\n");
 
-        testOutputTensor();
+        testOutputTensor(error_reporter, model_output);
 
         // Extract the maximum value of the probabilistic distribution from the model output
         int8_t prediction = recognizeLabel(model_output->data.int8, kLabelCount, false);
@@ -144,8 +137,8 @@ void loop()
     }
 
     TF_LITE_REPORT_ERROR(error_reporter, "Test finalized successfully!\n\n"
-        "Number of correct predicitions: %d over %d samples.\n",
-        correctPredicition, kNumTests);
+        "Number of correct predicitions: %d over %d samples.\nTime elapsed: %d s.\n",
+        correctPredicition, kNumTests, (millis() - startTime)/1000);
 
     correctPredicition = 0;
 }
@@ -153,43 +146,4 @@ void loop()
 int8_t quantize(float val) {
     int8_t ret = val / model_input->params.scale + model_input->params.zero_point;
     return ret;
-}
-
-// TODO: pass function tests to macros/header files
-
-void testInputTensor() {
-    if ((model_input == nullptr))
-        TF_LITE_REPORT_ERROR(error_reporter, "Input Tensor does not exist.\n");
-
-    if ((model_input->dims->size != 2))
-        TF_LITE_REPORT_ERROR(error_reporter, "Input Tensor size incorrect.\n");
-
-    if ((model_input->dims->data[0] != 1))
-        TF_LITE_REPORT_ERROR(error_reporter, "The first dimension of the Input "
-        "Tensor is not %d.It is: %d.\n", 1, model_input->dims->data[0]);
-
-    if ((model_input->dims->data[1] != kFeatureCount))
-        TF_LITE_REPORT_ERROR(error_reporter, "The second dimension of the Input "
-        "Tensor is not %d.It is: %d.\n", kFeatureCount, model_input->dims->data[1]);
-
-    if ((model_input->type != kTfLiteInt8))
-        TF_LITE_REPORT_ERROR(error_reporter, "Input Tensor type is not %d.\n",
-        kTfLiteInt8);
-}
-
-void testOutputTensor() {
-    if ((model_output->dims->size != 2))
-        TF_LITE_REPORT_ERROR(error_reporter, "Output Tensor size incorrect.\n");
-
-    if ((model_output->dims->data[0] != 1))
-        TF_LITE_REPORT_ERROR(error_reporter, "The first dimension of the Output "
-        "Tensor is not %d.It is: %d.\n", 1, model_output->dims->data[0]);
-
-    if ((model_output->dims->data[1] != kLabelCount))
-        TF_LITE_REPORT_ERROR(error_reporter, "The second dimension of the Output "
-        "Tensor is not %d.It is: %d.\n", kLabelCount, model_output->dims->data[1]);
-
-    if ((model_output->type != kTfLiteInt8))
-        TF_LITE_REPORT_ERROR(error_reporter, "Output Tensor type is not %d. \n",
-        kTfLiteInt8);
 }
