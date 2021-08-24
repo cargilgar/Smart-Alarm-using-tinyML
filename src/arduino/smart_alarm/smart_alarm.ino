@@ -54,7 +54,7 @@ namespace {
 /// Initializes all data needed for the application.
 void setup() {
 
-    while(!Serial);
+    // while(!Serial);
 
     // Setting up logging
     error_reporter = &micro_error_reporter;
@@ -132,7 +132,8 @@ void loop() {
     // Wait until the time to wake up arrives.
     while(millis() < wakeUpTimeRange[0]) { /*The arduino will remain idle here*/}
 
-     TF_LITE_REPORT_ERROR(error_reporter, "It's about time! Predicting sleep stages for awakening.\n");
+    TF_LITE_REPORT_ERROR(error_reporter, "It's about time! Predicting sleep stages for awakening."
+                         "\n\nAccumulating the first %d inferences first.\n", kInferenceSequence);
 
     // We are within the interval range for waking up, start doing inferences during this time.
     while(millis() < wakeUpTimeRange[1]) {
