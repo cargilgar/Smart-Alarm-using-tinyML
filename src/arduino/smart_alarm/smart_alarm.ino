@@ -182,7 +182,7 @@ void loop() {
                             kInferenceSequence, prediction);
 
         // REM label predicted, break the loop and trigger the alarm.
-        if(prediction == LabelStage::REM)
+        if((prediction == LabelStage::REM) || (prediction == LabelStage::Wake))
             break;
 
         // TODO: keep track of labels inferred to know what the model should predict in the following inferences
@@ -193,9 +193,9 @@ void loop() {
         inference_count -= 1;
     }
 
-    // If we arrive here, we have either predicted a REM label or reached the
-    // end of the waking up time range with no success finding the appropiate
-    // moment. Either way, set the alarm ON.
+    // If we arrive here, we have either predicted a sufficient number of Wake/REM 
+    // labels or reached the end of the waking up time range with no success finding 
+    // the appropiate moment. Either way, set the alarm ON.
     TF_LITE_REPORT_ERROR(error_reporter, "Good Morning! \n\n"
                         "Total number of inferences %d.\n", totalInferences);
 
