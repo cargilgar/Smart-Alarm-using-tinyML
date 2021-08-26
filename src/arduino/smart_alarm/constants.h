@@ -26,7 +26,7 @@ limitations under the License.
 ///
 /// @note `kNormalizationRanges` array contains the *min* and *max* values of
 /// each feature generated while normalizing the dataset before training the
-/// model. Since our g_model expects the same format, these ranges are included
+/// model. Since our smart_alarm_model expects the same format, these ranges are included
 /// as a way to process the data coming in from the sensors.
 ///
 /// @see [tflite model training](https://github.com/cargilgar/Smart-Alarm-using-tinyML/blob/main/src/colabs/model_training/tflite_model_training_DNN.ipynb "Model Training colab")
@@ -48,7 +48,6 @@ constexpr uint8_t kFeatureCount = 14;           /**< Number of total features fr
 // --- Time intervals
 constexpr uint16_t kTimeIMUInterval = 1000;     /**< Interval time to extract the maximum accelerometer value of each axis. */
 constexpr uint16_t kTimeHRInterval = 10000;     /**< Interval time to take an average heart rate measurement. */
-constexpr uint16_t kTimeAlarmOn  = 10000;       /**< Interval time the alarm takes after going off. */
 
 constexpr uint16_t kAnalogReadThreshold = 525;  /**< Set threshold for correct measurement (check adjust_threshold.ino)  345. */
 constexpr uint16_t kMinIBI = 420;               /**< Minimum Interbeat interval (IBI) [ms]. @note 60s/0.420s = 140 BPMs (BPMs should not be above this in normal heart function) */
@@ -57,7 +56,7 @@ constexpr uint16_t kMinIBI = 420;               /**< Minimum Interbeat interval 
 constexpr int kSensorPin = A0;                  /**< Analog input pin for the heart rate sensor. */
 constexpr int kMotorPin = 2;                    /**< Digital output for the vibration motor module. */
 constexpr int kPasiveBuzzerPin = 3;             /**< Digital output for the buzzer. */
-constexpr uint16_t kRingTone = 2000;             /**< Frequency for the buzzer. */
+constexpr uint16_t kRingTone = 2000;            /**< Frequency for the buzzer. */
 
 constexpr uint8_t kInferenceSequence = 10;      /**< Number of consecutive inferences to ensure a confident prediction . */
 

@@ -18,14 +18,15 @@ limitations under the License.
 #include "constants.h"
 
 /// @file input_hanlder.h
-
-// This class acts as a container to hold all the data that is going to be input
-// into the input Tensor of the model.
-//
-// It also provides a further level of abstraction by carrying out all the
-// calculations needed to generate the features. It takes the raw data, processes
-// it, generates the required features by the model, normalizes them and stores
-// them until new data comes in, repeating again the process.
+///
+/// @brief Class to process and input the data into the neural network.
+///
+/// @details This class takes care of all the calculations needed to generate the 
+/// features to be fed into the model. It takes the raw data read from the sensors 
+/// and processes them based on the dataset the model was trained on (i.e. generating 
+/// the features and normalizing). With the resulting array, it then popullates the 
+/// Input Tensor for making inference. After this, new data will come in, repeating 
+/// again the process.
 
 class InputHandler {
 public:
@@ -42,6 +43,7 @@ public:
 
 private:
     void _normalizeFeatures();
+    
     /// Converts 32-bit float to 8-bit integer.
     /// @returns quantized value int8_t data type.
     int8_t _quantize(float val);

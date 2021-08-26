@@ -46,10 +46,10 @@ void getwakeUpTimeRange(unsigned long* arrRange) {
 unsigned long charToSeconds(const char* inputTime) {
     unsigned long acc = 0;
 
-    acc += (time[0] - '0') * 36000;
-    acc += (time[1] - '0') * 3600;
-    acc += (time[3] - '0') * 600;
-    acc += (time[4] - '0') * 60;
+    acc += (inputTime[0] - '0') * 36000;
+    acc += (inputTime[1] - '0') * 3600;
+    acc += (inputTime[3] - '0') * 600;
+    acc += (inputTime[4] - '0') * 60;
 
     return acc;
 }

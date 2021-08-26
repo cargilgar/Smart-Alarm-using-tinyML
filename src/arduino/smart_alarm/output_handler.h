@@ -53,12 +53,50 @@ extern TfLiteStatus setupOutputDevice(tflite::ErrorReporter* error_reporter);
 /// range (-128, 127) to a scale 0-100 to display it when the formal parameter
 /// `msgVerbose` is set to `true`.
 uint8_t recognizeLabel(int8_t* arr, bool msgVerbose);
+
+/// Get the label that has been predicted the most in the kInferenceSequence and
+/// determine the index.
+/// *Note:* Check the explanatory example illustarted in the `.cpp` file.
+///
+/// @see output_handler.cpp
+///
+/// @param arrInferences Array containing a sequence of inferences.
+/// @return freqLabelsContainer[0].label The label that appears the first after
+/// sorting the frequency labels (i.e. the most frequent label).
 uint8_t getMostFrequent(uint8_t* arrInferences);
 
+/// Assign each inference with the corresponding label, adding up `freq` for
+/// each occurence of that label.
+///
+/// @param arr Array of inferences passed by getMostFrequent(uint8_t*).
+/// @param labels The struct to be filled with the number of occurrences (`freq).
 void _getFreqLabels(uint8_t* arr, FreqLabel* labels);
-void _insertionSort(FreqLabel* arr, uint8_t arrSize);
+
+/// Sort by descending order the `freq` values of the struct genreated.
+///
+/// @param labels Struct genreated in _getFreqLabels(uint8_t*, FreqLabel*).
+void _insertionSort(FreqLabel* labels);
+
+/// Helper function for _insertionSort(FreqLabel*) to swap the elements of the
+/// struct in place.
+///
+/// @params FreqLabel* Each of the elements to be swapped with each other.
 void _swapPointers(FreqLabel* ptr1, FreqLabel* ptr2);
 
-void triggerAlarm();
+/// This function simulates the standard sound of the typical alarm. It can also
+/// be configured to reproduce a constant beep by setting constBeep to `true`.
+///
+/// @warning This function is set to run endlessly without any pause. This is
+/// because the application is conceived to be finished once we reach to this
+/// point. The user simply needs to switch off the Arduino (resetting it again).
+/// You can change the loop condition with a timeout if it is more convenient.
+///
+/// @note For future development, an interrupt may be added so that the user can
+/// stop the alarm from ringing (e.g. by clicking a button), keeping the device
+/// still on for the next day.
+///
+/// @param constBeep True to get a constant beep instead of the standard sound.
+void triggerAlarm(bool constBeep = false);
+
 void setAlarmOn();
 void setAlarmOff();

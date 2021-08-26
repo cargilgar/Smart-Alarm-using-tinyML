@@ -58,7 +58,6 @@ uint8_t recognizeLabel(int8_t* arr, bool msgVerbose) {
     return maxIndex;
 }
 
-// Get label that has been predicted the most in the kInferenceSequence and return the index
 uint8_t getMostFrequent(uint8_t* arrInferences) {
     /* --------------------------------------------
     Explanatory example of how this function operates
@@ -84,9 +83,8 @@ uint8_t getMostFrequent(uint8_t* arrInferences) {
 
     _getFreqLabels(arrInferences, freqLabelsContainer);
 
-    _insertionSort(freqLabelsContainer, kLabelCount);
+    _insertionSort(freqLabelsContainer);
 
-    // The resulting array will contain the label most repeated at the first position
     return freqLabelsContainer[0].label;
 }
 
@@ -105,13 +103,13 @@ void _getFreqLabels(uint8_t* arr, FreqLabel* labels) {
     }
 }
 
-void _insertionSort(FreqLabel* arr, uint8_t arrSize) {
-    for(int j = 1; j < arrSize; j++) {
-        int key = arr[j].freq;
+void _insertionSort(FreqLabel* labels) {
+    for(int j = 1; j < kLabelCount; j++) {
+        int key = labels[j].freq;
         int i = j - 1;
 
-        while((i > -1) && (arr[i].freq < key)) {
-            _swapPointers(arr + i + 1, arr + i);
+        while((i > -1) && (labels[i].freq < key)) {
+            _swapPointers(labels + i + 1, labels + i);
             i --;
         }
     }
@@ -123,16 +121,25 @@ void _swapPointers(FreqLabel* ptr1, FreqLabel* ptr2) {
     *ptr2 = temp;
 }
 
-void triggerAlarm() {
-    unsigned long alarmCountDown = millis();
-
-    // Trigger the alarm for kTimeAlarmOn (10 seconds)
-    setAlarmOn();
-    while(millis() - alarmCountDown < kTimeAlarmOn) {
-        // if(interruptAlarm)  // TODO: set a callback that allows set interruptAlarm to true.
-        //     break;
+void triggerAlarm(bool constBeep) {
+    if(constBeep) {
+        setAlarmOn();
+        while(true) {}
     }
-    setAlarmOff();
+    else {
+        while(true) {
+            for(int i = 0; i < 3; i++) {
+                setAlarmOn();
+                delay(80);
+                setAlarmOff();
+                delay(80);
+            }
+            setAlarmOn();
+            delay(80);
+            setAlarmOff();
+            delay(500);
+        }
+    }
 }
 
 void setAlarmOn() {

@@ -24,5 +24,5 @@ limitations under the License.
 ///
 /// @see [FlatBuffers](https://google.github.io/flatbuffers/ "FlatBuffers Overview")
 
-extern const unsigned char g_model[];
-extern const int g_model_len;
+extern const unsigned char smart_alarm_model[];
+extern const int smart_alarm_model_len;

@@ -70,7 +70,7 @@ void setup() {
         TF_LITE_REPORT_ERROR(error_reporter, "Output devices not present\n");
 
     // Map the model into a usable data structure.
-    model = tflite::GetModel(g_model);
+    model = tflite::GetModel(smart_alarm_model);
 
     // Check the model has been converted with a compatible tflite converter version
     if (model->version() != TFLITE_SCHEMA_VERSION) {
