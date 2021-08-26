@@ -16,14 +16,12 @@ limitations under the License.
 #include "imu_handler.h"
 
 TfLiteStatus setupIMUSensor() {
-
     TfLiteStatus status = (!IMU.begin()) ? kTfLiteError : kTfLiteOk;
 
     return status;
 }
 
 void readAccelerometer(float* arr, tflite::ErrorReporter* error_reporter, bool msgVerbose) {
-
     float x, y, z;
 
     float max_x = 0;
@@ -32,12 +30,11 @@ void readAccelerometer(float* arr, tflite::ErrorReporter* error_reporter, bool m
 
     if(msgVerbose)
         TF_LITE_REPORT_ERROR(error_reporter, "Measuring accelerometer.\n");
-    
+
     unsigned long lastReportTime = millis();
 
     // Read accelerometer measurements during kTimeIMUInterval
     while(millis() - lastReportTime < kTimeIMUInterval) {
-
         IMU.readAcceleration(x, y, z);
 
         // Max value for each axis in 1 second and scale to m/s2

@@ -27,8 +27,8 @@ void loop(){
 
         newBeatTime = millis();                              // Storage new time to calculate IBI
 
-        if ((analogRead(sensorPin) >= threshold) {
-            if(!counted) && ((newBeatTime - lastTime) > 420)) {  // Check threshold, wave rising and IBI > 420 ms
+        if (analogRead(sensorPin) >= threshold) {
+            if((!counted) && ((newBeatTime - lastTime) > 420)) {  // Check threshold, wave rising and IBI > 420 ms
 
                 IBI = newBeatTime - lastTime;                    // Calculate IBI
                 lastTime = millis();                             // Storage last time to calculate IBI

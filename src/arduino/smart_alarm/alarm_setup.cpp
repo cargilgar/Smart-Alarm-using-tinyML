@@ -31,7 +31,6 @@ void displayAlarmConfiguration(unsigned long* arrRange) {
 }
 
 void getwakeUpTimeRange(unsigned long* arrRange) {
-
     unsigned long time1 = charToSeconds(kStrCurrentTime);
     unsigned long time2 = charToSeconds(kStrWakeUpTime);
 
@@ -45,7 +44,6 @@ void getwakeUpTimeRange(unsigned long* arrRange) {
 }
 
 unsigned long charToSeconds(const char* inputTime) {
-
     unsigned long acc = 0;
 
     acc += (time[0] - '0') * 36000;
@@ -57,7 +55,6 @@ unsigned long charToSeconds(const char* inputTime) {
 }
 
 void display24HourFormat(unsigned long inputTime) {
-
     int minutes, hours;
 
     if(inputTime > 86400)

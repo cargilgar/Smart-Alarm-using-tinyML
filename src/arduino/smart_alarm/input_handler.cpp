@@ -15,13 +15,14 @@ limitations under the License.
 
 #include "input_handler.h"
 
-// InputHandler::InputHandler(uint8_t arrSize) : _arrSize(arrSize), _initialized(false) {}
-InputHandler::InputHandler(uint8_t arrSize, float paramScale, int zeroPoint)
-    : _arrSize(arrSize), _initialized(false), _zeroPoint(zeroPoint), _scale(paramScale)
-{
-}
+InputHandler::InputHandler(float paramScale, int zeroPoint)
+    : _arrSize(kFeatureCount), _initialized(false), _zeroPoint(zeroPoint), _scale(paramScale) {}
 
-void InputHandler::generateFeatures(float x, float y, float z, float bpm) {
+void InputHandler::generateFeatures(float* imu, float bpm) {
+
+    float x = imu[0];
+    float y = imu[1];
+    float z = imu[2];
 
     if(!_initialized) {
         features[0] = x; // x axis
@@ -85,4 +86,4 @@ void InputHandler::displayFeatures() {
         Serial.println(features[i], 4);
 }
 
-InputHandler::~InputHandler() { }
+InputHandler::~InputHandler() {}

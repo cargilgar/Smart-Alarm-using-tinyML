@@ -39,15 +39,12 @@ namespace {
     TfLiteTensor* model_output = nullptr;
 
     uint8_t tensor_arena[kTensorArenaSize];
-
+    unsigned long wakeUpTimeRange[2];
     uint16_t inference_count = 0;
-    Queue inferences;
     uint16_t totalInferences = 0;
-
     float imu_input[3];
 
-    unsigned long wakeUpTimeRange[2];
-
+    Queue inferences;
     InputHandler* input_handler;
 }  // namespace
 
@@ -106,11 +103,9 @@ void setup() {
 
     // Set model's input.
     model_input = interpreter->input(0);
-    testInputTensor();
 
     // Instantiate input handler with tensor quantization parameters
-    input_handler = new InputHandler(kFeatureCount, model_input->params.scale,
-                                    model_input->params.zero_point);
+    input_handler = new InputHandler(model_input->params.scale, model_input->params.zero_point);
 
 
     // Set model's output.
@@ -128,7 +123,6 @@ void setup() {
 /// This proccess is then repeated inference_count times to ensure a good
 /// prediction.
 void loop() {
-
     // Wait until the time to wake up arrives.
     while(millis() < wakeUpTimeRange[0]) { /*The arduino will remain idle here*/}
 
@@ -137,21 +131,19 @@ void loop() {
 
     // We are within the interval range for waking up, start doing inferences during this time.
     while(millis() < wakeUpTimeRange[1]) {
-
         // First time doing inferences, we will fill up the inferences buffer
         while(inference_count < kInferenceSequence) {
-
             readAccelerometer(imu_input, error_reporter, false);
 
             // First time new data comes in, no HR is needed, only imu data.
             if(!input_handler->isInitialized())
-                input_handler->generateFeatures(imu_input[0], imu_input[1], imu_input[2], 0);
+                input_handler->generateFeatures(imu_input, 0);
 
             else {
                 int bpm = readHeartRate(error_reporter, false);
 
                 // --- Send input values to input handler
-                input_handler->generateFeatures(imu_input[0], imu_input[1], imu_input[2], bpm);
+                input_handler->generateFeatures(imu_input, bpm);
 
                 // Popullate model input
                 input_handler->popullateModelInput(model_input->data.int8);
@@ -163,12 +155,9 @@ void loop() {
                     TF_LITE_REPORT_ERROR(error_reporter, "Invoke failed\n");
 
                 // Extract the maximum value of the probabilistic distribution from the model output.
-                int new_inference = recognizeLabel(model_output->data.int8, kLabelCount, true);
+                int new_inference = recognizeLabel(model_output->data.int8, true);
 
                 inferences.enqueue(new_inference);
-
-                //TF_LITE_REPORT_ERROR(error_reporter, "Inference %d successful, label predicted: %d.\n",
-                //                    totalInferences, inferences.getItemAt(inference_count));
 
                 totalInferences++;
                 inference_count++;
@@ -176,7 +165,7 @@ void loop() {
         }
 
         // With the inferences buffer filled up, let's get the most frequent label.
-        uint8_t prediction = getMostFrequent(inferences.getQueuePointer(), kInferenceSequence);
+        uint8_t prediction = getMostFrequent(inferences.getQueuePointer());
 
         TF_LITE_REPORT_ERROR(error_reporter, "Most frequent label in the last %d inferences: %d.\n",
                             kInferenceSequence, prediction);
@@ -193,31 +182,11 @@ void loop() {
         inference_count -= 1;
     }
 
-    // If we arrive here, we have either predicted a sufficient number of Wake/REM 
-    // labels or reached the end of the waking up time range with no success finding 
+    // If we arrive here, we have either predicted a sufficient number of Wake/REM
+    // labels or reached the end of the waking up time range with no success finding
     // the appropiate moment. Either way, set the alarm ON.
     TF_LITE_REPORT_ERROR(error_reporter, "Good Morning! \n\n"
                         "Total number of inferences %d.\n", totalInferences);
 
     triggerAlarm();
-}
-
-void testInputTensor() {
-    if ((model_input == nullptr))
-        TF_LITE_REPORT_ERROR(error_reporter, "Input Tensor does not exist.\n");
-
-    if ((model_input->dims->size != 2))
-        TF_LITE_REPORT_ERROR(error_reporter, "Input Tensor size incorrect.\n");
-
-    if ((model_input->dims->data[0] != 1))
-        TF_LITE_REPORT_ERROR(error_reporter, "The first dimension of the Input "
-        "Tensor is not %d.It is: %d.\n", 1, model_input->dims->data[0]);
-
-    if ((model_input->dims->data[1] != kFeatureCount))
-        TF_LITE_REPORT_ERROR(error_reporter, "The second dimension of the Input "
-        "Tensor is not %d.It is: %d.\n", kFeatureCount, model_input->dims->data[1]);
-
-    if ((model_input->type != kTfLiteInt8))
-        TF_LITE_REPORT_ERROR(error_reporter, "Input Tensor type is not %d.\n",
-        kTfLiteInt8);
 }

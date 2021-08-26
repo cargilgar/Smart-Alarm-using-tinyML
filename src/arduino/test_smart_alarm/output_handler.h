@@ -33,4 +33,4 @@ limitations under the License.
 /// range (-128, 127) to a scale 0-100 to display it when the formal parameter
 /// `msgVerbose` is set to `true`.
 
-int8_t recognizeLabel(int8_t* arr, uint8_t arrSize, bool msgVerbose);
+uint8_t recognizeLabel(int8_t* arr, bool msgVerbose);

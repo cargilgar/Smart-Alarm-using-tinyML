@@ -49,7 +49,6 @@ int8_t quantize(float val);
 
 /// Initializes all data needed for the application.
 void setup() {
-
     while(!Serial);
 
     // Setting up logging
@@ -98,8 +97,7 @@ void setup() {
 }
 
 /// Runs all tests in one iteration.
-void loop()
-{
+void loop() {
     TF_LITE_REPORT_ERROR(error_reporter, "Press any key to start the test:\n");
     for(;;) {
         if(Serial.read() > 31)  // ASCII
@@ -111,7 +109,6 @@ void loop()
     TF_LITE_REPORT_ERROR(error_reporter, "The test is running... \n");
 
     for(uint16_t i = 0; i < kNumTests; i++) {
-
         // Popullate model input from samples.
         for (uint8_t j = 0; j < kFeatureCount; j++) {
             int8_t quantized = quantize(samples[j+i*(kFeatureCount+1)]); // Accessing each row from 0 up to 13
@@ -130,7 +127,7 @@ void loop()
         testOutputTensor(error_reporter, model_output);
 
         // Extract the maximum value of the probabilistic distribution from the model output
-        int8_t prediction = recognizeLabel(model_output->data.int8, kLabelCount, false);
+        uint8_t prediction = recognizeLabel(model_output->data.int8, false);
 
         if(prediction == label_test)
             correctPredicition++;

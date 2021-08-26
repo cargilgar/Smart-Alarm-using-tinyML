@@ -35,7 +35,7 @@ limitations under the License.
 
 // --- User input. Change these to the user's needs.
 const char* const kStrCurrentTime = "23:00";    /**< Time at which the user is expected to go to bed. At this time, the Arduino has to be switched on (24-hours format). */
-const char* const kStrWakeUpTime = "07:30";     /**< Time at which the user would ideally like to be awakened (24-hours format). */
+const char* const kStrWakeUpTime = "06:30";     /**< Time at which the user would ideally like to be awakened (24-hours format). */
 constexpr uint8_t kTimeRangeAlarm = 30;         /**< Range of time (split into two halves) which the Arduino is allowed to trigger the alarm [mins]. */
 
 // --- TensorFlow
@@ -57,7 +57,7 @@ constexpr uint16_t kMinIBI = 420;               /**< Minimum Interbeat interval 
 constexpr int kSensorPin = A0;                  /**< Analog input pin for the heart rate sensor. */
 constexpr int kMotorPin = 2;                    /**< Digital output for the vibration motor module. */
 constexpr int kPasiveBuzzerPin = 3;             /**< Digital output for the buzzer. */
-constexpr uint16_t kRingTone = 300;             /**< Frequency for the buzzer. */
+constexpr uint16_t kRingTone = 2000;             /**< Frequency for the buzzer. */
 
 constexpr uint8_t kInferenceSequence = 10;      /**< Number of consecutive inferences to ensure a confident prediction . */
 

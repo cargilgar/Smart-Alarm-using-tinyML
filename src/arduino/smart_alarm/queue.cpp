@@ -15,7 +15,7 @@ limitations under the License.
 
 #include "queue.h"
 
-Queue::Queue() : _qSize(kInferenceSequence), _stored(0) { }
+Queue::Queue() : _qSize(kInferenceSequence), _stored(0), _queue() {}
 
 uint8_t* Queue::getQueuePointer() {
     return _queue;
@@ -26,13 +26,11 @@ uint8_t Queue::getItemAt(uint8_t index) {
 }
 
 bool Queue::isFull() {
-
     bool ret = (_stored == _qSize) ? true : false;
     return ret;
 }
 
 void Queue::enqueue(int newItem) {
-
     if(isFull()) {
         _dequeue();
         _queue[_qSize - 1] = newItem;

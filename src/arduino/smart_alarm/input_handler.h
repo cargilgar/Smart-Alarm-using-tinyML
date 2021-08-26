@@ -27,14 +27,13 @@ limitations under the License.
 // it, generates the required features by the model, normalizes them and stores
 // them until new data comes in, repeating again the process.
 
-class InputHandler
-{
+class InputHandler {
 public:
-    InputHandler(uint8_t arrSize, float paramScale, int zeroPoint);
+    InputHandler(float paramScale, int zeroPoint);
     InputHandler() = delete;
     ~InputHandler();
 
-    void generateFeatures(float x, float y, float z, float bpm);
+    void generateFeatures(float* imu, float bpm);
     void displayFeatures();
     void popullateModelInput(int8_t* input);
     bool isInitialized();

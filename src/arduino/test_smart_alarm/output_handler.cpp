@@ -15,8 +15,7 @@ limitations under the License.
 
 #include "output_handler.h"
 
-int8_t recognizeLabel(int8_t* arr, uint8_t arrSize, bool msgVerbose) {
-    
+uint8_t recognizeLabel(int8_t* arr, bool msgVerbose) {    
     int8_t maxIndex;
     int8_t maxValue = -128;
 
@@ -33,11 +32,11 @@ int8_t recognizeLabel(int8_t* arr, uint8_t arrSize, bool msgVerbose) {
     float probPred = (maxValue + 127)/2.56;
 
     if(msgVerbose) {
-      Serial.print("Label predicted: ");
-      Serial.print(maxIndex);
-      Serial.print(", with a certainty of: ");
-      Serial.print(probPred);
-      Serial.print("%.\n\n");
+        Serial.print("Label predicted: ");
+        Serial.print(maxIndex);
+        Serial.print(", with a certainty of: ");
+        Serial.print(probPred);
+        Serial.print("%.\n\n");
     }
 
     return maxIndex;

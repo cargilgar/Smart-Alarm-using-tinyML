@@ -16,7 +16,6 @@ limitations under the License.
 #include "output_handler.h"
 
 TfLiteStatus setupOutputDevice(tflite::ErrorReporter* error_reporter) {
-
     // TODO: this causes the application to crash on runtime, check another way.
     /*
     // Only when no output device is detected, send error back.
@@ -32,8 +31,7 @@ TfLiteStatus setupOutputDevice(tflite::ErrorReporter* error_reporter) {
     return kTfLiteOk;
 }
 
-uint8_t recognizeLabel(int8_t* arr, uint8_t arrSize, bool msgVerbose) {
-
+uint8_t recognizeLabel(int8_t* arr, bool msgVerbose) {
     int8_t maxIndex;
     int8_t maxValue = -128;
 
@@ -61,8 +59,7 @@ uint8_t recognizeLabel(int8_t* arr, uint8_t arrSize, bool msgVerbose) {
 }
 
 // Get label that has been predicted the most in the kInferenceSequence and return the index
-uint8_t getMostFrequent(uint8_t* arrInferences, uint8_t arrSize) {
-
+uint8_t getMostFrequent(uint8_t* arrInferences) {
     /* --------------------------------------------
     Explanatory example of how this function operates
 
@@ -85,7 +82,7 @@ uint8_t getMostFrequent(uint8_t* arrInferences, uint8_t arrSize) {
         FreqLabel(LabelStage::REM)
     };
 
-    _getFreqLabels(arrInferences, kFeatureCount, freqLabelsContainer);
+    _getFreqLabels(arrInferences, freqLabelsContainer);
 
     _insertionSort(freqLabelsContainer, kLabelCount);
 
@@ -93,9 +90,8 @@ uint8_t getMostFrequent(uint8_t* arrInferences, uint8_t arrSize) {
     return freqLabelsContainer[0].label;
 }
 
-void _getFreqLabels(uint8_t* arr, uint8_t arrSize, FreqLabel* labels) {
-
-    for(int i = 0; i < arrSize; i++) {
+void _getFreqLabels(uint8_t* arr, FreqLabel* labels) {
+    for(int i = 0; i < kInferenceSequence; i++) {
         if(arr[i] == LabelStage::Wake)
             labels[0].freq ++;
         else if(arr[i] == LabelStage::N1)
@@ -110,7 +106,6 @@ void _getFreqLabels(uint8_t* arr, uint8_t arrSize, FreqLabel* labels) {
 }
 
 void _insertionSort(FreqLabel* arr, uint8_t arrSize) {
-
     for(int j = 1; j < arrSize; j++) {
         int key = arr[j].freq;
         int i = j - 1;
@@ -129,7 +124,6 @@ void _swapPointers(FreqLabel* ptr1, FreqLabel* ptr2) {
 }
 
 void triggerAlarm() {
-
     unsigned long alarmCountDown = millis();
 
     // Trigger the alarm for kTimeAlarmOn (10 seconds)

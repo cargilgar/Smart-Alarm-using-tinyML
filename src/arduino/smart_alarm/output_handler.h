@@ -52,10 +52,10 @@ extern TfLiteStatus setupOutputDevice(tflite::ErrorReporter* error_reporter);
 /// It also calculates the certainty of the prediction by mapping the 8-bit
 /// range (-128, 127) to a scale 0-100 to display it when the formal parameter
 /// `msgVerbose` is set to `true`.
-uint8_t recognizeLabel(int8_t* arr, uint8_t arrSize, bool msgVerbose);
-uint8_t getMostFrequent(uint8_t* arrInferences, uint8_t arrSize);
+uint8_t recognizeLabel(int8_t* arr, bool msgVerbose);
+uint8_t getMostFrequent(uint8_t* arrInferences);
 
-void _getFreqLabels(uint8_t* arr, uint8_t arrSize, FreqLabel* labels);
+void _getFreqLabels(uint8_t* arr, FreqLabel* labels);
 void _insertionSort(FreqLabel* arr, uint8_t arrSize);
 void _swapPointers(FreqLabel* ptr1, FreqLabel* ptr2);
 
