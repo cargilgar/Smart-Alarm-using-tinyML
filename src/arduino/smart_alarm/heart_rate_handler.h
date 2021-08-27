@@ -18,6 +18,9 @@ limitations under the License.
 #include "constants.h"
 
 /// @file heart_rate_handler.h
+///
+/// @brief This file handles heart rate operations, getting measurements from
+/// the heart rate sensor for a defined a kTimeHRInterval.
 
 extern TfLiteStatus setupHeartRateSensor();
 int readHeartRate(tflite::ErrorReporter* error_reporter, bool msgVerbose);

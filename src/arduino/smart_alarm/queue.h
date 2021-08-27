@@ -34,8 +34,8 @@ public:
 
     uint8_t* getQueuePointer();
     uint8_t getItemAt(uint8_t index);
-    bool isFull();
     void enqueue(int newItem);
+    bool isFull();
 
 private:
     uint8_t _qSize, _stored;

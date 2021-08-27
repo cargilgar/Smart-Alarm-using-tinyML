@@ -44,7 +44,7 @@ uint8_t recognizeLabel(int8_t* arr, bool msgVerbose) {
         }
     }
 
-    // Mapping from the range (-128, 127) to (0, 100) to express it in percentage
+    // Mapping from (-128, 127) to (0, 100) to express it in percentage
     float probPred = (maxValue + 127)/2.56;
 
     if(msgVerbose) {

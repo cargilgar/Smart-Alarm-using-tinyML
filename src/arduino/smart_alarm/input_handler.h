@@ -21,37 +21,50 @@ limitations under the License.
 ///
 /// @brief Class to process and input the data into the neural network.
 ///
-/// @details This class takes care of all the calculations needed to generate the 
-/// features to be fed into the model. It takes the raw data read from the sensors 
-/// and processes them based on the dataset the model was trained on (i.e. generating 
-/// the features and normalizing). With the resulting array, it then popullates the 
-/// Input Tensor for making inference. After this, new data will come in, repeating 
+/// @details This class takes care of all the calculations needed to generate the
+/// features to be fed into the model. It takes the raw data read from the sensors
+/// and processes them based on the dataset the model was trained on (i.e. generating
+/// the features and normalizing). With the resulting array, it then popullates the
+/// Input Tensor for making inference. After this, new data will come in, repeating
 /// again the process.
 
 class InputHandler {
 public:
     InputHandler(float paramScale, int zeroPoint);
+    /// Avoid the use of default constructor, _scale and _zeroPoint needed to
+    /// apply quantization within the InputHandler object.
     InputHandler() = delete;
     ~InputHandler();
 
-    void generateFeatures(float* imu, float bpm);
-    void displayFeatures();
+    /// Generate the derived features to produce the same data as the dataset,
+    /// which is how the model was trained on.
+    ///
+    /// @param imu Array containing x, y and z values coming from the imu sensor.
+    /// @param bpm Value obtained from the heart rate sensor.
+    ///
+    /// @see imu_handler.cpp heart_rate_handler.cpp
+    void generateFeatures(float* imu, int bpm);
+
+    /// Fill the Input Tensor of the neural netword with the values contained
+    /// within `features`.
+    ///
+    /// @param input Input Tensor to be filled before making the next inference.
     void popullateModelInput(int8_t* input);
     bool isInitialized();
 
-    float features[kFeatureCount] = {};
-
 private:
+    /// Apply normalization to each feature based on kNormalizationRanges defined
+    /// in constants.h.
     void _normalizeFeatures();
-    
+
     /// Converts 32-bit float to 8-bit integer.
     /// @returns quantized value int8_t data type.
     int8_t _quantize(float val);
 
     float _scale;
     int _zeroPoint;
-    int _arrSize;
     bool _initialized;
 
-    const float* _normalizer = kNormalizationRanges;
+    float _features[kFeatureCount];  /**< Container holding the data to be input to the model. */
+    const float* _normalizer = kNormalizationRanges;  /**< Pointer to the array kNormalizationRanges holding the respective normalizing values. */
 };

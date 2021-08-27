@@ -16,7 +16,7 @@ limitations under the License.
 #include <TensorFlowLite.h>
 
 #include "tensorflow/lite/micro/micro_mutable_op_resolver.h"
-#include "tensorflow/lite/micro/micro_error_reporter.h"
+// #include "tensorflow/lite/micro/micro_error_reporter.h"
 #include "tensorflow/lite/micro/micro_interpreter.h"
 #include "tensorflow/lite/schema/schema_generated.h"
 #include "tensorflow/lite/version.h"
@@ -27,6 +27,11 @@ limitations under the License.
 #include "data_samples.h"
 #include "main_functions.h"
 #include "output_handler.h"
+
+// TF_LITE_MICRO_TESTS_BEGIN
+
+// TF_LITE_MICRO_TEST(LoadModelAndPerformInference) {
+// }
 
 namespace{
     tflite::MicroErrorReporter micro_error_reporter;
@@ -105,7 +110,7 @@ void loop() {
     }
 
     unsigned long startTime = millis();
-    
+
     TF_LITE_REPORT_ERROR(error_reporter, "The test is running... \n");
 
     for(uint16_t i = 0; i < kNumTests; i++) {

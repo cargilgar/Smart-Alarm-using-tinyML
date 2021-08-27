@@ -142,7 +142,7 @@ void loop() {
             else {
                 int bpm = readHeartRate(error_reporter, false);
 
-                // --- Send input values to input handler
+                // Send input values to input handler
                 input_handler->generateFeatures(imu_input, bpm);
 
                 // Popullate model input
@@ -176,7 +176,7 @@ void loop() {
 
         // TODO: keep track of labels inferred to know what the model should predict in the following inferences
 
-        // Once inferences buffer is full, we will only perform one inference
+        // Once buffer of inferences is full, we will only perform one inference
         // dequeuing the oldest inference. Decrasing inference_count by one will
         // enqueue only one new inference nito the buffer.
         inference_count -= 1;
