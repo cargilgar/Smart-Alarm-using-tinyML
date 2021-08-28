@@ -25,10 +25,6 @@ In light of the above, this project is mainly focused on conflating the benefits
 A major challenge is to shrink down a reasonable ML model (to less than 1 MB of size) that still carries out predictions with high accuracy, low latency and low power consumption.
 
 
-## Additions and features
-BLE to send a daily report to the smart-phone.
-
-
 ## Version/Date: 
 
 19/08/2021	
@@ -54,4 +50,7 @@ For the time being, the main objective of this project is purely for research. A
 
 It is also worth mentioning that the authors of the project are not experts in the field of sleep medicine, thus non-accurate use of terminology or information may be foreseen. Additionally, constructive feedback and suggestions for improvement will be always welcome.
 
+
+## Future work
+BLE to send a daily report to the smart-phone.
 
