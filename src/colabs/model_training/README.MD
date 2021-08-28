@@ -16,6 +16,7 @@ Therefore, this file comprises all the stages of the Tiny Machine Learning pipel
 
 ## Model used for this project
 
+From our experiments, the model that has worked the best for our application and the processed dataset has been a Deep Neural Network (DNN). That is not to say, that other types of models might not provide better results with proper hyperparameter fine-tuning and careful preparation of the dataset. In fact, we tried other approaches which gave us positve results as well. The most noticeable ones were Long short-term memory (LSTM), which is a type of recurrent neural network (RNN), and the Gradient Boosting Decision Tree Algorithm, which is a more standard Machine Learning techniwqe. However, we decided to adhere to a DNN as the most promising model for the time being, leaving a more comprehensive model study for future work.
 
 ## Steps
 
