@@ -1,5 +1,15 @@
 # TFLite Model Training Colab
 
+Once the dataset has been generated in [generate_dataset.ipynb](../generate_dataset/generate_dataset.ipynb), it is ready for building our TinyML application. 
+
+This Colab creates an end-to-end multi-class classifier for microcontrollers using the Tensorflow framework for training a neural network and TensorFlow Lite to convert it into a suitable format.
+
+Therefore, this file comprises all the stages of the Tiny Machine Learning pipeline workflow, from importing the dataset all the way down to model deployment — the last step of making inferences is left to the Arduino.
+
+![image info](../../../media/TinyML-pipeline.jpg)
+
+
+
 
 ## Table of contents
 
