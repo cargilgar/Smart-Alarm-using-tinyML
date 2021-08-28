@@ -6,7 +6,7 @@ This Colab creates an end-to-end multi-class classifier for microcontrollers usi
 
 Therefore, this file comprises all the stages of the Tiny Machine Learning pipeline workflow, from importing the dataset all the way down to model deployment — the last step of making inferences is left to the Arduino.
 
-![image info](../../../media/TinyML-pipeline.jpg)
+![image info](../../../media/TinyML-pipeline.png)
 
 
 
