@@ -22,11 +22,11 @@ The steps taken in this Colab follow the TinyML pipeline workflow:
 ![image info](../../../media/TinyML-pipeline.png)
 
 * Import the dataset.
-* Preprocess the dataset: extract significant features which provide the highest value for learning and prepare it for input inro the nueral network.
+* Preprocess the dataset: extract significant features which provide the highest value for learning and prepare it for input into the neural network.
 * Design and build a model. See [Model used for this project](#Model-used-for-this-project).
 * Train the model.
 * Evaluate and optimize.
-* Convert the model for deployment: applying optimization and qantization to reduce the model's size while still keeping good accuracy.
+* Convert the model for deployment: applying optimization and quantization to reduce the model's size while still keeping good accuracy.
 * Save the model converted.
 
 
