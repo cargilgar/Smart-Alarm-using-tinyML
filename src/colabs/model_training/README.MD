@@ -25,4 +25,4 @@ Once that's done, just click `run all` under the `Cell` tab.
 
 Try this:
 
-[Future work](#https://github.com/cargilgar/Smart-Alarm-using-tinyML/README.md)
+[Future work](https://github.com/cargilgar/Smart-Alarm-using-tinyML/README.md)
