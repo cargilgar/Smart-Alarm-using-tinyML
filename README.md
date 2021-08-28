@@ -6,7 +6,7 @@ A device attached to the body (e.g. a bracelet) intelligently adjusts the exact 
 For example: the user wishes to wake up at around 8 am and it is okay if the system could wake him 15 minutes earlier or later. The user will then define a threshold of 15 minutes and the system will know that it can wake the user up at the most appropriate time between 7:45 and 8:15.
 
 
-## Purpose of the project:
+## Purpose of the project
 The aim of this project is to develop an alarm system that adjusts the waking up time to the best moment based on data collected from different sensors.
 
 A number of systems already employ Machine Learning (ML) to achieve this goal, but they depend on performing the calculations on external machines (for the time this project started). These systems fall into two categories:
@@ -20,17 +20,19 @@ Conversely, the latter will not lead to any reliance upon a battery as a power s
 In light of the above, this project is mainly focused on conflating the benefits of the abovementioned systems into a feasible solution. In short, we aim to achieve meaningful results and accurate predictions while performing data analysis on a device powered by a battery without the need of a daily/weekly recharge. 
 
 
-## Constraints and challenges: 
+## Constraints and challenges 
 
 A major challenge is to shrink down a reasonable ML model (to less than 1 MB of size) that still carries out predictions with high accuracy, low latency and low power consumption.
 
+## Model used for this project
 
-## Version/Date: 
+
+## Version/Date
 
 19/08/2021	
 
 
-## Expected due date:
+## Expected due date
 
 31/08/2021
 
