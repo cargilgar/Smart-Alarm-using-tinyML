@@ -4,15 +4,15 @@ Once the dataset has been generated in [generate_dataset.ipynb](../generate_data
 
 This Colab creates an end-to-end multi-class classifier for microcontrollers using the Tensorflow framework for training a neural network and TensorFlow Lite to convert it into a suitable format.
 
-Therefore, this file comprises all the stages of the Tiny Machine Learning pipeline workflow, from importing the dataset all the way down to model deployment — the last step of making inferences is left to the Arduino. See [Steps followed in this Colab](#Steps-followed-in-this-Colab).
+Therefore, this file comprises all the stages of the typical Tiny Machine Learning pipeline workflow, from importing the dataset all the way down to model deployment — the last step of making inferences is left to the Arduino. See [Steps followed in this Colab](#Steps-followed-in-this-Colab).
 
 
 ## Table of contents
 
-- [Steps followed in this Colab](#Steps-followed-in-this-Colab).
-- [Model used for this project](#Model-used-for-this-project).
-- [Running the program on Colab](#Running-the-program-on-Colab).
-- [Running the program on Jupyter Notebook](#Running-the-program-on-Jupyter-Notebook).
+- [Steps followed in this Colab](#Steps-followed-in-this-Colab)
+- [Model used for this project](#Model-used-for-this-project)
+- [Running the program on Colab](#Running-the-program-on-Colab)
+- [Running the program on Jupyter Notebook](#Running-the-program-on-Jupyter-Notebook)
 
 
 ## Steps followed in this Colab
