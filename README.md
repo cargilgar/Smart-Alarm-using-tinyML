@@ -24,8 +24,6 @@ In light of the above, this project is mainly focused on conflating the benefits
 
 A major challenge is to shrink down a reasonable ML model (to less than 1 MB of size) that still carries out predictions with high accuracy, low latency and low power consumption.
 
-## Model used for this project
-
 
 ## Version/Date
 
