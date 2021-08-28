@@ -12,14 +12,14 @@ The original dataset, which can be downloaded from here [link](https://www.physi
 
 
 
-## Steps
+## Steps followed in this Colab
 
-- Download and unzip the dataset into its corresponding directory.
-- Load the `.txt` files.
-- Merge the files from each user into one dataframe.
-- Export the resulting dataframe to `.csv`.
-- Repeat the process for all the users.
-- Download all `.csv` files in `.zip` format.
+* Download and unzip the dataset into its corresponding directory.
+* Load the `.txt` files.
+* Merge the files from each user into one dataframe.
+* Export the resulting dataframe to `.csv`.
+* Repeat the process for all the users.
+* Download all `.csv` files in `.zip` format.
 
 
 ## Running the program on Colab
