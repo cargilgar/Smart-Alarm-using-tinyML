@@ -1,63 +1,86 @@
-const int sensorPin = A0;                        // A0 is the input pin for the heart rate sensor
+/* Copyright 2021 Carlos Gil, Daniel Moreno.
 
-int heartRate = 0;                               // Variable to calculate the mean of the detected beats
-int BPM = 0;                                     // Variable to feed the interpreter (Beats per minute)
-int count = 0;                                   // Variable to count detected beats
-int threshold = 345;                             // Set threshold for correct measurement (check adjust_threshold.ino)
-float hr = 0;                                    // Variable to calculate 1 BPM
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-unsigned long startTime = 0;                     // Timer needed for while loop
-unsigned long IBI = 0;                           // Inter Beat Interval (ms)
-unsigned long newBeatTime = 0;                   // Timer to Calculate IBI
-unsigned long lastTime = 0;                      // Timer to Calculate IBI
-unsigned long readingTime = 15000;               // Reading sensor Time (15 seconds)
+https://www.apache.org/licenses/LICENSE-2.0
 
-bool counted = false;                            // Boolean to avoid false positives when the wave decreases
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+==============================================================================*/
+
+namespace{
+    const int sensorPin = A0;
+
+    int heartRate = 0;                               /**< Variable to calculate the mean of the detected beats. */
+    int BPM = 0;                                     /**< Variable to feed the interpreter (Beats per minute). */
+    int count = 0;                                   /**< Variable to count detected beats. */
+    int threshold = 345;                             /**< Set threshold for correct measurement (see adjust_threshold.ino). */
+    float hr = 0;                                    /**< Variable to calculate 1 BPM. */
+    
+    unsigned long startTime = 0;                     /**< Timer needed for while loop. */
+    unsigned long IBI = 0;                           /**< Inter Beat Interval (ms). */
+    unsigned long newBeatTime = 0;                   /**< Timer to Calculate IBI. */
+    unsigned long lastTime = 0;                      /**< Timer to Calculate IBI. */
+    unsigned long readingTime = 15000;               /**< Reading sensor Time (15 seconds). */
+    
+    bool waveDetected = false;                       /**< Boolean to avoid false positives when the wave decreases. */   
+}
 
 void setup(){
-
-    Serial.begin(9600);                              // Start Serial Communication @ 9600
+    Serial.begin(9600);
 }
 
 void loop(){
-
     startTime = millis();
 
-    while (millis() < (startTime + readingTime)){            // Reading pulse sensor for readingTime seconds
-
-        newBeatTime = millis();                              // Storage new time to calculate IBI
+    // Reading pulse sensor for readingTime seconds
+    while (millis() < (startTime + readingTime)){
+        // Store new time to calculate IBI
+        newBeatTime = millis();
 
         if (analogRead(sensorPin) >= threshold) {
-            if((!counted) && ((newBeatTime - lastTime) > 420)) {  // Check threshold, wave rising and IBI > 420 ms
+            // Check wave rising and IBI > 420 ms
+            if((!waveDetected) && ((newBeatTime - lastTime) > 420)) {
 
-                IBI = newBeatTime - lastTime;                    // Calculate IBI
-                lastTime = millis();                             // Storage last time to calculate IBI
+                IBI = newBeatTime - lastTime;
+                lastTime = millis();
 
-                count++;                                         // Add a heart beat detected to the counter
+                // Add a heart beat detected to the counter
+                count++;
 
-                hr = (60000 / IBI);                              // Calculate 1 BPM
-                heartRate += hr;                                 // Add BPMs calculated
+                // Calculate 1 BPM
+                hr = (60000 / IBI);
+                
+                // Add BPMs calculated
+                heartRate += hr;
 
                 Serial.print("Calculated BPM = ");
-                Serial.println(hr);                              // Print the calculated BPM value (just for checking)
+                Serial.println(hr);
 
-                counted = true;                                  // It is necessary to check that the wave decreases
+                // Necessary to check that the wave decreases
+                waveDetected = true;
             }
         }
-        else                // Check the wave is decreasing below threshold value
-            counted = false;                                 // With the next beat it is necessary to check that the wave is rising
+        else
+            // With the next beat it is necessary to check that the wave is rising
+            waveDetected = false;
     }
 
     Serial.print("Beats detected = ");
-    Serial.println(count);                                    // Print counted beats (just for checking)
+    Serial.println(count);
 
-    BPM = heartRate / count;                                  // Mean of BPMs calculated (value needed to feed into the model)
-    //BPM = count * (60000 / readingTime);                    // Simple method (less accurate)
+    BPM = heartRate / count;
 
     Serial.print("BPM = ");
-    Serial.println(BPM);                                      // Print BPM (just for checking)
+    Serial.println(BPM);
 
-    count = 0;                                                // Reset counter
-    heartRate = 0;                                            // Reset hearRate
-    counted = false;                                          // Reset Boolean
+    // --- reset variables
+    count = 0;
+    heartRate = 0;
+    waveDetected = false;
 }

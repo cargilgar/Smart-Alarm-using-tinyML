@@ -1,26 +1,39 @@
-//  Variables
-int pulseSensorPin = 0;               // Pulse Sensor connected to ANALOG PIN 0
-int blinkPin = 13;                    //  The on-board Arduion LED
+/* Copyright 2021 Carlos Gil, Daniel Moreno.
 
-int sensorValue;                      // Holds the incoming raw data. sensorValue can range from 0-1024
-int threshold = 346;                  // Determine which sensorValue to "count as a beat", and which to ingore.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+==============================================================================*/
+
+const int pulseSensorPin = A0;
+
+static int sensorValue;
+static int threshold = 346;                     // Determine which sensorValue to "count as a beat", and which to ingore.
 
 void setup() {
-    pinMode(blinkPin, OUTPUT);          // Pin that will blink
-    Serial.begin(9600);                 // Set's up Serial Communication at certain speed. @9600
+    while(!Serial);
+    pinMode(LED_BUILTIN, OUTPUT);
+    pinMode(pulseSensorPin, INPUT);
+    Serial.begin(9600);
 }
 
 void loop() {
+    sensorValue = analogRead(pulseSensorPin);
 
-    sensorValue = analogRead(pulseSensorPin);   // Read the PulseSensor's value.
-                                                // Assign this value to the "sensorValue" variable.
-    Serial.println(sensorValue);                // Send the sensorValue to Serial Plotter.
+    Serial.println(sensorValue);
 
-    if(sensorValue > threshold)                 // If the signal is above threshold value, then "turn-on" Arduino's on-Board LED.
-        digitalWrite(blinkPin, HIGH);
+    if(sensorValue > threshold)                 // If the signal is above threshold value, turn on the built-in Arduino's LED.
+        digitalWrite(LED_BUILTIN, HIGH);
     else
-        digitalWrite(blinkPin, LOW);            //  Else, the sensorValue must be below threshold value, so "turn-off" this LED.
+        digitalWrite(LED_BUILTIN, LOW);         // Otherwise, the sensorValue must be below threshold value, so turn this LED off
 
     delay(10);
-
 }
