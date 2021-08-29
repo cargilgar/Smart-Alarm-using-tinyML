@@ -1,22 +1,21 @@
+/* Copyright 2021 Carlos Gil, Daniel Moreno.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+==============================================================================*/
+
 #include "tflite_test.h"
 
-//void checkModelVersion(tflite::ErrorReporter* error_reporter, const tflite::Model* model) {
-    /*if (model->version() != TFLITE_SCHEMA_VERSION) {
-        TF_LITE_REPORT_ERROR(error_reporter,
-            "Model provided is schema version %d not equal "
-            "to supported version %d.",
-            model->version(), TFLITE_SCHEMA_VERSION);
-            return;
-    }*/
-//}
-
 void testInputTensor(tflite::ErrorReporter* error_reporter, TfLiteTensor* input_tensor) {
-    // TF_LITE_MICRO_EXPECT_NE(nullptr, input_tensor);
-    // TF_LITE_MICRO_EXPECT_EQ(2, input_tensor->dims->size);
-    // TF_LITE_MICRO_EXPECT_EQ(1, input_tensor->dims->data[0]);
-    // TF_LITE_MICRO_EXPECT_EQ(kFeatureCount, input_tensor->dims->data[1]);
-    // TF_LITE_MICRO_EXPECT_EQ(kTfLiteInt8, input_tensor->type);
-
     if ((input_tensor == nullptr))
         TF_LITE_REPORT_ERROR(error_reporter, "Input Tensor does not exist.\n");
 
@@ -37,12 +36,6 @@ void testInputTensor(tflite::ErrorReporter* error_reporter, TfLiteTensor* input_
 }
 
 void testOutputTensor(tflite::ErrorReporter* error_reporter, TfLiteTensor* output_tensor) {
-    // TF_LITE_MICRO_EXPECT_NE(nullptr, output_tensor);
-    // TF_LITE_MICRO_EXPECT_EQ(2, output_tensor->dims->size);
-    // TF_LITE_MICRO_EXPECT_EQ(1, output_tensor->dims->data[0]);
-    // TF_LITE_MICRO_EXPECT_EQ(kLabelCount, output_tensor->dims->data[1]);
-    // TF_LITE_MICRO_EXPECT_EQ(kTfLiteInt8, output_tensor->type);
-
     if ((output_tensor == nullptr))
         TF_LITE_REPORT_ERROR(error_reporter, "Output Tensor does not exist.\n");
 

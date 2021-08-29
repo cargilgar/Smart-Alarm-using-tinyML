@@ -16,22 +16,15 @@ limitations under the License.
 #include <TensorFlowLite.h>
 
 #include "tensorflow/lite/micro/micro_mutable_op_resolver.h"
-// #include "tensorflow/lite/micro/micro_error_reporter.h"
 #include "tensorflow/lite/micro/micro_interpreter.h"
 #include "tensorflow/lite/schema/schema_generated.h"
 #include "tensorflow/lite/version.h"
-
 
 #include "model.h"
 #include "tflite_test.h"
 #include "data_samples.h"
 #include "main_functions.h"
 #include "output_handler.h"
-
-// TF_LITE_MICRO_TESTS_BEGIN
-
-// TF_LITE_MICRO_TEST(LoadModelAndPerformInference) {
-// }
 
 namespace{
     tflite::MicroErrorReporter micro_error_reporter;
@@ -63,7 +56,7 @@ void setup() {
         " randomly selected from the processed dataset.\n", kNumTests);
 
     // Map the model into a usable data structure.
-    model = tflite::GetModel(g_model);
+    model = tflite::GetModel(smart_alarm_model);
 
     //checkModelVersion(error_reporter, model);
     if (model->version() != TFLITE_SCHEMA_VERSION) {

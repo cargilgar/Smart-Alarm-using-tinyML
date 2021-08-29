@@ -18,7 +18,6 @@ limitations under the License.
 #include "Arduino.h"
 #include "tensorflow/lite/c/common.h"
 #include "tensorflow/lite/micro/micro_error_reporter.h"
-// #include "tensorflow/lite/micro/testing/micro_test.h"
 
 /// @file constants.h
 ///
