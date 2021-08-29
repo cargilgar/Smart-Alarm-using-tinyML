@@ -63,7 +63,7 @@ Carlos Gil García, Daniel Moreno París
 
 In this project, there are three major steps to follow: 
 
-- Collect enough data to train a Machine Learning model: [Genrate Dataset](src/colabs/generate_dataset/)
+- Collect enough data to train a Machine Learning model: [Generate Dataset](src/colabs/generate_dataset/)
 - Train and convert the model for deployment: [Model training](src/colabs/model_training/)
 - Deploy the converted model onto the microcontroller: [Smart Alarm Application](src/arduino/smart_alarm/)
 
