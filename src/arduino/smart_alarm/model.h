@@ -19,10 +19,10 @@ limitations under the License.
 ///
 /// @brief This file contains the model in a C-format array.
 ///
-/// @details. The *.tflite* model has been handed to a Flattbuffer compiler that
+/// @details. The *.tflite* model has been handed to a Flatt Buffer compiler that
 /// creates C++ code to access the data held in the serialised byte array.
 ///
 /// @see [FlatBuffers](https://google.github.io/flatbuffers/ "FlatBuffers Overview")
 
-extern const unsigned char smart_alarm_model[];
 extern const int smart_alarm_model_len;
+extern const unsigned char smart_alarm_model[];

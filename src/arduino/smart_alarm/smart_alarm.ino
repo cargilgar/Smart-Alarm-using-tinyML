@@ -48,11 +48,7 @@ namespace {
     InputHandler* input_handler;
 }  // namespace
 
-/// Initializes all data needed for the application.
 void setup() {
-
-    // while(!Serial);
-
     // Setting up logging
     error_reporter = &micro_error_reporter;
 
@@ -107,14 +103,12 @@ void setup() {
     // Instantiate input handler with tensor quantization parameters
     input_handler = new InputHandler(model_input->params.scale, model_input->params.zero_point);
 
-
     // Set model's output.
     model_output = interpreter->output(0);
 
     // Get intervals in milliseconds to let know Arduino when to start inferences
     getwakeUpTimeRange(wakeUpTimeRange);
 
-    // Display all introductory information
     displayAlarmConfiguration(wakeUpTimeRange);
 }
 

@@ -22,17 +22,15 @@ TfLiteStatus setupHeartRateSensor() {
 }
 
 int readHeartRate(tflite::ErrorReporter* error_reporter, bool msgVerbose) {
-    float hr;               // Variable to calculate 1 BPM
-    float heartRate = 0;      // Variable to calculate the mean of the detected beats
+    float hr;               /**< Variable to calculate 1 BPM. */
+    float heartRate = 0;    /**< Variable to calculate the mean of the detected beats. */
 
-    int heartBeatCounter = 0;                                   // Variable to count detected beats
-    bool waveDetected = false;                            // Boolean to avoid false positives when the wave decreases
+    int heartBeatCounter = 0;
+    bool waveDetected = false;
 
     // Timers
-    // unsigned long newBeatTime;
     unsigned long IBI;
-    unsigned long lastTime = 0;                                     // Timer to Calculate IBI
-
+    unsigned long lastTime = 0;
     unsigned long startTime = millis();
 
     if(msgVerbose)
@@ -40,28 +38,32 @@ int readHeartRate(tflite::ErrorReporter* error_reporter, bool msgVerbose) {
 
     // Read heart rate measurements during kTimeHRInterval
     while (millis() < (startTime + kTimeHRInterval)) {
-        unsigned long newBeatTime = millis();                       // Storage new time to calculate IBI
+        // Store new time to calculate IBI
+        unsigned long newBeatTime = millis();
 
         if (analogRead(kHRSensorPin) >= kAnalogReadThreshold) {
             // Check wave rising and IBI > 420 ms
             if(!waveDetected && ((newBeatTime - lastTime) > kMinIBI)) {
-                IBI = newBeatTime - lastTime;                       // Calculate IBI
-                lastTime = millis();                                // Store last time to calculate IBI
+                IBI = newBeatTime - lastTime;
+                lastTime = millis();
 
-                hr = 60000 / IBI;                                   // Calculates 1 BPM
+                hr = 60000 / IBI;
 
                 heartRate += hr;
 
-                heartBeatCounter++;                                 // Add a heart beat detected to the heartBeatCounter
-                waveDetected = true;                                // It is necessary to check that the wave decreases
+                // Add a heart beat detected to the heartBeatCounter
+                heartBeatCounter++;
+
+                // Necessary to check that the wave decreases
+                waveDetected = true;
             }
         }
-        else                                                        // Check the wave is decreasing below threshold value
-          waveDetected = false;                                     // With the next beat it is necessary to check that the wave is rising
+        else
+            // With the next beat it is necessary to check that the wave is rising
+            waveDetected = false;
     }
 
-    // Mean of BPMs calculated (value needed to feed into the model)
-    int BPM = heartRate / heartBeatCounter;
+    int BPM = heartRate / heartBeatCounter;  /**< Mean of BPMs calculated, needed for the model input. */
 
     if(msgVerbose) {
         TF_LITE_REPORT_ERROR(error_reporter, "Beats detected = %d.\n", heartBeatCounter);

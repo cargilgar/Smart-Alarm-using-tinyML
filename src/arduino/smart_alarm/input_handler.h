@@ -45,7 +45,7 @@ public:
     /// @see imu_handler.cpp heart_rate_handler.cpp
     void generateFeatures(float* imu, int bpm);
 
-    /// Fill the Input Tensor of the neural netword with the values contained
+    /// Fill the Input Tensor of the neural network with the values contained
     /// within `features`.
     ///
     /// @param input Input Tensor to be filled before making the next inference.

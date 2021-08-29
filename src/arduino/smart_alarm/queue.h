@@ -22,11 +22,11 @@ limitations under the License.
 /// @brief This file is a very simplistic representation of a FIFO data structure
 /// to keep track of the latest `kInferenceSequence` inferences over time.
 ///
-/// @details This file has been designed to allow only enqueing from the caller.
+/// @details This file has been designed to allow only enqueuing from the caller.
 /// It is initialized empty and gets filled via enqueue(int). Once filled up,
 /// the next time it receives a new item, it then proceeds to dequeue the oldest
 /// item (i.e. the first introduced). Dequeuing is done automatically avoiding
-/// emptying the queue unintencionally from the caller.
+/// emptying the queue unintentionally from the caller.
 
 class Queue {
 public:

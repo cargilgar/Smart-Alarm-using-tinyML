@@ -40,6 +40,7 @@ constexpr uint8_t kTimeRangeAlarm = 30;         /**< Range of time (split into t
 
 // --- TensorFlow
 constexpr int kTensorArenaSize = 2*1024;        /**< Tensor Arena size for allocation of memory for input, output, and intermediate arrays [bytes]. */
+constexpr uint8_t kInferenceSequence = 10;      /**< Number of consecutive inferences to ensure a confident prediction . */
 
 // --- Tensor dimensions
 constexpr uint8_t kLabelCount = 5;              /**< Number of labels for classification. */
@@ -49,16 +50,13 @@ constexpr uint8_t kFeatureCount = 14;           /**< Number of total features fr
 constexpr uint16_t kTimeIMUInterval = 1000;     /**< Interval time to extract the maximum accelerometer value of each axis. */
 constexpr uint16_t kTimeHRInterval = 10000;     /**< Interval time to take an average heart rate measurement. */
 
-constexpr uint16_t kAnalogReadThreshold = 525;  /**< Set threshold for correct measurement (check adjust_threshold.ino)  345. */
-constexpr uint16_t kMinIBI = 420;               /**< Minimum Interbeat interval (IBI) [ms]. @note 60s/0.420s = 140 BPMs (BPMs should not be above this in normal heart function) */
-
 // --- Arduino constants
 constexpr int kHRSensorPin = A0;                /**< Analog input pin for the heart rate sensor. */
 constexpr int kMotorPin = 2;                    /**< Digital output for the vibration motor module. */
 constexpr int kPasiveBuzzerPin = 3;             /**< Digital output for the buzzer. */
 constexpr uint16_t kRingTone = 2000;            /**< Frequency for the buzzer. */
-
-constexpr uint8_t kInferenceSequence = 10;      /**< Number of consecutive inferences to ensure a confident prediction . */
+constexpr uint16_t kAnalogReadThreshold = 525;  /**< Set threshold for correct measurement (check adjust_threshold.ino) */
+constexpr uint16_t kMinIBI = 420;               /**< Minimum Interbeat interval (IBI) [ms]. @note 60s/0.420s = 140 BPMs (BPMs should not be above this in normal heart function) */
 
 // --- Mathematical and physical constants
 constexpr float e = 2.71828;                    /**< Euler's number for lograithmic expressions. */

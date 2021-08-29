@@ -29,11 +29,12 @@ limitations under the License.
 /// maximum value of the resultant vector is located.
 ///
 /// In the case of running multiple inferences to improve prediction reliability,
-/// output handler, via getMostFrequent(uint8_t*, uint8_t, bool), can receive all
-/// the labels result of each inference and determine which was predicted the most.
+/// the output handler, via getMostFrequent(uint8_t*, uint8_t, bool), can receive
+/// all the labels result of each inference and determine which was predicted
+/// the most.
 ///
 /// It also takes care of enabling/disabling the devices in charge of emit the
-/// corresponding singal to wake up the user. For this application, these are a
+/// corresponding signal to wake up the user. For this application, these are a
 /// vibration motor and/or a passive buzzer.
 
 
@@ -56,7 +57,7 @@ uint8_t recognizeLabel(int8_t* arr, bool msgVerbose);
 
 /// Get the label that has been predicted the most in the kInferenceSequence and
 /// determine the index.
-/// *Note:* Check the explanatory example illustarted in the `.cpp` file.
+/// *Note:* Check the explanatory example illustrated in the `.cpp` file.
 ///
 /// @see output_handler.cpp
 ///
@@ -72,9 +73,9 @@ uint8_t getMostFrequent(uint8_t* arrInferences);
 /// @param labels The struct to be filled with the number of occurrences (`freq).
 void _getFreqLabels(uint8_t* arr, FreqLabel* labels);
 
-/// Sort by descending order the `freq` values of the struct genreated.
+/// Sort by descending order the `freq` values of the struct generated.
 ///
-/// @param labels Struct genreated in _getFreqLabels(uint8_t*, FreqLabel*).
+/// @param labels Struct generated in _getFreqLabels(uint8_t*, FreqLabel*).
 void _insertionSort(FreqLabel* labels);
 
 /// Helper function for _insertionSort(FreqLabel*) to swap the elements of the

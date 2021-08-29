@@ -21,7 +21,7 @@ limitations under the License.
 /// @file imu_handler.h
 ///
 /// @brief This file handles imu operations, getting measurements from the imu
-/// sensor for a defined a kTimeIMUInterval.
+/// sensor for a defined kTimeIMUInterval.
 
 extern TfLiteStatus setupIMUSensor();
 void readAccelerometer(float* arr, tflite::ErrorReporter* error_reporter, bool msgVerbose);
