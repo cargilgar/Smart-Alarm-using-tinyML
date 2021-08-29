@@ -16,7 +16,7 @@ limitations under the License.
 #include "heart_rate_handler.h"
 
 TfLiteStatus setupHeartRateSensor() {
-    TfLiteStatus status = (analogRead(kSensorPin) > 0) ? kTfLiteOk : kTfLiteError;
+    TfLiteStatus status = (analogRead(kHRSensorPin) > 0) ? kTfLiteOk : kTfLiteError;
 
     return status;
 }
@@ -42,7 +42,7 @@ int readHeartRate(tflite::ErrorReporter* error_reporter, bool msgVerbose) {
     while (millis() < (startTime + kTimeHRInterval)) {
         unsigned long newBeatTime = millis();                       // Storage new time to calculate IBI
 
-        if (analogRead(kSensorPin) >= kAnalogReadThreshold) {
+        if (analogRead(kHRSensorPin) >= kAnalogReadThreshold) {
             // Check wave rising and IBI > 420 ms
             if(!waveDetected && ((newBeatTime - lastTime) > kMinIBI)) {
                 IBI = newBeatTime - lastTime;                       // Calculate IBI

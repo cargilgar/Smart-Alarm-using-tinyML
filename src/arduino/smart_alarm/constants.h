@@ -53,7 +53,7 @@ constexpr uint16_t kAnalogReadThreshold = 525;  /**< Set threshold for correct m
 constexpr uint16_t kMinIBI = 420;               /**< Minimum Interbeat interval (IBI) [ms]. @note 60s/0.420s = 140 BPMs (BPMs should not be above this in normal heart function) */
 
 // --- Arduino constants
-constexpr int kSensorPin = A0;                  /**< Analog input pin for the heart rate sensor. */
+constexpr int kHRSensorPin = A0;                /**< Analog input pin for the heart rate sensor. */
 constexpr int kMotorPin = 2;                    /**< Digital output for the vibration motor module. */
 constexpr int kPasiveBuzzerPin = 3;             /**< Digital output for the buzzer. */
 constexpr uint16_t kRingTone = 2000;            /**< Frequency for the buzzer. */

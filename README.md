@@ -54,3 +54,6 @@ It is also worth mentioning that the authors of the project are not experts in t
 ## Future work
 BLE to send a daily report to the smart-phone.
 
+The main idea of this is that every time the Arduino is switched on, it starts advertising to establish connection with the phone. Once connected, the user has the option of
+This would only require pairing the Arduino with the phone when it is switched on. It then gets synchronyzed getting local time from the phone's system internal clock. The user will have fully control to configure the system as they wish. Then the user can close the app and the Arduino gets disconnected itself helping reduce battery drain. After this, the Arduino can remain switched on for as long as the battery lasts, not having to reset it each night. The user can at any time connect open the app and connect to Arduino.
+
