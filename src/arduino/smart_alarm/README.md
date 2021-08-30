@@ -14,7 +14,7 @@
 
 ## Smart Alarm application architecture
 
-![image info](../../../media/Smart-alarm-deployment-architecture.png)
+![image info](../../../images/Smart-alarm-deployment-architecture.png)
 
 * Initialization: Declaring variables, instantiating objects, loading the model, resolving the operations, initializing the interpreter, allocating the Tensor Arena, defining model input parameters and setting up sensors and timers.
 * IMU handler: It reads the accelerometer data from the IMU sensor.
@@ -47,7 +47,7 @@ The sensitivity of the heart rate sensor [we chose for this project](#Before-you
 
 Once you have the threslhold value, modify `kAnalogReadThreshold` in `constants.h`.
 
-![image info](../../../media/set-heart-rate-threshold.jpg)
+![image info](../../../images/set-heart-rate-threshold.jpg)
 
 
 ## Instructions
@@ -56,7 +56,7 @@ Once you have the threslhold value, modify `kAnalogReadThreshold` in `constants.
 2. Open the Project in the Arduino IDE.
 3. In `constants.h` modify `kStrCurrentTime`, `kStrWakeUpTime` and `kTimeRangeAlarm` to your own needs:
 
-    ![image info](../../../media/Constants-to-change-by-the-user.jpg)
+    ![image info](../../../images/Constants-to-change-by-the-user.jpg)
 
     * kStrCurrentTime: Time in 24-hours format when you will go to bed. At this time, the Arduino has to be switched on.
     * kStrWakeUpTime: Time in 24-hours format when you would ideally like to be awakened.
@@ -79,11 +79,11 @@ Once you have the threslhold value, modify `kAnalogReadThreshold` in `constants.
 
 This sketch serves as an intuitive guide of how you should connect the components in order to make the system work as expected. Please note that your components might be different as the ones we used for our prototypes and you may need to make your own custom design.
 
-![image info](../../../media/Smart-Alarm-fritzing.jpg)
+![image info](../../../images/Smart-Alarm-fritzing.jpg)
 
 If you connect the components to other analog/digital pins, you need to update these in `constants.h`, which are shown in the following picture:
 
-![image info](../../../media/Arduino-pin-connections.jpg)
+![image info](../../../images/Arduino-pin-connections.jpg)
 
 Depending on your own liking, you can either connect the buzzer, the vibration motor or both together.
 

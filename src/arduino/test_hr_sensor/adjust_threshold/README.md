@@ -18,4 +18,4 @@ Each cardiac cycle is characterized by a total of 6 peaks, due to the rhythmic c
 
 The following picture illustrates an example from our Serial Plotter, in which we can determine a threshold of approximately 535, indicated by the red line.
 
-![image info](../../../media/adjust-threshold-example.jpg)
+![image info](../../../images/adjust-threshold-example.jpg)

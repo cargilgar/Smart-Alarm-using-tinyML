@@ -19,7 +19,7 @@ Therefore, this file comprises all the stages of the typical Tiny Machine Learni
 
 The steps taken in this Colab follow the TinyML pipeline workflow:
 
-![image info](../../../media/TinyML-pipeline.png)
+![image info](../../../images/TinyML-pipeline.png)
 
 * Import the dataset.
 * Preprocess the dataset: extract significant features which provide the highest value for learning and prepare it for input into the neural network.
