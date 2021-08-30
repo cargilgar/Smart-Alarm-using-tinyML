@@ -68,7 +68,7 @@ Carlos Gil García, Daniel Moreno París
 
 The results of the application application deployed on an Arduino Nano BLE Sense can be watched in the following [Youtube Video](https://www.youtube.com/watch?v=60zlHIsxDk4&t=2s&ab_channel=CarlosGil).
 
-To conduct the experiments, we designed two different prototypes. One was built with a 3D printed case [[5]](#5) [Prototype 1](#Prototype-1) allowing easy connections with the Arduino pins and the other one was directed soldered on a perfboard [Prototype 2](#Prototype-2). In practice, there is no difference between both prototypes aside from the design, since both worked well in our experiments.
+To conduct the experiments, we designed two different prototypes. One was built with a 3D printed case [[5]](#5) ([Prototype 1](#Prototype-1)) allowing easy connections with the Arduino pins and the other one was directed soldered on a perfboard ([Prototype 2](#Prototype-2)). In practice, there is no difference between both prototypes aside from the design, since both worked well in our experiments.
 
 
 #### Prototype 1
