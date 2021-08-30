@@ -73,10 +73,10 @@ To conduct the experiments, we designed two different prototypes. One was built 
 
 
 #### Prototype 1
-![Animation Prototype 2](images/prototype-2.gif)
+![](images/prototype-2.gif)  |  ![](images/prototype-1.jpg)
 
 #### Prototype 2
-![Animation Prototype 2](images/prototype-2.gif)
+![](images/prototype-2.gif)  |  ![](images/prototype-2.jpg)
 
 
 ## User instructions
