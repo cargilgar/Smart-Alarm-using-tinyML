@@ -13,6 +13,7 @@ Smart Alarm using TinyML to take part in the **Call for TinyML edX Projects comp
 - [Final results](#Final-results)
 - [User instructions](#User-instructions)
 - [Future work](#Future-work)
+- [Learning resources](#Learning-resources)
 - [Disclaimer](#Disclaimer)
 - [References](#References)
 
@@ -105,6 +106,10 @@ Due to the limited time available for this competition, there are still pending 
 - Other model architectures or type of machine learning techniques (e.g. Long short-term memory [[8]](#8) or Gradient Boosting Decision Tree Algorithm).
 - Explore more ways of extracting representative features from the dataset. We used some tools to help us automate feature selection [[9]](#9), but there is room for better feature engineering.
 
+## Learning resources
+
+Apart from the outlined papers and articles used for research, our main learning sources for making this project possible have been the Tiny Machine Learning edX course [[10]](#10) and the TinyML book [[11]](#11).
+
 
 ## Disclaimer
 
@@ -151,3 +156,11 @@ J. Brownlee, "LSTMs for Human Activity Recognition Time Series Classification". 
 
 <a id="9">[9]</a>
 Horn, Franziska, Robert Pack, and Michael Rieger. "The autofeat python library for automated feature engineering and selection." arXiv preprint arXiv:1901.07329 (2019).
+
+<a id="10">[10]</a>
+The Future of ML is Tiny and Bright. edX.
+https://www.edx.org/professional-certificate/harvardx-tiny-machine-learning
+
+<a id="11">[11]</a>
+Warden, Pete, and Daniel Situnayake. 
+TinyML: Machine Learning with TENSORFLOW Lite on Arduino and Ultra-Low Power Microcontrollers. O'Reilly Media Inc., 2020.
