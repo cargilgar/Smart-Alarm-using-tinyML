@@ -52,7 +52,7 @@ For example: the user wishes to wake up at around 8 am and it is okay if the sys
 
 A major challenge is to reduce the size of a trained ML model (to less than 1 MB of size) that still makes predictions with high accuracy, low latency and low power consumption.
 
-Another challenge is to train a decent ML model with limited data, since the current data available do not come 
+Another challenge is to train a decent ML model with limited data, since the current data available do not come.
 
 
 ## Expected due date
