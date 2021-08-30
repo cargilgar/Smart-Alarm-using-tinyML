@@ -24,7 +24,7 @@ The aim of this project is to develop an alarm system that adjusts the waking up
 
 A number of systems — for the time this project started — already employ Machine Learning (ML) to achieve this goal, but they depend on performing the calculations on external machines. These systems fall into two categories:
 
-- Wearable devices equipped with different sensors that are directly attached to the user (i.e. bracelet, smartwatch, rings...) which rely upon wireless communication (BLE, WIFI...) so as to transmit this data to another more powerful computer, typically a smart-phone.
+- Wearable devices equipped with different sensors that are directly attached to the user (i.e. wristband, smartwatch, rings...) which rely upon wireless communication (BLE, WIFI...) so as to transmit this information to another more powerful computer, typically a smartphone.
 - A nightstand-style alarm clock that employs other different sensors which measure remotely the sleep cycles of the user.
 
 While the former gives very reasonable results due to the fact that it has sensors that are in close contact with the user, it suffers from the drawback of a considerable battery drain. Not to mention the need for stable connectivity for data transmission. 
@@ -43,7 +43,7 @@ The main idea is to train a neural network model with data gathered from PSG for
 
 ![image info](images/sleep-cycles-example.jpg)
 
-For this project, we have devised a device attached to the body (e.g. a bracelet) that intelligently adjusts the exact time to wake the user according to his state of sleep. The user will need to define a time threshold so that the model knows what is the range in which it has room to operate.
+For this project, we have devised a device attached to the body (e.g. a wristband) that intelligently adjusts the exact time to wake the user according to his state of sleep. The user will need to define a time threshold so that the model knows what is the range in which it has room to operate.
 
 For example: the user wishes to wake up at around 8 am and it is okay if the system could trigger the alarm 15 minutes earlier or later. The user will then define a threshold of 30 minutes and the system will know that it can wake the user up at the most appropriate time between 7:45 and 8:15.
 
@@ -67,7 +67,7 @@ Carlos Gil García, Daniel Moreno París
 
 ## Final results
 
-The results of the application application deployed on an Arduino Nano BLE Sense can be watched in the following [Youtube Video](https://www.youtube.com/watch?v=60zlHIsxDk4&t=2s&ab_channel=CarlosGil).
+The results of the application deployed on an Arduino Nano BLE Sense can be watched in the following [Youtube Video](https://www.youtube.com/watch?v=60zlHIsxDk4&t=2s&ab_channel=CarlosGil).
 
 To conduct the experiments, we designed two different prototypes. One was built with a 3D printed case [[6]](#6) ([Prototype 1](#Prototype-1)) allowing easy connections with the Arduino pins and the other one was directed soldered on a perfboard ([Prototype 2](#Prototype-2)). In practice, there is no difference between both prototypes aside from the design, since both worked well in our experiments.
 
@@ -101,8 +101,8 @@ You must follow each of these steps in the same order to follow along with this 
 Due to the limited time available for this competition, there are still pending tasks to be completed and considerations to be taken into account for future work. Some of these are listed below:
 
 - Develop a mobile application (Android/IOS) connecting with the microcontroller via BLE. This might bring some potential benefits:
-    * The microcontroller, which usually lacks Real Time Clocks (RTCs) — at least development baords, retrieves the local time from the phone's system internal clock.
-    * The user can easily configure alarm settings, in a more user friendly graphical user interface (GUI).
+    * The microcontroller, which usually lacks Real Time Clocks (RTCs) — at least development boards, retrieves the local time from the phone's system internal clock.
+    * The user can easily configure alarm settings, in a more user-friendly graphical user interface (GUI).
     * The user can choose to enable vibration, sound or both, as well as select different types of alarm sounds.
     * Statistical reports on the user's sleep information can be displayed and downloaded to the smartphone if desired.
 
@@ -158,7 +158,7 @@ PhysioNet. https://doi.org/10.13026/hmhs-py35.
 "Multi-Ethnic Study of Atherosclerosis (MESA Sleep)". Sleepdata.org. https://sleepdata.org/datasets/mesa.
 
 <a id="8">[8]</a>
-J. Brownlee, "LSTMs for Human Activity Recognition Time Series Classification". Machine Learning maestry. https://machinelearningmastery.com/how-to-develop-rnn-models-for-human-activity-recognition-time-series-classification/
+J. Brownlee, "LSTMs for Human Activity Recognition Time Series Classification". Machine Learning Mastery. https://machinelearningmastery.com/how-to-develop-rnn-models-for-human-activity-recognition-time-series-classification/
 
 <a id="9">[9]</a>
 Horn, Franziska, Robert Pack, and Michael Rieger. "The autofeat python library for automated feature engineering and selection." arXiv preprint arXiv:1901.07329 (2019).
