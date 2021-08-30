@@ -48,7 +48,7 @@ For example: the user wishes to wake up at around 8 am and it is okay if the sys
 
 ## Constraints and challenges 
 
-A major challenge is to shrink down a reasonable ML model (to less than 1 MB of size) that still makes predictions with high accuracy, low latency and low power consumption.
+A major challenge is to reduce the size of a trained ML model (to less than 1 MB of size) that still makes predictions with high accuracy, low latency and low power consumption.
 
 Another challenge is to train a decent ML model with limited data, since the current data available do not come 
 
@@ -95,7 +95,7 @@ It is also worth mentioning that the authors of the project are not experts in t
 
 ## References
 
-<a id="1">[1]</a>> 
+<a id="1">[1]</a>
 Katherine A. Kaplan, Jason Hirshman, Beatriz Hernandez, Marcia L. Stefanick, Andrew R. Hoffman, Susan Redline, Sonia Ancoli-Israel, Katie Stone, Leah Friedman, Jamie M. Zeitzer,
 When a gold standard isn’t so golden: Lack of prediction of subjective sleep quality from sleep polysomnography.
 ScienceDirect. https://doi.org/10.1016/j.biopsycho.2016.11.010.
