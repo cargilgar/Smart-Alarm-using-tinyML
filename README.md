@@ -27,7 +27,8 @@ A number of systems — for the time this project started — already employ Mac
 - Wearable devices equipped with different sensors that are directly attached to the user (i.e. wristband, smartwatch, rings...) which rely upon wireless communication (BLE, WIFI...) so as to transmit this information to another more powerful computer, typically a smartphone.
 - A nightstand-style alarm clock that employs other different sensors which measure remotely the sleep cycles of the user.
 
-While the former gives very reasonable results due to the fact that it has sensors that are in close contact with the user, it suffers from the drawback of a considerable battery drain. Not to mention the need for stable connectivity for data transmission. 
+While the former gives very reasonable results due to the fact that it has sensors that are in close contact with the body, it suffers from the drawback of a considerable battery drain. Not to mention the need for stable connectivity for data transmission. 
+
 Conversely, the latter will not lead to any reliance upon a battery as a power supply. However, the quality of data seems to be more difficult to obtain and more sophisticated components are needed. As a result, these devices are priced much too high, becoming not very appealing to the 'common' user.
 
 In light of the above, we propose a combination of the two above-mentioned systems into a feasible solution. In short, we aim to achieve accurate predictions while performing data analysis on a device powered by a battery without the need of a daily/weekly recharge. 
