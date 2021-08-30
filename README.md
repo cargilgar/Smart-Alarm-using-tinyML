@@ -10,6 +10,7 @@ Smart Alarm using TinyML to take part in the **Call for TinyML edX Projects comp
 - [Constraints and challenges](#Constraints-and-challenges)
 - [Expected due date](#Expected-due-date)
 - [Authors](#Authors)
+- [Final results](#Final-results)
 - [User instructions](#User-instructions)
 - [Future work](#Future-work)
 - [Disclaimer](#Disclaimer)
@@ -20,7 +21,7 @@ Smart Alarm using TinyML to take part in the **Call for TinyML edX Projects comp
 
 The aim of this project is to develop an alarm system that adjusts the waking up time to the best moment based on data collected from different sensors.
 
-A number of systems already employ Machine Learning (ML) to achieve this goal, but they depend on performing the calculations on external machines (for the time this project started). These systems fall into two categories:
+A number of systems — for the time this project started — already employ Machine Learning (ML) to achieve this goal, but they depend on performing the calculations on external machines. These systems fall into two categories:
 
 - Wearable devices equipped with different sensors that are directly attached to the user (i.e. bracelet, smartwatch, rings...) which rely upon wireless communication (BLE, WIFI...) so as to transmit this data to another more powerful computer, typically a smart-phone.
 - A nightstand-style alarm clock that employs other different sensors which measure remotely the sleep cycles of the user.
@@ -39,7 +40,7 @@ A more feasible approach is to try to reduce the number of components used in PS
 
 The main idea is to train a neural network model with data gathered from PSG for a **research project** [[4]](#4) and extract meaningful correlations among the sensor data. If with only accelerometer and heart rate data the model proves to distinguish specific patterns for different sleep stages, then it is possible to predict the state of sleep of a user on new fresh data.
 
-(Photo sleep cycles)
+![image info](images/sleep-cycles-example.jpg)
 
 For this project, we have devised a device attached to the body (e.g. a bracelet) that intelligently adjusts the exact time to wake the user according to his state of sleep. The user will need to define a time threshold so that the model knows what is the range in which it has room to operate.
 
@@ -63,6 +64,22 @@ Another challenge is to train a decent ML model with limited data, since the cur
 Carlos Gil García, Daniel Moreno París
 
 
+## Final results
+
+The results of the application application deployed on an Arduino Nano BLE Sense can be watched in the following [Youtube Video](https://www.youtube.com/watch?v=60zlHIsxDk4&t=2s&ab_channel=CarlosGil).
+
+To conduct the experiments, we designed two different prototypes. One was built with a 3D printed case [[5]](#5) [Prototype 1](#Prototype-1) allowing easy connections with the Arduino pins and the other one was directed soldered on a perfboard [Prototype 2](#Prototype-2). In practice, there is no difference between both prototypes aside from the design, since both worked well in our experiments.
+
+
+#### Prototype 1
+![Animation Prototype 2](images/prototype-2.gif)
+
+#### Prototype 2
+![Animation Prototype 2](images/prototype-2.gif)
+
+
+
+
 ## User instructions
 
 In this project, there are three major steps to follow: 
@@ -72,6 +89,7 @@ In this project, there are three major steps to follow:
 - Deploy the converted model onto the microcontroller: [Smart Alarm Application](src/arduino/smart_alarm/)
 
 You must follow each of these steps in the same order to follow along with this project.
+
 
 ## Future work
 
@@ -84,6 +102,10 @@ Due to the limited time available for this competition, there are still pending 
     * Statistical reports on the user's sleep information can be displayed and downloaded to the smartphone if desired.
 
     Note: for the implementation of a mobile application, the idea is that once the user closes the app, the microcontroller disables BLE advertising helping reduce battery drain.
+    
+- Gather more data from other resources [[6]](#6) to increase diversity and reduce overfitting.
+- Other model architectures or type of machine learning techniques (e.g. Long short-term memory [[7]](#7) or Gradient Boosting Decision Tree Algorithm).
+- Explore more ways of extracting representative features from the dataset. We used some tools to help us automate feature selection [[8]](#8), but there is room for better feature engineering.
 
 
 ## Disclaimer
@@ -115,3 +137,15 @@ Oxford Academic. https://doi.org/10.5665/sleep.3142.
 Walch, O. (2019). 
 Motion and heart rate from a wrist-worn wearable and labeled sleep from polysomnography (version 1.0.0). 
 PhysioNet. https://doi.org/10.13026/hmhs-py35.
+
+<a id="5">[5]</a>
+"Arduino Nano case with completely accessible pins" (c) by Nicolai Sp (@nspohrer), retrieved from https://www.thingiverse.com/thing:959057/files, used under Attribution-ShareAlike 3.0 Unported (https://creativecommons.org/licenses/by-sa/3.0/).
+
+<a id="6">[6]</a>
+"Multi-Ethnic Study of Atherosclerosis (MESA Sleep)". Sleepdata.org. https://sleepdata.org/datasets/mesa.
+
+<a id="7">[7]</a>
+J. Brownlee, "LSTMs for Human Activity Recognition Time Series Classification". Machine Learning maestry. https://machinelearningmastery.com/how-to-develop-rnn-models-for-human-activity-recognition-time-series-classification/
+
+<a id="8">[8]</a>
+Horn, Franziska, Robert Pack, and Michael Rieger. "The autofeat python library for automated feature engineering and selection." arXiv preprint arXiv:1901.07329 (2019).
