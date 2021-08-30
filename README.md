@@ -72,17 +72,7 @@ The results of the application application deployed on an Arduino Nano BLE Sense
 To conduct the experiments, we designed two different prototypes. One was built with a 3D printed case [[6]](#6) ([Prototype 1](#Prototype-1)) allowing easy connections with the Arduino pins and the other one was directed soldered on a perfboard ([Prototype 2](#Prototype-2)). In practice, there is no difference between both prototypes aside from the design, since both worked well in our experiments.
 
 
-#### Prototype 1
 
-Prototype 1 wristband attached |  Prototype 1 wristband
-:-------------------------:|:-------------------------:
-![](images/prototype-2.gif)  |  ![](images/prototype-1.jpg)
-
-#### Prototype 2
-
-Prototype 2 wristband attached |  Prototype 2 wristband
-:-------------------------:|:-------------------------:
-![](images/prototype-2.gif)  |  ![](images/prototype-2.jpg)
 
 
 ## User instructions
