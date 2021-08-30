@@ -73,9 +73,15 @@ To conduct the experiments, we designed two different prototypes. One was built 
 
 
 #### Prototype 1
+
+Prototype 1 wristband attached |  Prototype 1 wristband
+:-------------------------:|:-------------------------:
 ![](images/prototype-2.gif)  |  ![](images/prototype-1.jpg)
 
 #### Prototype 2
+
+Prototype 2 wristband attached |  Prototype 2 wristband
+:-------------------------:|:-------------------------:
 ![](images/prototype-2.gif)  |  ![](images/prototype-2.jpg)
 
 
