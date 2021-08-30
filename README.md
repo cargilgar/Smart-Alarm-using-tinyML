@@ -5,8 +5,15 @@ Smart Alarm using TinyML to take part in the **Call for TinyML edX Projects comp
 
 ## Table of contents
 
-- [Description of the project](#Description-of-the-project)
 - [Purpose of the project](#Purpose-of-the-project)
+- [Description of the project](#Description-of-the-project)
+- [Constraints and challenges](#Constraints-and-challenges)
+- [Expected due date](#Expected-due-date)
+- [Authors](#Authors)
+- [User instructions](#User-instructions)
+- [Future work](#Future-work)
+- [Disclaimer](#Disclaimer)
+- [References](#References)
 
 
 ## Purpose of the project
@@ -28,9 +35,9 @@ In light of the above, this project is mainly focused on conflating the benefits
 
 The variable changes which take place while sleeping can be measured with different mechanisms. One of the most popular ones, Polysomnography (PSG), is the gold standard test for the study of sleep. However, albeit effective, this method is intrusive as well as unfeasible, since an entire specialized room equipped with sophisticated and expensive machines are required.
 
-A more feasible approach is to try to reduce the number of components used in PSG to the bare minimum, in such a way that only the essential sensors are kept. In this project, we aim to achieve similar results to PSG with only accelerometer and heart rate sensors and with the help of Machine Learning. 
+A more feasible approach is to try to reduce the number of components used in PSG to the bare minimum, in such a way that only the essential sensors are kept. Research suggests it is possible to achieve similar results to PSG [[1]](#1), [[2]](#2), [[3]](#3) only with a few sensors. In this project, we aim to build a system capable of obtaining such desired results with only accelerometer and heart rate sensors and with the help of Machine Learning. 
 
-The main idea is to train a neural network model with data gathered from PSG for a **research project** [[1]](#1) and extract meaningful correlations among the sensor data. If with only accelerometer and heart rate data the model proves to distinguish specific patterns for different sleep stages, then it is possible to predict the state of sleep of a user on new fresh data.
+The main idea is to train a neural network model with data gathered from PSG for a **research project** [[4]](#4) and extract meaningful correlations among the sensor data. If with only accelerometer and heart rate data the model proves to distinguish specific patterns for different sleep stages, then it is possible to predict the state of sleep of a user on new fresh data.
 
 (Photo sleep cycles)
 
@@ -39,21 +46,11 @@ For this project, we have devised a device attached to the body (e.g. a bracelet
 For example: the user wishes to wake up at around 8 am and it is okay if the system could trigger the alarm 15 minutes earlier or later. The user will then define a threshold of 30 minutes and the system will know that it can wake the user up at the most appropriate time between 7:45 and 8:15.
 
 
-## References
-<a id="1">[1]</a> 
-Walch, O. (2019). 
-Motion and heart rate from a wrist-worn wearable and labeled sleep from polysomnography (version 1.0.0). 
-PhysioNet. https://doi.org/10.13026/hmhs-py35.
-
-
 ## Constraints and challenges 
 
-A major challenge is to shrink down a reasonable ML model (to less than 1 MB of size) that still carries out predictions with high accuracy, low latency and low power consumption.
+A major challenge is to shrink down a reasonable ML model (to less than 1 MB of size) that still makes predictions with high accuracy, low latency and low power consumption.
 
-
-## Version/Date
-
-29/08/2021
+Another challenge is to train a decent ML model with limited data, since the current data available do not come 
 
 
 ## Expected due date
@@ -76,6 +73,18 @@ In this project, there are three major steps to follow:
 
 You must follow each of these steps in the same order to follow along with this project.
 
+## Future work
+
+Due to the limited time available for this competition, there are still pending tasks to be completed and considerations to be taken into account for future work. Some of these are listed below:
+
+- Develop a mobile application (Android/IOS) connecting with the microcontroller via BLE. This might bring some potential benefits:
+    * The microcontroller, which usually lacks Real Time Clocks (RTCs) — at least development baords, retrieves the local time from the phone's system internal clock.
+    * The user can easily configure alarm settings, in a more user friendly graphical user interface (GUI).
+    * The user can choose to enable vibration, sound or both, as well as select different types of alarm sounds.
+    * Statistical reports on the user's sleep information can be displayed and downloaded to the smartphone if desired.
+
+    Note: for the implementation of a mobile application, the idea is that once the user closes the app, the microcontroller disables BLE advertising helping reduce battery drain.
+
 
 ## Disclaimer
 
@@ -84,10 +93,25 @@ For the time being, the main objective of this project is purely for research. A
 It is also worth mentioning that the authors of the project are not experts in the field of sleep medicine, thus non-accurate use of terminology or information may be foreseen. Additionally, constructive feedback and suggestions for improvement will be always welcome.
 
 
-## Future work
+## References
 
-BLE to send a daily report to the smart-phone.
+<a id="1">[1]</a>> 
+Katherine A. Kaplan, Jason Hirshman, Beatriz Hernandez, Marcia L. Stefanick, Andrew R. Hoffman, Susan Redline, Sonia Ancoli-Israel, Katie Stone, Leah Friedman, Jamie M. Zeitzer,
+When a gold standard isn’t so golden: Lack of prediction of subjective sleep quality from sleep polysomnography.
+ScienceDirect. https://doi.org/10.1016/j.biopsycho.2016.11.010.
 
-The main idea of this is that every time the Arduino is switched on, it starts advertising to establish connection with the phone. Once connected, the user has the option of
-This would only require pairing the Arduino with the phone when it is switched on. It then gets synchronized, getting local time from the phone's system internal clock. The user will have fully control to configure the system as they wish. Then the user can close the app and the Arduino gets disconnected itself helping reduce battery drain. After this, the Arduino can remain switched on for as long as the battery lasts, not having to reset it each night. The user can at any time connect open the app and connect to Arduino.
+<a id="2">[2]</a> 
+Blood, Mary L., Sack, Robert L, Percy, David C, Pen, Julie C.
+A Comparison of Sleep Detection by Wrist Actigraphy, Behavioral Response, and Polysomnography.
+Oxford Academic. https://doi.org/10.1093/sleep/20.6.388.
 
+<a id="3">[3]</a> 
+RT Journal Article
+Miguel Marino, Yi Li, Michael N. Rueschman, J. W. Winkelman, J. M. Ellenbogen, J. M. Solet, Hilary Dulin, Lisa F. Berkman, Orfeu M. Buxton.
+Measuring Sleep: Accuracy, Sensitivity, and Specificity of Wrist Actigraphy Compared to Polysomnography
+Oxford Academic. https://doi.org/10.5665/sleep.3142.
+
+<a id="4">[4]</a> 
+Walch, O. (2019). 
+Motion and heart rate from a wrist-worn wearable and labeled sleep from polysomnography (version 1.0.0). 
+PhysioNet. https://doi.org/10.13026/hmhs-py35.
