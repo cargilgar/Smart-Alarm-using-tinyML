@@ -29,16 +29,16 @@ A number of systems — for the time this project started — already employ Mac
 While the former gives very reasonable results due to the fact that it has sensors that are in close contact with the user, it suffers from the drawback of a considerable battery drain. Not to mention the need for stable connectivity for data transmission. 
 Conversely, the latter will not lead to any reliance upon a battery as a power supply. However, the quality of data seems to be more difficult to obtain and more sophisticated components are needed. As a result, these devices are priced much too high, becoming not very appealing to the 'common' user.
 
-In light of the above, this project is mainly focused on conflating the benefits of the above-mentioned systems into a feasible solution. In short, we aim to achieve meaningful results and accurate predictions while performing data analysis on a device powered by a battery without the need of a daily/weekly recharge. 
+In light of the above, we propose a combination of the two above-mentioned systems into a feasible solution. In short, we aim to achieve accurate predictions while performing data analysis on a device powered by a battery without the need of a daily/weekly recharge. 
 
 
 ## Description of the project
 
 The variable changes which take place while sleeping can be measured with different mechanisms. One of the most popular ones, Polysomnography (PSG), is the gold standard test for the study of sleep. However, albeit effective, this method is intrusive as well as unfeasible, since an entire specialized room equipped with sophisticated and expensive machines are required.
 
-A more feasible approach is to try to reduce the number of components used in PSG to the bare minimum, in such a way that only the essential sensors are kept. Research suggests it is possible to achieve similar results to PSG [[1]](#1), [[2]](#2), [[3]](#3) only with a few sensors. In this project, we aim to build a system capable of obtaining such desired results with only accelerometer and heart rate sensors and with the help of Machine Learning. 
+A more feasible approach is to try to reduce the number of components used in PSG to the bare minimum, in such a way that only the essential sensors are kept. Research suggests it is possible to achieve similar results to PSG [[1]](#1), [[2]](#2), [[3]](#3), [[4]](#4) only with a few sensors. In this project, we aim to build a system capable of obtaining such desired results with only accelerometer and heart rate sensors and with the help of Machine Learning. 
 
-The main idea is to train a neural network model with data gathered from PSG for a **research project** [[4]](#4) and extract meaningful correlations among the sensor data. If with only accelerometer and heart rate data the model proves to distinguish specific patterns for different sleep stages, then it is possible to predict the state of sleep of a user on new fresh data.
+The main idea is to train a neural network model with data gathered from PSG for a **research project** [[5]](#5) and extract meaningful correlations among the sensor data. If with only accelerometer and heart rate data the model proves to distinguish specific patterns for different sleep stages, then it is possible to predict the state of sleep of a user on new fresh data.
 
 ![image info](images/sleep-cycles-example.jpg)
 
@@ -68,7 +68,7 @@ Carlos Gil García, Daniel Moreno París
 
 The results of the application application deployed on an Arduino Nano BLE Sense can be watched in the following [Youtube Video](https://www.youtube.com/watch?v=60zlHIsxDk4&t=2s&ab_channel=CarlosGil).
 
-To conduct the experiments, we designed two different prototypes. One was built with a 3D printed case [[5]](#5) ([Prototype 1](#Prototype-1)) allowing easy connections with the Arduino pins and the other one was directed soldered on a perfboard ([Prototype 2](#Prototype-2)). In practice, there is no difference between both prototypes aside from the design, since both worked well in our experiments.
+To conduct the experiments, we designed two different prototypes. One was built with a 3D printed case [[6]](#6) ([Prototype 1](#Prototype-1)) allowing easy connections with the Arduino pins and the other one was directed soldered on a perfboard ([Prototype 2](#Prototype-2)). In practice, there is no difference between both prototypes aside from the design, since both worked well in our experiments.
 
 
 #### Prototype 1
@@ -76,8 +76,6 @@ To conduct the experiments, we designed two different prototypes. One was built 
 
 #### Prototype 2
 ![Animation Prototype 2](images/prototype-2.gif)
-
-
 
 
 ## User instructions
@@ -103,9 +101,9 @@ Due to the limited time available for this competition, there are still pending 
 
     Note: for the implementation of a mobile application, the idea is that once the user closes the app, the microcontroller disables BLE advertising helping reduce battery drain.
     
-- Gather more data from other resources [[6]](#6) to increase diversity and reduce overfitting.
-- Other model architectures or type of machine learning techniques (e.g. Long short-term memory [[7]](#7) or Gradient Boosting Decision Tree Algorithm).
-- Explore more ways of extracting representative features from the dataset. We used some tools to help us automate feature selection [[8]](#8), but there is room for better feature engineering.
+- Gather more data from other resources [[7]](#7) to increase diversity and reduce overfitting.
+- Other model architectures or type of machine learning techniques (e.g. Long short-term memory [[8]](#8) or Gradient Boosting Decision Tree Algorithm).
+- Explore more ways of extracting representative features from the dataset. We used some tools to help us automate feature selection [[9]](#9), but there is room for better feature engineering.
 
 
 ## Disclaimer
@@ -118,34 +116,38 @@ It is also worth mentioning that the authors of the project are not experts in t
 ## References
 
 <a id="1">[1]</a>
+Olivia Walch, Yitong Huang, Daniel Forger, Cathy Goldstein, 
+Sleep stage prediction with raw acceleration and photoplethysmography heart rate data derived from a consumer wearable device. Oxford Academic. https://doi.org/10.1093/sleep/zsz180
+
+<a id="2">[2]</a>
 Katherine A. Kaplan, Jason Hirshman, Beatriz Hernandez, Marcia L. Stefanick, Andrew R. Hoffman, Susan Redline, Sonia Ancoli-Israel, Katie Stone, Leah Friedman, Jamie M. Zeitzer,
 When a gold standard isn’t so golden: Lack of prediction of subjective sleep quality from sleep polysomnography.
 ScienceDirect. https://doi.org/10.1016/j.biopsycho.2016.11.010.
 
-<a id="2">[2]</a> 
+<a id="3">[3]</a> 
 Blood, Mary L., Sack, Robert L, Percy, David C, Pen, Julie C.
 A Comparison of Sleep Detection by Wrist Actigraphy, Behavioral Response, and Polysomnography.
 Oxford Academic. https://doi.org/10.1093/sleep/20.6.388.
 
-<a id="3">[3]</a> 
+<a id="4">[4]</a> 
 RT Journal Article
 Miguel Marino, Yi Li, Michael N. Rueschman, J. W. Winkelman, J. M. Ellenbogen, J. M. Solet, Hilary Dulin, Lisa F. Berkman, Orfeu M. Buxton.
 Measuring Sleep: Accuracy, Sensitivity, and Specificity of Wrist Actigraphy Compared to Polysomnography
 Oxford Academic. https://doi.org/10.5665/sleep.3142.
 
-<a id="4">[4]</a> 
+<a id="5">[5]</a> 
 Walch, O. (2019). 
 Motion and heart rate from a wrist-worn wearable and labeled sleep from polysomnography (version 1.0.0). 
 PhysioNet. https://doi.org/10.13026/hmhs-py35.
 
-<a id="5">[5]</a>
+<a id="6">[6]</a>
 "Arduino Nano case with completely accessible pins" (c) by Nicolai Sp (@nspohrer), retrieved from https://www.thingiverse.com/thing:959057/files, used under Attribution-ShareAlike 3.0 Unported (https://creativecommons.org/licenses/by-sa/3.0/).
 
-<a id="6">[6]</a>
+<a id="7">[7]</a>
 "Multi-Ethnic Study of Atherosclerosis (MESA Sleep)". Sleepdata.org. https://sleepdata.org/datasets/mesa.
 
-<a id="7">[7]</a>
+<a id="8">[8]</a>
 J. Brownlee, "LSTMs for Human Activity Recognition Time Series Classification". Machine Learning maestry. https://machinelearningmastery.com/how-to-develop-rnn-models-for-human-activity-recognition-time-series-classification/
 
-<a id="8">[8]</a>
+<a id="9">[9]</a>
 Horn, Franziska, Robert Pack, and Michael Rieger. "The autofeat python library for automated feature engineering and selection." arXiv preprint arXiv:1901.07329 (2019).
