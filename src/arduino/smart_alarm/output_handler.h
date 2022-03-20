@@ -29,7 +29,7 @@ limitations under the License.
 /// maximum value of the resultant vector is located.
 ///
 /// In the case of running multiple inferences to improve prediction reliability,
-/// the output handler, via getMostFrequent(uint8_t*, uint8_t, bool), can receive
+/// the output handler, via getMode(uint8_t*, uint8_t, bool), can receive
 /// all the labels result of each inference and determine which was predicted
 /// the most.
 ///
@@ -64,12 +64,12 @@ uint8_t recognizeLabel(int8_t* arr, bool msgVerbose);
 /// @param arrInferences Array containing a sequence of inferences.
 /// @return freqLabelsContainer[0].label The label that appears the first after
 /// sorting the frequency labels (i.e. the most frequent label).
-uint8_t getMostFrequent(uint8_t* arrInferences);
+uint8_t getMode(uint8_t* arrInferences);
 
 /// Assign each inference with the corresponding label, adding up `freq` for
 /// each occurence of that label.
 ///
-/// @param arr Array of inferences passed by getMostFrequent(uint8_t*).
+/// @param arr Array of inferences passed by getMode(uint8_t*).
 /// @param labels The struct to be filled with the number of occurrences (`freq).
 void _getFreqLabels(uint8_t* arr, FreqLabel* labels);
 

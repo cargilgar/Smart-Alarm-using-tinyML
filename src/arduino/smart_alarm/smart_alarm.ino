@@ -159,7 +159,7 @@ void loop() {
         }
 
         // With the inferences buffer filled up, let's get the most frequent label.
-        uint8_t prediction = getMostFrequent(inferences.getQueuePointer());
+        uint8_t prediction = getMode(inferences.getQueuePointer());
 
         TF_LITE_REPORT_ERROR(error_reporter, "Most frequent label in the last %d inferences: %d.\n",
                             kInferenceSequence, prediction);

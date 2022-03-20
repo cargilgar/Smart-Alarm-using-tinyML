@@ -58,7 +58,7 @@ uint8_t recognizeLabel(int8_t* arr, bool msgVerbose) {
     return maxIndex;
 }
 
-uint8_t getMostFrequent(uint8_t* arrInferences) {
+uint8_t getMode(uint8_t* arrInferences) {
     /* --------------------------------------------
     Explanatory example of how this function operates
 
@@ -66,7 +66,7 @@ uint8_t getMostFrequent(uint8_t* arrInferences) {
         (2, 0, 1, 2, 1, 4, 2, 3, 1, 2)
 
     Get frequency table for each label and sort them in descending order:
-        Wake: 1              N2: 4   <- Most frequent label
+        Wake: 1              N2: 4   <- Most frequent label (mode)
         N1: 3       sort     N1: 3
         N2: 4       ===>     Wake: 1
         N3: 1                N3: 1
@@ -90,16 +90,23 @@ uint8_t getMostFrequent(uint8_t* arrInferences) {
 
 void _getFreqLabels(uint8_t* arr, FreqLabel* labels) {
     for(int i = 0; i < kInferenceSequence; i++) {
-        if(arr[i] == LabelStage::Wake)
-            labels[0].freq ++;
-        else if(arr[i] == LabelStage::N1)
-            labels[1].freq++;
-        else if(arr[i] == LabelStage::N2)
-            labels[2].freq++;
-        else if(arr[i] == LabelStage::N3)
-            labels[3].freq++;
-        else
-            labels[4].freq++;
+        switch (arr[i]) {
+            case LabelStage::Wake:
+                labels[0].freq ++;
+                break;
+            case LabelStage::N1:
+                labels[1].freq++;
+                break;
+            case LabelStage::N2:
+                labels[2].freq++;
+                break;
+            case LabelStage::N3:
+                labels[3].freq++;
+                break;
+            case LabelStage::REM:
+                labels[4].freq++;
+                break;
+        }
     }
 }
 
