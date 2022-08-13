@@ -14,7 +14,7 @@
 
 ## Smart Alarm application architecture
 
-![image info](../../../images/Smart-alarm-deployment-architecture.png)
+![image info](../../../images/Smart-alarm-deployment-architecture.jpg)
 
 * Initialization: Declaring variables, instantiating objects, loading the model, resolving the operations, initializing the interpreter, allocating the Tensor Arena, defining model input parameters and setting up sensors and timers.
 * IMU handler: It reads the accelerometer data from the IMU sensor.
@@ -101,7 +101,7 @@ For our prototype we have chosen the components listed below:
 
 Note: The 5V buzzer sounds loud enough for an alarm under the 3.3V delivered by the microcontroller. You can supply it 5V for a louder sound with the Arduino Nano BLE Sense board by following this [link](https://support.arduino.cc/hc/en-us/articles/360014779679-Why-doesn-t-the-5V-pin-work-in-the-Arduino-Nano-33-BLE-boards-).
 
-Note that you can use other components for your own application, but bear in mind that using different components from different manufacturers and with specifications will lead you to adapting the design as well as modifying the code. For example, if you decide to use another Arduino board (e.g. Arduino Nano Every), you will need to buy a separate IMU sensor and write the proper code for it. Because of this, we recommend you use the same components as ours.
+Note that you can use other components for your own application, but bear in mind that using different components from different manufacturers and/or with specifications will lead you to adapting the design as well as modifying the code. For example, if you decide to use another Arduino board (e.g. Arduino Nano Every), you will need to buy a separate IMU sensor and write the proper code for it. Because of this, we recommend you use the same components as ours.
 
 
 ## Additional notes
