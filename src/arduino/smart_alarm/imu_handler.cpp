@@ -28,23 +28,23 @@ void readAccelerometer(float* arr, tflite::ErrorReporter* error_reporter, bool m
     float max_y = 0;
     float max_z = 0;
 
-    if(msgVerbose)
+    if (msgVerbose)
         TF_LITE_REPORT_ERROR(error_reporter, "Measuring accelerometer.\n");
 
     unsigned long lastReportTime = millis();
 
     // Read accelerometer measurements during kTimeIMUInterval
-    while(millis() - lastReportTime < kTimeIMUInterval) {
+    while (millis() - lastReportTime < kTimeIMUInterval) {
         IMU.readAcceleration(x, y, z);
 
         // Max value for each axis in 1 second and scale to m/s2
-        if(abs(x) > abs(max_x))
+        if (abs(x) > abs(max_x))
             max_x = abs(x) * g;
 
-        if(abs(y) > abs(max_y))
+        if (abs(y) > abs(max_y))
             max_y = abs(y) * g;
 
-        if(abs(z) > abs(max_z))
+        if (abs(z) > abs(max_z))
             max_z = abs(z) * g;
     }
 

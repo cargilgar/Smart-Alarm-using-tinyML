@@ -26,12 +26,11 @@ uint8_t Queue::getItemAt(uint8_t index) {
 }
 
 bool Queue::isFull() {
-    bool ret = (_stored == _qSize) ? true : false;
-    return ret;
+    return _stored == _qSize;
 }
 
 void Queue::enqueue(int newItem) {
-    if(isFull()) {
+    if (isFull()) {
         _dequeue();
         _queue[_qSize - 1] = newItem;
     }
@@ -42,6 +41,6 @@ void Queue::enqueue(int newItem) {
 }
 
 void Queue::_dequeue() {
-    for(int i = 0; i < _qSize - 1; i++)
+    for (int i = 0; i < _qSize - 1; i++)
         _queue[i] = _queue[i + 1];
 }

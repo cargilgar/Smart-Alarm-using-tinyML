@@ -24,7 +24,7 @@ void InputHandler::generateFeatures(float* imu, int bpm) {
     float y = imu[1];
     float z = imu[2];
 
-    if(!_initialized) {
+    if (!_initialized) {
         _features[0] = x; // x axis
         _features[1] = y; // y axis
         _features[2] = z; // z axis
@@ -63,12 +63,12 @@ void InputHandler::generateFeatures(float* imu, int bpm) {
 }
 
 void InputHandler::_normalizeFeatures() {
-    for(int i = 0; i < kFeatureCount; i++)
+    for (int i = 0; i < kFeatureCount; i++)
         _features[i] = (_features[i] - _normalizer[i*2]) / (_normalizer[i*2+1] - _normalizer[i*2]);
 }
 
-void InputHandler::popullateModelInput(int8_t* input) {
-    for(int i = 0; i < kFeatureCount; i++)
+void InputHandler::populateModelInput(int8_t* input) {
+    for (int i = 0; i < kFeatureCount; i++)
         input[i] = _quantize(_features[i]);
 }
 

@@ -25,7 +25,7 @@ limitations under the License.
 /// @details This file has been designed to allow only enqueuing from the caller.
 /// It is initialized empty and gets filled via enqueue(int). Once filled up,
 /// the next time it receives a new item, it then proceeds to dequeue the oldest
-/// item (i.e. the first introduced). Dequeuing is done automatically avoiding
+/// item (i.e. the first introduced). De-queuing is done automatically avoiding
 /// emptying the queue unintentionally from the caller.
 
 class Queue {

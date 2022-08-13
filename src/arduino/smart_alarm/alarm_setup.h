@@ -29,7 +29,7 @@ void displayAlarmConfiguration(unsigned long* arrRange);
 ///
 /// @param arrRange Array to be filled with time to start making inferences (ms)
 /// and time to stop (ms), in positions 0 and 1 respectively.
-void getwakeUpTimeRange(unsigned long* arrRange);
+void getWakeUpTimeRange(unsigned long* arrRange);
 
 /// This function converts a string in 24-hour format into the corresponding numeric seconds.
 /// As a reference, it considers "00:00" = 0s up to "23:59" = 86400s

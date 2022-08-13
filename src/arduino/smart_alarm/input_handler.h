@@ -17,14 +17,14 @@ limitations under the License.
 
 #include "constants.h"
 
-/// @file input_hanlder.h
+/// @file input_handler.h
 ///
 /// @brief Class to process and input the data into the neural network.
 ///
 /// @details This class takes care of all the calculations needed to generate the
 /// features to be fed into the model. It takes the raw data read from the sensors
 /// and processes them based on the dataset the model was trained on (i.e. generating
-/// the features and normalizing). With the resulting array, it then popullates the
+/// the features and normalizing). With the resulting array, it then populates the
 /// Input Tensor for making inference. After this, new data will come in, repeating
 /// again the process.
 
@@ -49,7 +49,7 @@ public:
     /// within `features`.
     ///
     /// @param input Input Tensor to be filled before making the next inference.
-    void popullateModelInput(int8_t* input);
+    void populateModelInput(int8_t* input);
     bool isInitialized();
 
 private:

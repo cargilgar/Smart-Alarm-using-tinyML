@@ -30,13 +30,13 @@ void displayAlarmConfiguration(unsigned long* arrRange) {
     Serial.println("\nGood night :)\n");
 }
 
-void getwakeUpTimeRange(unsigned long* arrRange) {
+void getWakeUpTimeRange(unsigned long* arrRange) {
     unsigned long time1 = charToSeconds(kStrCurrentTime);
     unsigned long time2 = charToSeconds(kStrWakeUpTime);
 
     // Add 24 hours (86400s) when time2 is the next day.
     // For example: (time1 = 23:00, time2 = 07:00)
-    if(time1 > time2)
+    if (time1 > time2)
         time2 += 86400;
 
     arrRange[0] = (time2 - time1 - kTimeRangeAlarm * 60 / 2) * 1000;
@@ -57,7 +57,7 @@ unsigned long charToSeconds(const char* inputTime) {
 void display24HourFormat(unsigned long inputTime) {
     int minutes, hours;
 
-    if(inputTime > 86400)
+    if (inputTime > 86400)
         inputTime -= 86400;
 
     minutes = inputTime / 60;

@@ -20,7 +20,7 @@ limitations under the License.
 extern "C" {
 #endif
 
-// Arduino compatibility functions
+// Arduino's compatibility functions
 void setup();
 void loop();
 

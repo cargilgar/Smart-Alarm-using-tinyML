@@ -19,11 +19,11 @@ TfLiteStatus setupOutputDevice(tflite::ErrorReporter* error_reporter) {
     // TODO: this causes the application to crash on runtime, check another way.
     /*
     // Only when no output device is detected, send error back.
-    if((digitalRead(kMotorPin) > 0) && (digitalRead(kPasiveBuzzerPin) > 0))
+    if ((digitalRead(kMotorPin) > 0) && (digitalRead(kPassiveBuzzerPin) > 0))
         TF_LITE_REPORT_ERROR(error_reporter, "System ready.\n");
-    else if(digitalRead(kMotorPin) > 0)
+    else if (digitalRead(kMotorPin) > 0)
         TF_LITE_REPORT_ERROR(error_reporter, "Buzzer not connected.\n");
-    else if(digitalRead(kPasiveBuzzerPin) > 0)
+    else if (digitalRead(kPassiveBuzzerPin) > 0)
         TF_LITE_REPORT_ERROR(error_reporter, "Vibration motor not connected.\n");
     else
         return kTfLiteError;*/
@@ -35,10 +35,10 @@ uint8_t recognizeLabel(int8_t* arr, bool msgVerbose) {
     int8_t maxIndex;
     int8_t maxValue = -128;
 
-    for(int8_t i = 0; i < kLabelCount; i++) {
+    for (int8_t i = 0; i < kLabelCount; i++) {
         int8_t temp = *(arr+i);
 
-        if(temp > maxValue) {
+        if (temp > maxValue) {
             maxIndex = i;
             maxValue = temp;
         }
@@ -47,7 +47,7 @@ uint8_t recognizeLabel(int8_t* arr, bool msgVerbose) {
     // Mapping from (-128, 127) to (0, 100) to express it in percentage
     float probPred = (maxValue + 127)/2.56;
 
-    if(msgVerbose) {
+    if (msgVerbose) {
         Serial.print("New label predicted: ");
         Serial.print(maxIndex);
         Serial.print(", with a certainty of: ");
@@ -89,35 +89,18 @@ uint8_t getMode(uint8_t* arrInferences) {
 }
 
 void _getFreqLabels(uint8_t* arr, FreqLabel* labels) {
-    for(int i = 0; i < kInferenceSequence; i++) {
-        switch (arr[i]) {
-            case LabelStage::Wake:
-                labels[0].freq ++;
-                break;
-            case LabelStage::N1:
-                labels[1].freq++;
-                break;
-            case LabelStage::N2:
-                labels[2].freq++;
-                break;
-            case LabelStage::N3:
-                labels[3].freq++;
-                break;
-            case LabelStage::REM:
-                labels[4].freq++;
-                break;
-        }
-    }
+    for (int i = 0; i < kInferenceSequence; i++)
+        labels[arr[i]].freq++;
 }
 
 void _insertionSort(FreqLabel* labels) {
-    for(int j = 1; j < kLabelCount; j++) {
+    for (int j = 1; j < kLabelCount; j++) {
         int key = labels[j].freq;
         int i = j - 1;
 
-        while((i > -1) && (labels[i].freq < key)) {
+        while ((i > -1) && (labels[i].freq < key)) {
             _swapPointers(labels + i + 1, labels + i);
-            i --;
+            i--;
         }
     }
 }
@@ -129,13 +112,13 @@ void _swapPointers(FreqLabel* ptr1, FreqLabel* ptr2) {
 }
 
 void triggerAlarm(bool constBeep) {
-    if(constBeep) {
+    if (constBeep) {
         setAlarmOn();
-        while(true) {}
+        for (;;) {}
     }
     else {
-        while(true) {
-            for(int i = 0; i < 3; i++) {
+        for (;;) {
+            for (int i = 0; i < 3; i++) {
                 setAlarmOn();
                 delay(80);
                 setAlarmOff();
@@ -151,10 +134,10 @@ void triggerAlarm(bool constBeep) {
 
 void setAlarmOn() {
     digitalWrite(kMotorPin, HIGH);
-    tone(kPasiveBuzzerPin, kRingTone);
+    tone(kPassiveBuzzerPin, kRingTone);
 }
 
 void setAlarmOff() {
     digitalWrite(kMotorPin, LOW);
-    noTone(kPasiveBuzzerPin);
+    noTone(kPassiveBuzzerPin);
 }

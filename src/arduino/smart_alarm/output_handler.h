@@ -67,7 +67,7 @@ uint8_t recognizeLabel(int8_t* arr, bool msgVerbose);
 uint8_t getMode(uint8_t* arrInferences);
 
 /// Assign each inference with the corresponding label, adding up `freq` for
-/// each occurence of that label.
+/// each occurrence of that label.
 ///
 /// @param arr Array of inferences passed by getMode(uint8_t*).
 /// @param labels The struct to be filled with the number of occurrences (`freq).

@@ -107,7 +107,7 @@ void setup() {
     model_output = interpreter->output(0);
 
     // Get intervals in milliseconds to let know Arduino when to start inferences
-    getwakeUpTimeRange(wakeUpTimeRange);
+    getWakeUpTimeRange(wakeUpTimeRange);
 
     displayAlarmConfiguration(wakeUpTimeRange);
 }
@@ -118,19 +118,19 @@ void setup() {
 /// prediction.
 void loop() {
     // Wait until the time to wake up arrives.
-    while(millis() < wakeUpTimeRange[0]) { /*The arduino will remain idle here*/}
+    while (millis() < wakeUpTimeRange[0]) { /*The arduino will remain idle here*/}
 
     TF_LITE_REPORT_ERROR(error_reporter, "It's about time! Predicting sleep stages for awakening."
                          "\n\nAccumulating the first %d inferences first.\n", kInferenceSequence);
 
     // We are within the interval range for waking up, start doing inferences during this time.
-    while(millis() < wakeUpTimeRange[1]) {
+    while (millis() < wakeUpTimeRange[1]) {
         // First time doing inferences, we will fill up the inferences buffer
-        while(inference_count < kInferenceSequence) {
+        while (inference_count < kInferenceSequence) {
             readAccelerometer(imu_input, error_reporter, false);
 
             // First time new data comes in, no HR is needed, only imu data.
-            if(!input_handler->isInitialized())
+            if (!input_handler->isInitialized())
                 input_handler->generateFeatures(imu_input, 0);
 
             else {
@@ -140,7 +140,7 @@ void loop() {
                 input_handler->generateFeatures(imu_input, bpm);
 
                 // Popullate model input
-                input_handler->popullateModelInput(model_input->data.int8);
+                input_handler->populateModelInput(model_input->data.int8);
 
                 // Run inference, and report any error
                 TfLiteStatus invoke_status = interpreter->Invoke();
@@ -165,7 +165,7 @@ void loop() {
                             kInferenceSequence, prediction);
 
         // REM label predicted, break the loop and trigger the alarm.
-        if((prediction == LabelStage::REM) || (prediction == LabelStage::Wake))
+        if ((prediction == LabelStage::REM) || (prediction == LabelStage::Wake))
             break;
 
         // TODO: keep track of labels inferred to know what the model should predict in the following inferences

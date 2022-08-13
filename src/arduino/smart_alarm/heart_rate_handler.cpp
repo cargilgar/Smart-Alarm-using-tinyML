@@ -16,9 +16,7 @@ limitations under the License.
 #include "heart_rate_handler.h"
 
 TfLiteStatus setupHeartRateSensor() {
-    TfLiteStatus status = (analogRead(kHRSensorPin) > 0) ? kTfLiteOk : kTfLiteError;
-
-    return status;
+    return analogRead(kHRSensorPin) > 0 ? kTfLiteOk : kTfLiteError;
 }
 
 int readHeartRate(tflite::ErrorReporter* error_reporter, bool msgVerbose) {
@@ -33,7 +31,7 @@ int readHeartRate(tflite::ErrorReporter* error_reporter, bool msgVerbose) {
     unsigned long lastTime = 0;
     unsigned long startTime = millis();
 
-    if(msgVerbose)
+    if (msgVerbose)
         TF_LITE_REPORT_ERROR(error_reporter, "Measuring Beats per Minute.\n");
 
     // Read heart rate measurements during kTimeHRInterval
@@ -43,7 +41,7 @@ int readHeartRate(tflite::ErrorReporter* error_reporter, bool msgVerbose) {
 
         if (analogRead(kHRSensorPin) >= kAnalogReadThreshold) {
             // Check wave rising and IBI > 420 ms
-            if(!waveDetected && ((newBeatTime - lastTime) > kMinIBI)) {
+            if (!waveDetected && ((newBeatTime - lastTime) > kMinIBI)) {
                 IBI = newBeatTime - lastTime;
                 lastTime = millis();
 
@@ -65,7 +63,7 @@ int readHeartRate(tflite::ErrorReporter* error_reporter, bool msgVerbose) {
 
     int BPM = heartRate / heartBeatCounter;  /**< Mean of BPMs calculated, needed for the model input. */
 
-    if(msgVerbose) {
+    if (msgVerbose) {
         TF_LITE_REPORT_ERROR(error_reporter, "Beats detected = %d.\n", heartBeatCounter);
         TF_LITE_REPORT_ERROR(error_reporter, "BPM = %d.\n", BPM);
     }
