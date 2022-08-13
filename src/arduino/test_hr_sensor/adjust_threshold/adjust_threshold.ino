@@ -19,7 +19,7 @@ static int sensorValue;
 static int threshold = 346;                     // Determine which sensorValue to "count as a beat", and which to ingore.
 
 void setup() {
-    while(!Serial);
+    while (!Serial);
     pinMode(LED_BUILTIN, OUTPUT);
     pinMode(pulseSensorPin, INPUT);
     Serial.begin(9600);
@@ -30,10 +30,8 @@ void loop() {
 
     Serial.println(sensorValue);
 
-    if(sensorValue > threshold)                 // If the signal is above threshold value, turn on the built-in Arduino's LED.
-        digitalWrite(LED_BUILTIN, HIGH);
-    else
-        digitalWrite(LED_BUILTIN, LOW);         // Otherwise, the sensorValue must be below threshold value, so turn this LED off
+    // If the signal is above threshold value, turn the built-in Arduino's LED on, otherwise, turn it off.
+    digitalWrite(LED_BUILTIN, sensorValue > threshold ? HIGH : LOW);
 
     delay(10);
 }

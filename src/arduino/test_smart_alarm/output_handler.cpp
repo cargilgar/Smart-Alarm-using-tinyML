@@ -19,10 +19,10 @@ uint8_t recognizeLabel(int8_t* arr, bool msgVerbose) {
     int8_t maxIndex;
     int8_t maxValue = -128;
 
-    for(int8_t i = 0; i < kLabelCount; i++) {
+    for (int8_t i = 0; i < kLabelCount; i++) {
         int8_t temp = *(arr+i);
 
-        if(temp > maxValue) {
+        if (temp > maxValue) {
             maxIndex = i;
             maxValue = temp;
         }
@@ -31,7 +31,7 @@ uint8_t recognizeLabel(int8_t* arr, bool msgVerbose) {
     // Mapping from the range (-128, 127) to (0, 100) to express it in percentage
     float probPred = (maxValue + 127)/2.56;
 
-    if(msgVerbose) {
+    if (msgVerbose) {
         Serial.print("Label predicted: ");
         Serial.print(maxIndex);
         Serial.print(", with a certainty of: ");

@@ -13,7 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-namespace{
+namespace {
     const int sensorPin = A0;
 
     int heartRate = 0;                               /**< Variable to calculate the mean of the detected beats. */
@@ -31,21 +31,21 @@ namespace{
     bool waveDetected = false;                       /**< Boolean to avoid false positives when the wave decreases. */   
 }
 
-void setup(){
+void setup() {
     Serial.begin(9600);
 }
 
-void loop(){
+void loop() {
     startTime = millis();
 
     // Reading pulse sensor for readingTime seconds
-    while (millis() < (startTime + readingTime)){
+    while (millis() < (startTime + readingTime)) {
         // Store new time to calculate IBI
         newBeatTime = millis();
 
         if (analogRead(sensorPin) >= threshold) {
             // Check wave rising and IBI > 420 ms
-            if((!waveDetected) && ((newBeatTime - lastTime) > 420)) {
+            if ((!waveDetected) && ((newBeatTime - lastTime) > 420)) {
 
                 IBI = newBeatTime - lastTime;
                 lastTime = millis();

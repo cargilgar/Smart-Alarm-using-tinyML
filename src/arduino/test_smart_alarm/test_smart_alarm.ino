@@ -26,7 +26,7 @@ limitations under the License.
 #include "main_functions.h"
 #include "output_handler.h"
 
-namespace{
+namespace {
     tflite::MicroErrorReporter micro_error_reporter;
     tflite::MicroInterpreter* interpreter = nullptr;
     tflite::ErrorReporter* error_reporter = nullptr;
@@ -47,7 +47,7 @@ int8_t quantize(float val);
 
 /// Initializes all data needed for the application.
 void setup() {
-    while(!Serial);
+    while (!Serial);
 
     // Setting up logging
     error_reporter = &micro_error_reporter;
@@ -97,8 +97,8 @@ void setup() {
 /// Runs all tests in one iteration.
 void loop() {
     TF_LITE_REPORT_ERROR(error_reporter, "Press any key to start the test:\n");
-    for(;;) {
-        if(Serial.read() > 31)  // ASCII
+    for (;;) {
+        if (Serial.read() > 31)  // ASCII
             break;
     }
 
@@ -106,7 +106,7 @@ void loop() {
 
     TF_LITE_REPORT_ERROR(error_reporter, "The test is running... \n");
 
-    for(uint16_t i = 0; i < kNumTests; i++) {
+    for (uint16_t i = 0; i < kNumTests; i++) {
         // Popullate model input from samples.
         for (uint8_t j = 0; j < kFeatureCount; j++) {
             int8_t quantized = quantize(samples[j+i*(kFeatureCount+1)]); // Accessing each row from 0 up to 13
@@ -127,7 +127,7 @@ void loop() {
         // Extract the maximum value of the probabilistic distribution from the model output
         uint8_t prediction = recognizeLabel(model_output->data.int8, false);
 
-        if(prediction == label_test)
+        if (prediction == label_test)
             correctPredicition++;
     }
 
@@ -139,6 +139,5 @@ void loop() {
 }
 
 int8_t quantize(float val) {
-    int8_t ret = val / model_input->params.scale + model_input->params.zero_point;
-    return ret;
+    return val / model_input->params.scale + model_input->params.zero_point;
 }
